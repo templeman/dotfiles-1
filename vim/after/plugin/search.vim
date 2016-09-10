@@ -40,6 +40,7 @@ function! s:DKO_StarSearch()
 endfunction
 
 if !empty(s:DKO_StarSearch())
+  nunmap *
   nmap <silent><special><expr>  *   <SID>DKO_StarSearch()
 endif
 

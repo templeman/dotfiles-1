@@ -966,6 +966,8 @@ function! s:LoadPlugins()
   " :GitGutterToggle
   Plug 'airblade/vim-gitgutter', { 'on': ['GitGutterToggle'] }
 
+  Plug 'timakro/vim-searchant'
+
   " <Plug> to not move on * search function
   Plug 'haya14busa/vim-asterisk'
 
