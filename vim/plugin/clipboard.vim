@@ -3,9 +3,13 @@
 let s:cpo_save = &cpoptions
 set cpoptions&vim
 
-" ======================================================================
+augroup dkoclipboard
+  autocmd!
+augroup END
+
+" ============================================================================
 " EasyClip
-" ======================================================================
+" ============================================================================
 
 if dko#IsLoaded('vim-easyclip')
   " explicitly do NOT remap s/S to paste register
@@ -16,30 +20,25 @@ if dko#IsLoaded('vim-easyclip')
 endif
 
 " ============================================================================
-" Manual blackhole
+" vim-yankstack
 " ============================================================================
 
-if !dko#IsLoaded('vim-easyclip')
-  function! s:Blackhole(key) abort
-    execute 'nnoremap ' . a:key . ' "' . a:key . a:key
-    execute 'xnoremap ' . a:key . ' "' . a:key . a:key
+if dko#IsPlugged('vim-yankstack')
+  let g:yankstack_yank_keys = ['m', 'y', 'Y']
+  autocmd dkoclipboard User vim-yankstack call yankstack#setup()
+
+  function! s:MapYankstack() abort
+    nmap <C-p> <Plug>yankstack_substitute_older_paste
+    " xmap <M-p> <Plug>yankstack_substitute_older_paste
+    " imap <M-p> <Plug>yankstack_substitute_older_paste
+    nmap <C-n> <Plug>yankstack_substitute_newer_paste
+    " xmap <M-P> <Plug>yankstack_substitute_newer_paste
+    " imap <M-P> <Plug>yankstack_substitute_newer_paste
   endfunction
+  autocmd dkoclipboard User vim-yankstack call s:MapYankstack()
 
-  let s:blackhole_keys = [ 'c', 'C', 'd', 'D', 's', 'S', 'x', 'X' ]
-  for s:key in s:blackhole_keys
-     call s:Blackhole(s:key)
-  endfor
-
-  let s:register = has('clipboard') ? '"*' : '""'
-  execute 'nnoremap m ' . s:register . 'd'
-  execute 'nnoremap M ' . s:register . 'dd'
-  execute 'xnoremap m ' . s:register . 'd'
-  execute 'xnoremap M ' . s:register . 'dd'
-  execute 'nnoremap mm ' . s:register . 'dd'
-  execute 'xnoremap mm ' . s:register . 'dd'
+  call plug#load('vim-yankstack')
 endif
-
-" ============================================================================
 
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
