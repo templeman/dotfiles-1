@@ -1,67 +1,35 @@
 " autoload/dkoline.vim
 scriptencoding utf-8
 
-" let g:dkoline#refresh = 0
-" let g:dkoline#trefresh = 0
-" let g:dkoline#srefresh = 0
-
 function! dkoline#GetTabline() abort
   "let g:dkoline#trefresh += 1
-  let l:tabnr = tabpagenr()
-  let l:winnr = tabpagewinnr(l:tabnr)
-  let l:bufnr = winbufnr(l:winnr)
-  let l:ww    = &columns
-  let l:cwd   = has('nvim') ? getcwd(l:winnr) : getcwd()
-
-  let l:x = {
-        \   'bufnr': l:bufnr,
-        \   'ww': 9999,
-        \ }
-
   let l:contents = '%#StatusLine#'
-
-  " ==========================================================================
-  " Left side
-  " ==========================================================================
-
-  " Search context
-  let l:contents .= dkoline#Format(dkoline#Anzu(),
-        \ '%#Pmenu# ? %#PmenuSel#%#Search#')
-
-  " ==========================================================================
-  " Right side
-  " ==========================================================================
-
+  let l:contents .= dkoline#Part({
+        \   'heading':  '%#Pmenu# ? ',
+        \   'color':    '%#Search#',
+        \   'function': 'anzu#search_status',
+        \ })
   let l:contents .= '%#StatusLine# %= '
-
-  let l:project_root = dko#ShortenPath(dkoproject#GetRoot(), 0)
-  let l:maxwidth = float2nr(&columns / 2) - 5 - 6 - len(l:project_root)
-
-  let l:contents .= dkoline#Format(
-        \   dkoline#ShortPath(l:bufnr, l:cwd, 0),
-        \   '%#Pmenu# ʟᴄᴅ %#PmenuSel#%0.' . l:maxwidth . '(',
-        \   '%)'
-        \ )
-
-  let l:contents .= dkoline#Format(
-        \ l:project_root,
-        \ '%#Pmenu# ᴘʀᴏᴊ %#PmenuSel#')
-
-  let l:contents .= dkoline#Format(
-        \ dkoline#GitBranch(l:bufnr),
-        \ '%#Pmenu# ʙʀᴀɴᴄʜ %#PmenuSel#')
-
-  " ==========================================================================
-
+  let l:contents .= dkoline#Part({
+        \   'heading':  '%#Pmenu# ʟᴄᴅ ',
+        \   'color':    '%#PmenuSel#',
+        \   'format':   '0.' . (float2nr(&columns / 2) - 20),
+        \   'raw':      '%{dko#ShortenPath(getcwd())}',
+        \ })
+  let l:contents .= dkoline#Part({
+        \   'heading':  '%#Pmenu# ᴘʀᴏᴊ ',
+        \   'color':    '%#PmenuSel#',
+        \   'format':   '0.' . (float2nr(&columns / 2) - 20),
+        \   'raw':      '%{dko#ShortenPath(dkoproject#GetRoot())}',
+        \ })
   return l:contents
 endfunction
 
 " a:winnr from dkoline#Refresh() or 0 on set statusline
-function! dkoline#GetStatusline(winnr) abort
-  if empty(a:winnr) | return | endif
-  " let g:dkoline#srefresh += 1
+function! dkoline#GetStatusline() abort
+  let l:winnr = winnr()
+  if !l:winnr | return | endif
 
-  let l:winnr = a:winnr > winnr('$') ? 1 : a:winnr
   let l:bufnr = winbufnr(l:winnr)
   let l:ww    = winwidth(l:winnr)
   let l:cwd   = has('nvim') ? getcwd(l:winnr) : getcwd()
@@ -77,7 +45,10 @@ function! dkoline#GetStatusline(winnr) abort
   " Left side
   " ==========================================================================
 
-  let l:contents .= '%#TabLine# ' . dkoline#Mode(l:winnr)
+  let l:contents .= dkoline#Part({
+        \   'color':  '%#TabLine#',
+        \   'raw':    dkoline#Mode(l:winnr),
+        \ })
 
   " Filebased
   let l:contents .= dkoline#Format(dkoline#Filetype(l:bufnr), '%#StatusLine#')
@@ -167,23 +138,18 @@ endfunction
 
 " @return {String}
 function! dkoline#Mode(winnr) abort
-  " blacklist
-  let l:modecolor = '%#TabLine#'
-
+  if a:winnr != winnr() | return '' | endif
   let l:modeflag = mode()
-  if a:winnr != winnr()
-    let l:modeflag = ' '
-  elseif l:modeflag ==# 'i'
-    let l:modecolor = '%#PmenuSel#'
+  if l:modeflag ==# 'i'
+    return '%#PmenuSel# ' . l:modeflag . ' '
   elseif l:modeflag ==# 'R'
-    let l:modecolor = '%#DiffDelete#'
+    return '%#DiffDelete# ' . l:modeflag . ' '
   elseif l:modeflag =~? 'v'
-    let l:modecolor = '%#Cursor#'
+    return '%#Cursor# ' . l:modeflag . ' '
   elseif l:modeflag ==? "\<C-v>"
-    let l:modecolor = '%#Cursor#'
-    let l:modeflag = 'B'
+    return '%#Cursor# B '
   endif
-  return  l:modecolor . ' ' . l:modeflag . ' '
+  return ' ? '
 endfunction
 
 " @return {String}
@@ -289,21 +255,6 @@ function! dkoline#ShortPath(bufnr, path, max) abort
         \ : l:path
 endfunction
 
-" Uses fugitive or gita to get cached branch name
-"
-" @param {Int} bufnr
-" @return {String}
-function! dkoline#GitBranch(bufnr) abort
-  return dko#IsNonFile(a:bufnr)
-        \ || dko#IsHelp(a:bufnr)
-        \ ? ''
-        \ : exists('*fugitive#head')
-        \   ? ' ' . fugitive#head(7) . ' '
-        \   : exists('g:gita#debug')
-        \     ? gita#statusline#format('%lb')
-        \     : ''
-endfunction
-
 " @return {String}
 function! dkoline#FunctionInfo() abort
   let l:funcinfo = dkocode#GetFunctionInfo()
@@ -334,8 +285,11 @@ endfunction
 " ============================================================================
 
 function! dkoline#Init() abort
-  set statusline=%!dkoline#GetStatusline(1)
+  " let g:dkoline#refresh = 0
+  " let g:dkoline#trefresh = 0
+  " let g:dkoline#srefresh = 0
 
+  set statusline=%!dkoline#GetStatusline()
   call dkoline#RefreshTabline()
   set showtabline=2
 
@@ -360,22 +314,14 @@ function! dkoline#Init() abort
         \ ]
   " 'NeomakeCountsChanged',
 
-  if !empty(l:refresh_hooks)
-    execute 'autocmd plugin-dkoline ' . join(l:refresh_hooks, ',') . ' *'
-          \ . ' call dkoline#RefreshStatus()'
-  endif
-  if !empty(l:user_refresh_hooks)
-    execute 'autocmd plugin-dkoline User ' . join(l:user_refresh_hooks, ',')
-          \ . ' call dkoline#RefreshStatus()'
-  endif
-endfunction
-
-function! dkoline#RefreshStatus() abort
-  " let g:dkoline#refresh += 1
-  for l:winnr in range(1, winnr('$'))
-    let l:fn = '%!dkoline#GetStatusline(' . l:winnr . ')'
-    call setwinvar(l:winnr, '&statusline', l:fn)
-  endfor
+  " if !empty(l:refresh_hooks)
+  "   execute 'autocmd plugin-dkoline ' . join(l:refresh_hooks, ',') . ' *'
+  "         \ . ' call dkoline#RefreshStatusline()'
+  " endif
+  " if !empty(l:user_refresh_hooks)
+  "   execute 'autocmd plugin-dkoline User ' . join(l:user_refresh_hooks, ',')
+  "         \ . ' call dkoline#RefreshStatusline()'
+  " endif
 endfunction
 
 function! dkoline#RefreshTabline() abort
@@ -385,4 +331,31 @@ endfunction
 " bound to <F11> - see ../plugin/mappings.vim
 function! dkoline#ToggleTabline() abort
   let &showtabline = &showtabline ? 0 : 2
+endfunction
+
+function! dkoline#Part(settings) abort
+  let l:text = dkoline#GetText(a:settings)
+  if empty(l:text) | return '' | endif
+  let l:format_start = dkoline#GetFormat(a:settings)
+  let l:format_end = (!empty(l:format_start) ? '%)' : '')
+  return get(a:settings, 'heading', '')
+        \ . get(a:settings, 'color', '')
+        \ . l:format_start . l:text . l:format_end
+endfunction
+
+function! dkoline#GetText(settings) abort
+  if !empty(get(a:settings, 'raw', ''))
+    return a:settings.raw
+  elseif !empty(get(a:settings, 'function', ''))
+        \ && exists('*' . a:settings.function)
+    let l:args = get(a:settings, 'args', [])
+    return call(a:settings.function, l:args)
+  endif
+  return ''
+endfunction
+
+function! dkoline#GetFormat(settings) abort
+  return !empty(get(a:settings, 'format', ''))
+        \ ? '%' . a:settings.format . '('
+        \ : ''
 endfunction

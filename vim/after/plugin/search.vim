@@ -73,6 +73,8 @@ call s:SetupIncsearch()
 function! s:SetupAnzu() abort
   if !dko#IsLoaded('vim-anzu') | return | endif
 
+  let g:anzu_status_format = ' %p [%i/%l] '
+
   " Replace anzu's cursormoved with my own that updates the tabline where
   " search status is displayed
   autocmd! anzu CursorMoved
