@@ -177,44 +177,32 @@ function! dkoplug#plugins#LoadAll() abort
   " Completion
   " ==========================================================================
 
+  " --------------------------------------------------------------------------
+  " Engine: Deoplete
+  " --------------------------------------------------------------------------
+
+  Plug 'Shougo/deoplete.nvim', WithCompl({
+        \   'do': ':UpdateRemotePlugins'
+        \ })
+
+  " --------------------------------------------------------------------------
+  " Engine: LanguageClient
+  " --------------------------------------------------------------------------
+
   " The language client completion is a bit slow to kick in, but it works
   Plug 'autozimu/LanguageClient-neovim', WithCompl({
         \   'branch': 'next',
         \   'do': 'bash ./install.sh',
         \ })
 
-  " Auto-insert matching braces with detection for jumping out on close.
-  " No right brace detection
-  "Plug 'cohama/lexima.vim'
-  " Slow but detects right brace
-  "Plug 'Raimondi/delimitMate'
-  " Slowest
-  "Plug 'kana/vim-smartinput'
-
-  " Main completion engine, bound to <C-o>
-  " Does not start until InsertEnter, so we can set up sources, then load
-  " them, then load NCM
-  Plug 'roxma/nvim-completion-manager', WithCompl({ 'on': [] })
-
-  " Complete words from other open buffers (tags is probably enough, this will
-  " just introduce irrelevant completions)
-  "Plug 'fgrsnau/ncm-otherbuf', WithCompl()
-
   " --------------------------------------------------------------------------
-  " NCM functionality: Includes
+  " Supplement: Includes
   " --------------------------------------------------------------------------
 
   " Include completion, include tags
   " For what langs are supported, see:
   " https://github.com/Shougo/neoinclude.vim/blob/master/autoload/neoinclude.vim
-  " Note: NCM Errors when can't find b:node_root (from moll/vim-node)
   Plug 'Shougo/neoinclude.vim', WithCompl()
-
-  " --------------------------------------------------------------------------
-  " Completion: CSS
-  " --------------------------------------------------------------------------
-
-  Plug 'calebeby/ncm-css', WithCompl()
 
   " --------------------------------------------------------------------------
   " Completion: Java
@@ -229,10 +217,6 @@ function! dkoplug#plugins#LoadAll() abort
   " Completion: JavaScript
   " --------------------------------------------------------------------------
 
-  Plug 'roxma/nvim-cm-tern', PlugIf(g:dko_use_tern_lsp, {
-        \   'do': 'npm install'
-        \ })
-
   " Parameter completion (in or after ' or ")
   " Extends omnicomplete to fill in addEventListener('click'
   "Plug 'othree/jspc.vim'
@@ -243,10 +227,6 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Native omnicomplete and some refactoring support, official plugin
   "Plug 'flowtype/vim-flow'
-
-  " NCM completion, same deps as vim-flow
-  " not using until this is fixed: https://github.com/roxma/ncm-flow/issues/3
-  "Plug 'roxma/ncm-flow', WithCompl()
 
   " --------------------------------------------------------------------------
   " Completion: PHP
@@ -276,18 +256,10 @@ function! dkoplug#plugins#LoadAll() abort
         \ })
 
   " --------------------------------------------------------------------------
-  " Completion: Python
-  " --------------------------------------------------------------------------
-
-  " nvim-completion-manager has a jedi source in python already, so as long as
-  " jedi is pip installed it is good to go.
-
-  " --------------------------------------------------------------------------
   " Completion: Syntax
   " --------------------------------------------------------------------------
 
   " Full syntax completion. Keyed as [S]
-  " Only use with NCM - normally super slow, like syntaxcomplete
   " DISABLED - Makes pandoc/markdown really slow.
   "Plug 'Shougo/neco-syntax', WithCompl()
 
@@ -295,7 +267,6 @@ function! dkoplug#plugins#LoadAll() abort
   " Completion: Snippet engine
   " --------------------------------------------------------------------------
 
-  " nvim-completion-manager
   Plug 'Shougo/neosnippet', WithCompl()
   Plug 'Shougo/neosnippet-snippets', WithCompl()
   Plug 'honza/vim-snippets', WithCompl()
@@ -304,7 +275,6 @@ function! dkoplug#plugins#LoadAll() abort
   " Completion: VimL
   " --------------------------------------------------------------------------
 
-  " nvim-completion-manager
   Plug 'Shougo/neco-vim', WithCompl()
 
   " ==========================================================================
