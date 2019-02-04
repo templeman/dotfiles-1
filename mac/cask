@@ -5,48 +5,62 @@ set -e
 brew update
 
 # ==============================================================================
+# Alfred
+# ==============================================================================
+
+brew cask install alfred
+echo "License in LastPass Vault"
+# echo "Workflows in SpiderOak Hive"
+
+# ==============================================================================
 # bettertouchtool
 # ==============================================================================
 
-brew cask install bettertouchtool
-echo "License in SpiderOak Hive"
+# brew cask install bettertouchtool
+# echo "License in SpiderOak Hive"
 
 # ==============================================================================
 
-brew cask install betwixt
+# brew cask install betwixt
 
-brew cask install bitbar
-echo "Sync in SpiderOak Hive"
+# BitBar: Put anything in the Mac menu bar
+# brew cask install bitbar
+# echo "Sync in SpiderOak Hive"
 
-brew cask install cloudapp
+# brew cask install cloudapp
 
+# Deluge: BitTorrent client
 # full socks5+DHT+blocklist support
-brew cask install deluge
+# brew cask install deluge
 
-brew cask install discord
-brew cask install docker
+# brew cask install discord
+# brew cask install docker
 brew cask install dropbox
-brew cask install firefox
-brew cask install gimp
-brew cask install gitter
-brew cask install google-chrome-beta
+# brew cask install firefox
+# brew cask install gimp
+# brew cask install gitter
+# brew cask install google-chrome-beta
+brew cask install google-chrome
 brew cask install gpg-suite-no-mail
 brew cask install hammerspoon
 
 # inkscape requires xquartz
-brew cask install xquartz
-brew cask install inkscape
+# brew cask install xquartz
+# brew cask install inkscape
 
-brew cask install iina
+# IINA: Modern media player for macOS
+# brew cask install iina
+
 brew cask install iterm2
-brew cask install java
+
+# brew cask install java
 
 # ==============================================================================
 # Kaleidoscope
 # ==============================================================================
 
-brew cask install kaleidoscope
-echo "License in SpiderOak Hive"
+# brew cask install kaleidoscope
+# echo "License in SpiderOak Hive"
 
 # ==============================================================================
 
@@ -57,39 +71,71 @@ brew cask install karabiner-elements
 # ==============================================================================
 
 brew cask install marked
-echo "License in SpiderOak Hive"
+# echo "License in SpiderOak Hive"
 
 # ==============================================================================
 
 brew cask install ngrok
-brew cask install robo-3t
-brew cask install skype
-brew cask install slack
-brew cask install spideroakone
+# brew cask install robo-3t
+# brew cask install skype
+# brew cask install slack
+# brew cask install spideroakone
+# brew cask install spotify spotifree
 brew cask install spotify
 # brew cask install switchresx
-brew cask install the-unarchiver
+# brew cask install the-unarchiver
 
 # ==============================================================================
 # Transmit
 # ==============================================================================
 
-brew cask install transmit
-echo "License in email"
-echo "Favorites in SpiderOak sync"
+# brew cask install transmit
+# echo "License in email"
+# echo "Favorites in SpiderOak sync"
 
 # ============================================================================
 
-brew cask install tunnelblick
-echo "Set up vpn"
+# brew cask install tunnelblick
+# echo "Set up vpn"
 
 # ============================================================================
 # Virtualization
 # ============================================================================
 
 brew cask install vagrant
-brew cask install virtualbox virtualbox-extension-pack
+# brew cask install virtualbox virtualbox-extension-pack
+brew cask install virtualbox
 
 # ============================================================================
 
-brew cask install vnc-viewer
+# brew cask install vnc-viewer
+
+# ============================================================================
+# For Funsies
+# ============================================================================
+
+brew cask install electric-sheep
+
+# ============================================================================
+# Security and Privacy
+# ============================================================================
+
+brew cask install tunnelbear
+
+# ============================================================================
+# Email
+# ============================================================================
+brew cask install mailmate
+echo "License in LastPass Vault"
+
+# ============================================================================
+# File Management
+# ============================================================================
+brew cask install forklift
+echo "License in LastPass Vault"
+
+# ============================================================================
+# Dev
+# ============================================================================
+brew cask install dash
+echo "License in LastPass Vault"
