@@ -7,4 +7,3 @@ set -e
 # mas install Transmit
 # mas install Xcode
 mas install LittleIpsum
-

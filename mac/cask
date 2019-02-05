@@ -139,3 +139,6 @@ echo "License in LastPass Vault"
 # ============================================================================
 brew cask install dash
 echo "License in LastPass Vault"
+
+brew cask install sequel-pro
+echo "Favorites can be imported"
