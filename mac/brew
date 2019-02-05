@@ -90,8 +90,8 @@ brew install openssl
 #brew install homebrew/dupes/ssh --with-libressl
 
 # better curl
-brew install curl --with-libressl
-brew link --force curl
+# brew install curl --with-libressl
+# brew link --force curl
 
 brew install htop --with-ncurses
 
