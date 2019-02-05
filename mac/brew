@@ -93,7 +93,7 @@ brew install openssl
 # brew install curl --with-libressl
 # brew link --force curl
 
-brew install htop --with-ncurses
+brew install htop
 
 brew install multitail
 brew install nmap
