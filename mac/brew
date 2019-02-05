@@ -122,7 +122,7 @@ brew install jsonpp jq
 # ----------------------------------------------------------------------------
 # code analysis
 # ----------------------------------------------------------------------------
-
+brew tap universal-ctags/universal-ctags
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 brew install cloc
@@ -134,7 +134,7 @@ brew install highlight
 # git
 # ----------------------------------------------------------------------------
 
-brew install git --without-completions
+brew install git
 brew install hub tig
 
 # ----------------------------------------------------------------------------
