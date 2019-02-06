@@ -27,3 +27,4 @@ zsh/antibody
 
 # generated
 hammerspoon/init.lua
+hammerspoon/alfred.lua
