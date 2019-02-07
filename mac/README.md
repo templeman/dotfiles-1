@@ -33,6 +33,12 @@ login. To remedy this, see [Unlock] (forked to my GitHub for archival).
 1. `sshkeygen` (alias to generate new ed25519 keys)
 1. Add the public key to GitHub, GitLab, Bitbucket, keybasefs, etc.
 
+### Name the computer
+
+1. Go to https://www.npmjs.com/package/epithet
+1. Click "Test with RunKit" and generate snappy name
+1. System Preferences > Sharing and enter the new name
+
 ### Casks
 
 - Install fonts - `~/.dotfiles/mac/fonts` to install via cask
