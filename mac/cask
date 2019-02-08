@@ -70,7 +70,7 @@ brew cask install karabiner-elements
 # Marked
 # ==============================================================================
 
-brew cask install marked
+# brew cask install marked
 # echo "License in SpiderOak Hive"
 
 # ==============================================================================

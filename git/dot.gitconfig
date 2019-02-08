@@ -230,3 +230,9 @@
 
 [include]
 	path = "~/.dotfiles/local/gitconfig"
+[user]
+	sigingkey = 7E5A453336A71537
+	name = Sam Templeman
+	email = sam.a.templeman@gmail.com
+[tag]
+	forceSignAnnotated = true
