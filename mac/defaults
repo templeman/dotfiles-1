@@ -6,6 +6,7 @@ set -eu
 # https://github.com/mathiasbynens/dotfiles/blob/master/.macos
 # https://github.com/mathiasbynens/dotfiles/blob/master/.osx
 # https://github.com/simonowendesign/dotfiles/blob/master/.osx
+# https://github.com/joeyhoer/starter/blob/master/system/dock.sh
 
 osascript -e 'tell application "System Preferences" to quit'
 
@@ -113,14 +114,26 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Show indicator lights for open applications in the Dock
 # defaults write com.apple.dock show-process-indicators -bool true
 
-# Pin Dock to right-hand side
-defaults write com.apple.dock pinning -string end
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
+
+# Auto-hide delay
+defaults write com.apple.dock autohide-delay -float 0
+
+# Dock orientation: 'left', 'bottom', 'right'
+defaults write com.apple.dock orientation -string 'right'
+
+# Dock pinning: 'start', 'middle', 'end'
+defaults write com.apple.dock pinning -string 'middle'
 
 # Set the icon size of Dock items
-defaults write com.apple.dock tilesize -int 16
+defaults write com.apple.dock tilesize -int 36
 
 # Set the magnification size of Dock items
-defaults write com.apple.dock largesize -float 36
+defaults write com.apple.dock largesize -float 48
+
+# Remove all (default) app icons from the Dock
+defaults write com.apple.dock persistent-apps -array
 
 # Finder: show path bar
 defaults write com.apple.finder ShowPathbar -bool true
