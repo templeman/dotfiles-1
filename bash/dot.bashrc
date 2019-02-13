@@ -89,3 +89,7 @@ __dko_source "${LDOTDIR}/bashrc"
 
 export DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=sh :
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
