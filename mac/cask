@@ -134,6 +134,9 @@ echo "License in LastPass Vault"
 brew cask install forklift
 echo "License in LastPass Vault"
 
+brew cask install default-folder-x
+echo "License in LastPass Vault"
+
 # ============================================================================
 # Dev
 # ============================================================================
