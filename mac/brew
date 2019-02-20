@@ -165,7 +165,7 @@ brew install hub tig
 
 brew install php71
 brew install pmd
-brew install homebrew/homebrew-php/composer
+brew install composer
 
 # ----------------------------------------------------------------------------
 # Prose
