@@ -11,7 +11,7 @@ jsonlint
 jspm-check-updates
 less
 markdownlint-cli
-npm-check-updates
+npm-check
 npmrc
 package-json-validator
 prettier
