@@ -265,6 +265,14 @@ set nostartofline                     " don't jump to col1 on switch buffer
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> ss <C-w>s
 
+
+" ----------------------------------------------------------------------------
+" Everyday shortcuts
+" ----------------------------------------------------------------------------
+" Clear current search highlight by double tapping //
+nmap <silent> // :nohlsearch<CR>
+
+
 " ----------------------------------------------------------------------------
 " Code folding
 " ----------------------------------------------------------------------------
