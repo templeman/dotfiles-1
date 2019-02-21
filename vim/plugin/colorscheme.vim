@@ -18,21 +18,32 @@ if dkoplug#Exists('nord-vim')
   let g:nord_italic_comments = 1
 endif
 
-if dkoplug#Exists('vim-two-firewatch')
-  function! s:Firewatch() abort
-    silent! colorscheme two-firewatch
+" if dkoplug#Exists('vim-two-firewatch')
+"   function! s:Firewatch() abort
+"     silent! colorscheme two-firewatch
+"   endfunction
+"   nnoremap <silent><special> <Leader>zt :<C-U>call <SID>Firewatch()<CR>:set bg=light<CR>
+"
+"   let s:colorscheme = s:truecolor && $ITERM_PROFILE =~? 'light'
+"        \ ? 'two-firewatch'
+"        \ : s:colorscheme
+" endif
+
+if dkoplug#Exists('lifepillar/vim-solarized8')
+  function! s:Solarized() abort
+    silent! colorscheme solarized8_high
   endfunction
-  nnoremap <silent><special> <Leader>zt :<C-U>call <SID>Firewatch()<CR>:set bg=light<CR>
+  nnoremap <silent><special> <Leader>zt :<C-U>call <SID>Solarized()<CR>:set bg=light<CR>
 
   let s:colorscheme = s:truecolor && $ITERM_PROFILE =~? 'light'
-        \ ? 'two-firewatch'
+        \ ? 'solarized8_high'
         \ : s:colorscheme
 endif
 
 let s:colorscheme = s:truecolor || $TERM_PROGRAM =~? 'Hyper'
-      \ ? 'meh'
+      \ ? 'solarized8_high'
       \ : s:colorscheme
-nnoremap <silent><special> <Leader>zd :<C-U>silent! colorscheme meh<CR>
+nnoremap <silent><special> <Leader>zd :<C-U>silent! colorscheme solarized8_high<CR>:set bg=light<CR>
 
 autocmd dkocolorscheme
       \ VimEnter * nested

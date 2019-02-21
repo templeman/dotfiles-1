@@ -77,6 +77,8 @@ set synmaxcol=512                     " don't syntax highlight long lines
 
 if exists('+signcolumn') | set signcolumn=yes | endif
 
+set background=light
+
 " ------------------------------------
 " Tab line
 " ------------------------------------

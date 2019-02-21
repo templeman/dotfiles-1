@@ -39,9 +39,10 @@ function! dkoplug#plugins#LoadAll() abort
   " Colorscheme
   " ==========================================================================
 
-  Plug g:dko#vim_dir . '/mine/vim-meh'
+  " Plug g:dko#vim_dir . '/mine/vim-meh'
   Plug 'rakr/vim-two-firewatch'
   Plug 'kamwitsta/flatwhite-vim'
+  Plug 'lifepillar/vim-solarized8'
 
   " ==========================================================================
   " Embedded filetype support
