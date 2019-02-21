@@ -265,6 +265,9 @@ set nostartofline                     " don't jump to col1 on switch buffer
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> ss <C-w>s
 
+" Zoom in
+map <silent> <Space>gz <C-w>o
+
 
 " ----------------------------------------------------------------------------
 " Everyday shortcuts
