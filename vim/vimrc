@@ -260,6 +260,11 @@ set switchbuf=useopen
 
 set nostartofline                     " don't jump to col1 on switch buffer
 
+" Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s. Let's
+" remap this to vv and ss.
+nnoremap <silent> vv <C-w>v
+nnoremap <silent> ss <C-w>s
+
 " ----------------------------------------------------------------------------
 " Code folding
 " ----------------------------------------------------------------------------
