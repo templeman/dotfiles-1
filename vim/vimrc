@@ -77,7 +77,7 @@ set synmaxcol=512                     " don't syntax highlight long lines
 
 if exists('+signcolumn') | set signcolumn=yes | endif
 
-set background=light
+set background=dark
 
 " ------------------------------------
 " Tab line
@@ -157,7 +157,7 @@ set wildignore+=*.swp,.lock,.DS_Store,._*,tags.lock
 " ----------------------------------------------------------------------------
 
 " reload files if they were edited elsewhere?
-"set autoread
+set autoread
 
 set fileformats=unix,mac,dos
 " Not modifiable if no window (e.g. resourcing vimrc)
@@ -562,12 +562,32 @@ augroup END
 
 
 " ============================================================================
-" Navigation
+" Custom: To be broken out a la YADR
 " ============================================================================
 " Change current working directory to match current file
 nnoremap <SPACE>lcd :lcd %:p:h<CR>:pwd<CR>
 nnoremap <SPACE>cd :cd %:p:h<CR>:pwd<CR>
 
+" General VIM sanity improvements
+
+" Alias yw to yank the entire word 'yank inner word' even if the cursor is
+" halfway inside the word
+" FIXME: Will not properly repeat with the dot (tie into repeat.vim)
+nnoremap <SPACE>yw yiww
+
+" (o)verwrite (w)ord
+" Replace a word with what is in the yank buffer.
+" FIXME: Will not properly repeat with the dot (tie into repeat.vim)
+nnoremap <SPACE>ow "_diwhp
+
+" Make 0 go to the first character rather than the beginning of the line. When
+" we're programming, we're almost always interested in working with text rather
+" than empty space. If you want the traditional beginning of a line, use ^
+nnoremap 0 ^
+nnoremap ^ 0
+
+" Go to last edit location with ,.
+nnoremap <SPACE>. `.
 
 " ============================================================================
 " Security
