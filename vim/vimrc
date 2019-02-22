@@ -557,6 +557,15 @@ augroup dkoreadonly
   autocmd BufEnter * call dko#readonly#Unmap()
 augroup END
 
+
+" ============================================================================
+" Navigation
+" ============================================================================
+" Change current working directory to match current file
+nnoremap <SPACE>lcd :lcd %:p:h<CR>:pwd<CR>
+nnoremap <SPACE>cd :cd %:p:h<CR>:pwd<CR>
+
+
 " ============================================================================
 " Security
 " ============================================================================
