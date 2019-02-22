@@ -275,6 +275,9 @@ map <silent> <Space>gz <C-w>o
 " Clear current search highlight by double tapping //
 nmap <silent> // :nohlsearch<CR>
 
+" (v)im (r)eload
+nmap <silent> <SPACE>vr :so %<CR>
+
 
 " ----------------------------------------------------------------------------
 " Code folding
