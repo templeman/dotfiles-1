@@ -118,8 +118,8 @@ brew cask install virtualbox
 # ============================================================================
 # For Funsies
 # ============================================================================
-
 brew cask install electric-sheep
+brew cask install homebrew/cask-drivers/sonos
 
 # ============================================================================
 # Security and Privacy
