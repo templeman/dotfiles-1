@@ -501,6 +501,8 @@ function! dkoplug#plugins#LoadAll() abort
   " Less feature filled but this is upstream for $VIMRUNTIME and more up-to-date
   Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim/' }
 
+  Plug 'christoomey/vim-tmux-navigator'
+
   " ==========================================================================
   " Language: VimL
   " ==========================================================================

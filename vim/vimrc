@@ -158,6 +158,7 @@ set wildignore+=*.swp,.lock,.DS_Store,._*,tags.lock
 
 " reload files if they were edited elsewhere?
 set autoread
+au FocusGained * :checktime
 
 set fileformats=unix,mac,dos
 " Not modifiable if no window (e.g. resourcing vimrc)
@@ -259,24 +260,6 @@ set hidden                            " remember undo after quitting
 set switchbuf=useopen
 
 set nostartofline                     " don't jump to col1 on switch buffer
-
-" Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s. Let's
-" remap this to vv and ss.
-nnoremap <silent> vv <C-w>v
-nnoremap <silent> ss <C-w>s
-
-" Zoom in
-map <silent> <Space>gz <C-w>o
-
-
-" ----------------------------------------------------------------------------
-" Everyday shortcuts
-" ----------------------------------------------------------------------------
-" Clear current search highlight by double tapping //
-nmap <silent> // :nohlsearch<CR>
-
-" (v)im (r)eload
-nmap <silent> <SPACE>vr :so %<CR>
 
 
 " ----------------------------------------------------------------------------
@@ -381,6 +364,8 @@ set noshiftround
 " When on, a <Tab> in front of a line inserts blanks according to
 " 'shiftwidth'. 'tabstop' or 'softtabstop' is used in other places.
 set smarttab
+set tabstop=2
+set expandtab
 
 set backspace=indent,eol,start        " bs anything
 
@@ -562,37 +547,15 @@ augroup END
 
 
 " ============================================================================
-" Custom: To be broken out a la YADR
-" ============================================================================
-" Change current working directory to match current file
-nnoremap <SPACE>lcd :lcd %:p:h<CR>:pwd<CR>
-nnoremap <SPACE>cd :cd %:p:h<CR>:pwd<CR>
-
-" General VIM sanity improvements
-
-" Alias yw to yank the entire word 'yank inner word' even if the cursor is
-" halfway inside the word
-" FIXME: Will not properly repeat with the dot (tie into repeat.vim)
-nnoremap <SPACE>yw yiww
-
-" (o)verwrite (w)ord
-" Replace a word with what is in the yank buffer.
-" FIXME: Will not properly repeat with the dot (tie into repeat.vim)
-nnoremap <SPACE>ow "_diwhp
-
-" Make 0 go to the first character rather than the beginning of the line. When
-" we're programming, we're almost always interested in working with text rather
-" than empty space. If you want the traditional beginning of a line, use ^
-nnoremap 0 ^
-nnoremap ^ 0
-
-" Go to last edit location with ,.
-nnoremap <SPACE>. `.
-
-" ============================================================================
 " Security
 " ============================================================================
 
 " Disallow unsafe local vimrc commands
 " Leave down here since it trims local settings
 set secure
+
+
+" ============================================================================
+" Load Custom Settings
+" ============================================================================
+execute 'source' . g:dko_nvim_dir . '/settings.vim'
