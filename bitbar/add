@@ -30,9 +30,11 @@ __add() {
 
   local _basename
   _basename="$(basename "$1")"
+  # echo "${_basename}"
   local _fullsource
   _fullsource="$(realpath "$1")"
-  ln -sf -- "${_fullsource}" "enabled/${_basename}" \
+  # echo "${_fullsource}"
+  ln -sf -- "${_fullsource}" "${DOTFILES}/bitbar/enabled/${_basename}" \
     && __dko_ok "enabled/${_basename} linked to ${_fullsource}"
 }
 

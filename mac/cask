@@ -24,7 +24,7 @@ echo "License in LastPass Vault"
 # brew cask install betwixt
 
 # BitBar: Put anything in the Mac menu bar
-# brew cask install bitbar
+brew cask install bitbar
 # echo "Sync in SpiderOak Hive"
 
 # brew cask install cloudapp
