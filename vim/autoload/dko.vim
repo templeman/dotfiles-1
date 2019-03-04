@@ -177,6 +177,10 @@ function! dko#TwoSpace() abort
   setlocal expandtab shiftwidth=2 softtabstop=2
 endfunction
 
+function! dko#FourSpace() abort
+  setlocal expandtab shiftwidth=4 softtabstop=4
+endfunction
+
 function! dko#TwoTabs() abort
   setlocal noexpandtab shiftwidth=2 softtabstop=2
 endfunction
