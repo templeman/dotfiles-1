@@ -28,9 +28,9 @@ inoreabbrev targetter   targeter
 
 inoreabbrev removeable  removable
 
-inoreabbrev d'' David O'Trakoun
-inoreabbrev o'' O'Trakoun
-inoreabbrev m@@ me@davidosomething.com
+inoreabbrev s'' Sam Templeman
+inoreabbrev t'' Templeman
+inoreabbrev m@@ sam.a.templeman@gmail.com
 
 " ============================================================================
 " Disable for reuse
