@@ -34,7 +34,7 @@ brew cask install bitbar
 # brew cask install deluge
 
 # brew cask install discord
-# brew cask install docker
+brew cask install docker
 brew cask install dropbox
 # brew cask install firefox
 # brew cask install gimp
@@ -61,6 +61,12 @@ brew cask install java
 
 # brew cask install kaleidoscope
 # echo "License in SpiderOak Hive"
+
+# ==============================================================================
+# Beyond Compare
+# ==============================================================================
+brew cask install beyond-compare
+echo "License in LastPass Vault"
 
 # ==============================================================================
 
