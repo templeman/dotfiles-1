@@ -50,7 +50,7 @@ __dko_status "asciinema auth to link computer to account"
 brew install awscli
 brew install catimg
 # does not come with Docker.app
-# brew install docker-completion hadolint
+brew install docker-completion hadolint
 # brew install kubectx
 
 # ============================================================================
@@ -166,6 +166,7 @@ brew install goenv
 brew install php71
 brew install pmd
 brew install composer
+brew install wp-cli
 
 # ----------------------------------------------------------------------------
 # Prose
