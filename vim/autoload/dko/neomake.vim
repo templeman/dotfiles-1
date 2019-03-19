@@ -82,6 +82,7 @@ let g:echint_whitelist = [
       \   'sh',
       \   'vim',
       \   'yaml',
+      \   'scss',
       \]
 
 function! dko#neomake#EchintCreate() abort

@@ -19,6 +19,7 @@ prettier-eslint-cli
 pwmetrics
 remark-cli
 sass-lint
+sass-lint-auto-fix
 source-map-explorer
 tern
 tern-browser-extension
