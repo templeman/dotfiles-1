@@ -6,4 +6,6 @@ set -e
 # mas install Microsoft Remote Desktop
 # mas install Transmit
 # mas install Xcode
-mas install LittleIpsum
+mas install 405772121 # LittleIpsum
+mas install 890031187 # Marked 2
+
