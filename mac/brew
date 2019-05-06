@@ -101,6 +101,7 @@ brew install nmap
 brew install ssh-copy-id
 brew install wget
 brew install wifi-password
+brew install doctl
 
 # Use the `gpgtools` cask instead (it also provides cli `gpg` and
 # `gpg-agent`). It provides a nicer gui prefpane and automatic integration
