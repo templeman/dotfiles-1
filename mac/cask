@@ -144,6 +144,7 @@ echo "License in LastPass Vault"
 # ============================================================================
 brew cask install adobe-creative-cloud
 
+
 # ============================================================================
 # File Management
 # ============================================================================
@@ -153,6 +154,7 @@ echo "License in LastPass Vault"
 brew cask install default-folder-x
 echo "License in LastPass Vault"
 
+
 # ============================================================================
 # Dev
 # ============================================================================
@@ -161,6 +163,9 @@ echo "License in LastPass Vault"
 
 brew cask install sequel-pro
 echo "Favorites can be imported"
+
+brew cask install postman
+
 
 # ============================================================================
 # Backups
