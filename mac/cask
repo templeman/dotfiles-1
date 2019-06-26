@@ -144,6 +144,7 @@ echo "License in LastPass Vault"
 # Adobe
 # ============================================================================
 brew cask install adobe-creative-cloud
+brew cask install adobe-acrobat-reader
 
 
 # ============================================================================
