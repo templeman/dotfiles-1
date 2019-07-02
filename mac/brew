@@ -170,6 +170,7 @@ brew install php72
 brew install pmd
 brew install composer
 brew install wp-cli
+brew install brew-php-switcher
 
 # ----------------------------------------------------------------------------
 # Prose
