@@ -53,6 +53,8 @@ brew install catimg
 brew install docker-completion hadolint
 # brew install kubectx
 brew install pianobar
+brew install task
+brew install tasksh
 
 # ============================================================================
 # vim
