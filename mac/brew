@@ -55,6 +55,14 @@ brew install docker-completion hadolint
 brew install pianobar
 brew install task
 brew install tasksh
+brew install lastpass-cli
+
+
+# ============================================================================
+# for funsies
+# ============================================================================
+brew install asciiquarium
+
 
 # ============================================================================
 # vim
