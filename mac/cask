@@ -98,6 +98,11 @@ brew cask install spotify
 brew cask install nvalt
 
 # ==============================================================================
+# Notion
+# ==============================================================================
+brew cask install notion
+
+# ==============================================================================
 # Transmit
 # ==============================================================================
 
@@ -107,16 +112,13 @@ brew cask install nvalt
 
 # ============================================================================
 
-# brew cask install tunnelblick
-# echo "Set up vpn"
-
 # ============================================================================
 # Virtualization
 # ============================================================================
-
 brew cask install vagrant
 # brew cask install virtualbox virtualbox-extension-pack
 brew cask install virtualbox
+
 
 # ============================================================================
 
@@ -128,17 +130,31 @@ brew cask install virtualbox
 brew cask install electric-sheep
 brew cask install homebrew/cask-drivers/sonos
 
+
 # ============================================================================
 # Security and Privacy
 # ============================================================================
-
+brew cask install lastpass
 brew cask install tunnelbear
+brew cask install nordvpn
+echo "Set up VPN"
+
+# brew cask install tunnelblick
+# echo "Set up vpn"
+
 
 # ============================================================================
 # Email
 # ============================================================================
 brew cask install mailmate
 echo "License in LastPass Vault"
+
+
+# ============================================================================
+# Schedule & Planning
+# ============================================================================
+brew cask install fantastical
+
 
 # ============================================================================
 # Adobe
