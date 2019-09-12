@@ -183,6 +183,7 @@ brew cask install sequel-pro
 echo "Favorites can be imported"
 
 brew cask install postman
+brew cask install mjml
 
 
 # ============================================================================
