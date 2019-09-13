@@ -402,15 +402,18 @@ function! dkoplug#plugins#LoadAll() abort
   "Plug 'moskytw/nginx-contrib-vim'
 
   " ==========================================================================
-  " Language: PHP, twig
+  " Language: PHP, Twig, Blade
   " ==========================================================================
 
   " ----------------------------------------
   " Syntax
   " ----------------------------------------
 
-  " creates twig ft
+  " creates Twig ft
   "Plug 'evidens/vim-twig'
+
+  " creates Blade ft
+  Plug 'jwalton512/vim-blade'
 
   " Syntax
 
