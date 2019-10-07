@@ -34,7 +34,7 @@ insert_final_newline = true
 
 # PHP http://make.wordpress.org/core/handbook/coding-standards/php/
 [*.{blade,php}]
-indent_size = 4
+indent_size = 2
 insert_final_newline = true
 
 [*.{bash,sh,zsh}]
