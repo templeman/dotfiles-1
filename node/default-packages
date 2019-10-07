@@ -1,6 +1,7 @@
 ajv-cli
 boxen-cli
 commitizen
+generator-standard-readme
 http-server
 javascript-typescript-langserver
 js-beautify
@@ -29,3 +30,4 @@ tern-jspm
 tern-node-extension
 trash-cli
 write-good
+yo
