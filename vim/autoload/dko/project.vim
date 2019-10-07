@@ -149,7 +149,7 @@ endfunction
 
 " @return {String}
 function! dko#project#Type() abort
-  if expand('%:p') =~? 'content/\(mu-plugins\|plugins\|themes\)'
+  if expand('%:p') =~? 'app/\(mu-plugins\|plugins\|themes\)'
     return 'wordpress'
   endif
   return ''
