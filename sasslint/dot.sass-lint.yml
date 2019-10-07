@@ -79,7 +79,7 @@ rules:
   no-misspelled-properties:
     - 2
     - extra-properties: [osx-font-smoothing, overflow-scrolling]
-  no-qualifying-elements: 1
+  no-qualifying-elements: 0
   no-trailing-zero: 2
   no-url-protocols: 0
   no-vendor-prefixes: 1
@@ -88,7 +88,9 @@ rules:
   placeholder-name-format:
     - 1
     - convention: BEM
-  property-sort-order: 2
+  property-sort-order:
+    - 2
+    - order: concentric
   property-units: 0
   pseudo-element: 0
   quotes:
@@ -154,7 +156,9 @@ resolvers:
   no-mergeable-selectors: 0
   no-trailing-zero: 2
   no-url-protocols: 0
-  property-sort-order: 2
+  property-sort-order:
+    - 2
+    - order: concentric
   property-units: 0
   pseudo-element: 0
   space-after-colon:
