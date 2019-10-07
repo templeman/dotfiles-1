@@ -3,9 +3,8 @@
 let s:phpcs_psr2 = [ '--standard=PSR2' ]
 
 let s:phpcs_wordpress = [
-      \   '--standard=WordPress-Extra',
+      \   '--standard='.expand('~/src/wpcs/phpcs.xml.dist'),
       \   '--runtime-set', 'installed_paths', expand('~/src/wpcs'),
-      \   '--exclude=WordPress.PHP.YodaConditions',
       \ ]
 
 function! dko#neomake#php#Setup() abort
@@ -16,7 +15,7 @@ function! dko#neomake#php#Setup() abort
   call dko#neomake#utils#LocalMaker({
         \   'ft':     'php',
         \   'maker':  'phpcs',
-        \   'exe':    'vendor/bin/phpcs',
+        \   'exe':    expand('~/.config/composer/vendor/bin/phpcs'),
         \ })
 
   call dko#neomake#php#Phpcs()
