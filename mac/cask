@@ -87,11 +87,19 @@ brew cask install ngrok
 brew cask install skype
 brew cask install slack
 # brew cask install spideroakone
+# brew cask install switchresx
+# brew cask install the-unarchiver
+brew cask install raindropio
+
+
+# ==============================================================================
+# Music
+# ==============================================================================
+
 # brew cask install spotify spotifree
 brew cask install spotify
 brew cask install mutespotifyads
-# brew cask install switchresx
-# brew cask install the-unarchiver
+
 
 # ==============================================================================
 # nvALT
