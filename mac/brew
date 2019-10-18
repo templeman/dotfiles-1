@@ -114,6 +114,7 @@ brew install ssh-copy-id
 brew install wget
 brew install wifi-password
 brew install doctl
+brew install roots/tap/trellis-cli
 
 # Use the `gpgtools` cask instead (it also provides cli `gpg` and
 # `gpg-agent`). It provides a nicer gui prefpane and automatic integration
