@@ -12,6 +12,9 @@ brew cask install alfred
 echo "License in LastPass Vault"
 # echo "Workflows in SpiderOak Hive"
 
+
+
+
 # ==============================================================================
 # bettertouchtool
 # ==============================================================================
@@ -56,6 +59,9 @@ brew cask install iterm2
 
 brew cask install java
 
+
+
+
 # ==============================================================================
 # Kaleidoscope
 # ==============================================================================
@@ -63,15 +69,25 @@ brew cask install java
 # brew cask install kaleidoscope
 # echo "License in SpiderOak Hive"
 
+
+
+
 # ==============================================================================
 # Beyond Compare
 # ==============================================================================
+
 brew cask install beyond-compare
 echo "License in LastPass Vault"
+
+
+
 
 # ==============================================================================
 
 brew cask install karabiner-elements
+
+
+
 
 # ==============================================================================
 # Marked
@@ -80,16 +96,19 @@ brew cask install karabiner-elements
 # brew cask install marked
 # echo "License in SpiderOak Hive"
 
+
+
+
 # ==============================================================================
 
 brew cask install ngrok
 # brew cask install robo-3t
-brew cask install skype
-brew cask install slack
 # brew cask install spideroakone
 # brew cask install switchresx
 # brew cask install the-unarchiver
 brew cask install raindropio
+
+
 
 
 # ==============================================================================
@@ -101,15 +120,25 @@ brew cask install spotify
 brew cask install mutespotifyads
 
 
+
+
 # ==============================================================================
 # nvALT
 # ==============================================================================
+
 brew cask install nvalt
+
+
+
 
 # ==============================================================================
 # Notion
 # ==============================================================================
+
 brew cask install notion
+
+
+
 
 # ==============================================================================
 # Transmit
@@ -119,30 +148,43 @@ brew cask install notion
 # echo "License in email"
 # echo "Favorites in SpiderOak sync"
 
+
+
+
 # ============================================================================
 
 # ============================================================================
 # Virtualization
 # ============================================================================
+
 brew cask install vagrant
 # brew cask install virtualbox virtualbox-extension-pack
 brew cask install virtualbox
+
+
 
 
 # ============================================================================
 
 # brew cask install vnc-viewer
 
+
+
+
 # ============================================================================
 # For Funsies
 # ============================================================================
+
 brew cask install electric-sheep
 brew cask install homebrew/cask-drivers/sonos
+
+
 
 
 # ============================================================================
 # Security and Privacy
 # ============================================================================
+
 brew cask install lastpass
 brew cask install tunnelbear
 brew cask install nordvpn
@@ -152,29 +194,44 @@ echo "Set up VPN"
 # echo "Set up vpn"
 
 
+
+
 # ============================================================================
-# Email
+# Comms
 # ============================================================================
+
 brew cask install mailmate
 echo "License in LastPass Vault"
+brew cask install franz
+brew cask install skype
+brew cask install slack
+
+
 
 
 # ============================================================================
 # Schedule & Planning
 # ============================================================================
+
 brew cask install fantastical
+
+
 
 
 # ============================================================================
 # Adobe
 # ============================================================================
+
 brew cask install adobe-creative-cloud
 brew cask install adobe-acrobat-reader
+
+
 
 
 # ============================================================================
 # File Management
 # ============================================================================
+
 brew cask install forklift
 echo "License in LastPass Vault"
 
@@ -182,9 +239,12 @@ brew cask install default-folder-x
 echo "License in LastPass Vault"
 
 
+
+
 # ============================================================================
 # Dev
 # ============================================================================
+
 brew cask install dash
 echo "License in LastPass Vault"
 
@@ -195,8 +255,11 @@ brew cask install postman
 brew cask install mjml
 
 
+
+
 # ============================================================================
 # Backups
 # ============================================================================
+
 brew cask install arq
 echo "License in LastPass Vault"
