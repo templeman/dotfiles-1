@@ -107,6 +107,7 @@ brew cask install ngrok
 # brew cask install switchresx
 # brew cask install the-unarchiver
 brew cask install raindropio
+brew cask install libreoffice
 
 
 
