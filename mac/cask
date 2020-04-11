@@ -178,6 +178,7 @@ brew cask install virtualbox
 
 brew cask install electric-sheep
 brew cask install homebrew/cask-drivers/sonos
+brew cask install folding-at-home
 
 
 
