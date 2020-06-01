@@ -124,10 +124,11 @@ brew cask install mutespotifyads
 
 
 # ==============================================================================
-# nvALT
+# Notes
 # ==============================================================================
 
 brew cask install nvalt
+brew cask install notable
 
 
 
