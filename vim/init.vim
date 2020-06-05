@@ -4,40 +4,67 @@
 let g:dko_nvim_dir = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 
 " ============================================================================
-" Settings
+" Temporary fixes
 " ============================================================================
 
-" Hyper.app does not truly support truecolor yet
-" @see https://github.com/zeit/hyper/issues/2846
-"\ || $TERM_PROGRAM ==# 'Hyper'
-if $COLORTERM ==# 'truecolor'
-      \ || $TERM ==# 'xterm-kitty'
-      \ || !empty($ITERM_PROFILE)
-  set termguicolors
-endif
-
 if $TERM ==# 'xterm-kitty'
-  " @see https://github.com/kovidgoyal/kitty#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
+  " https://github.com/kovidgoyal/kitty#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
   let &t_ut=''
 endif
 
+if !has('nvim-0.4')
+  " https://github.com/neovim/neovim/issues/7994
+  augroup dkoneovimfixes
+    autocmd!
+    autocmd InsertLeave * set nopaste
+  augroup END
+endif
+
+" ============================================================================
+" GUI editors
+" ============================================================================
+
+if exists('g:fvim_loaded')
+  set termguicolors
+elseif exists('g:vv')
+  VVset windowheight=100%
+  VVset windowwidth=40%
+  VVset windowleft=0
+  VVset windowtop=0
+  VVset fontfamily=FuraMonoNerdFontCompleteM-Medium
+  VVset fontsize=13
+  VVset lineheight=1.42
+endif
+
+" ============================================================================
+" Settings
+" ============================================================================
+
+set clipboard+=unnamedplus
+
+" Bumped '100 to '1000 to save more previous files
+" Bumped <50 to <100 to save more register lines
+" Bumped s10 to s100 for to allow up to 100kb of data per item
+set shada=!,'1000,<100,s100,h
+
+" The default blinking cursor leaves random artifacts in display like "q" in
+" old terminal emulators and some VTEs
+" https://github.com/neovim/neovim/issues?utf8=%E2%9C%93&q=is%3Aissue+cursor+shape+q
+set guicursor=
 augroup dkonvim
   autocmd!
   autocmd OptionSet guicursor noautocmd set guicursor=
 augroup END
-set guicursor=
-" @see https://github.com/neovim/neovim/issues?utf8=%E2%9C%93&q=is%3<Plug>(ncm2_auto_trigger)Aissue+cursor+shape+q
-" Leaves random artifacts in display like "q"
-" set guicursor=n-v-c:block,i-ci-ve:ver50,r-cr:hor20,o:hor50
-"       \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
-"       \,sm:block-blinkwait175-blinkoff150-blinkon175
 
 " New neovim feature, it's like vim-over but hides the thing being replaced
 " so it is not practical for now (makes it harder to remember what you're
 " replacing/reference previous regex tokens). Default is off, but explicitly
 " disabled here, too.
-" @see https://github.com/neovim/neovim/pull/5226
+" https://github.com/neovim/neovim/pull/5226
 set inccommand=
+
+" Pretty quick... errorprone on old vim so only apply to nvim
+set updatetime=250
 
 " ============================================================================
 " :terminal emulator
@@ -48,8 +75,8 @@ let g:terminal_scrollback_buffer_size = 100000
 " ----------------------------------------------------------------------------
 " Use gruvbox's termcolors
 "
-" @see https://github.com/ianks/gruvbox/blob/c7b13d9872af9fe1f5588d6ec56759489b0d7864/colors/gruvbox.vim#L137-L169
-" @see https://github.com/morhetz/gruvbox/pull/93/files
+" https://github.com/ianks/gruvbox/blob/c7b13d9872af9fe1f5588d6ec56759489b0d7864/colors/gruvbox.vim#L137-L169
+" https://github.com/morhetz/gruvbox/pull/93/files
 
 " dark0 + gray
 let g:terminal_color_0 = '#282828'
@@ -84,13 +111,6 @@ let g:terminal_color_7 = '#a89984'
 let g:terminal_color_15 = '#ebdbb2'
 
 " ============================================================================
-" fzf fix
-" https://github.com/junegunn/fzf/issues/809#issuecomment-273226434
-" ============================================================================
-
-let $FZF_DEFAULT_OPTS .= ' --no-height'
-
-" ============================================================================
 " Neovim-only mappings
 " ============================================================================
 
@@ -107,10 +127,21 @@ nnoremap <special> <A-Up>     <C-w>k
 nnoremap <special> <A-Down>   <C-w>j
 nnoremap <special> <A-Left>   <C-w>h
 nnoremap <special> <A-Right>  <C-w>l
-nnoremap <special> <A-k>      <C-w>k
-nnoremap <special> <A-j>      <C-w>j
-nnoremap <special> <A-h>      <C-w>h
-nnoremap <special> <A-l>      <C-w>l
+" nnoremap <special> <A-k>      <C-w>k
+" nnoremap <special> <A-j>      <C-w>j
+" nnoremap <special> <A-h>      <C-w>h
+" nnoremap <special> <A-l>      <C-w>l
+nnoremap <special> <C-k>      <C-w>k
+nnoremap <special> <C-j>      <C-w>j
+nnoremap <special> <C-h>      <C-w>h
+nnoremap <special> <C-l>      <C-w>l
+
+nnoremap <special> <Leader>vt :<C-U>vsplit term://$SHELL<CR>A
+
+" ============================================================================
+
+let g:loaded_ruby_provider = 0
+let g:loaded_node_provider = 0
 
 " ============================================================================
 " Python setup
@@ -125,24 +156,10 @@ function! s:FindExecutable(paths) abort
   return ''
 endfunction
 
-" ----------------------------------------------------------------------------
-" Python 2
-" ----------------------------------------------------------------------------
+" disable python 2
+let g:loaded_python_provider = 0
 
-let s:pyenv_py2 = s:FindExecutable([
-      \   '$PYENV_ROOT/versions/neovim2/bin/python',
-      \   '/usr/bin/python2',
-      \ ])
-if !empty(s:pyenv_py2)
-  let g:python_host_prog  = s:pyenv_py2
-else
-  let g:loaded_python_provider = 1
-endif
-
-" ----------------------------------------------------------------------------
-" Python 3
-" ----------------------------------------------------------------------------
-
+" python 3
 let s:pyenv_py3 = s:FindExecutable([
       \   '$PYENV_ROOT/versions/neovim3/bin/python',
       \   '/usr/bin/python3',
@@ -150,7 +167,7 @@ let s:pyenv_py3 = s:FindExecutable([
 if !empty(s:pyenv_py3)
   let g:python3_host_prog = s:pyenv_py3
 else
-  let g:loaded_python3_provider = 1
+  let g:loaded_python3_provider = !exists('g:fvim_loaded') ? 2 : 0
 endif
 
 " =============================================================================

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Install python cli tools using pipx
+#
+
+# ============================================================================
+# initialize script and dependencies
+# ============================================================================
+
+if [[ -z "$DOTFILES" ]]; then
+  cd -- "$(dirname "$0")/.." || exit 1
+  DOTFILES="$PWD"
+fi
+. "${DOTFILES}/lib/helpers.sh"
+. "${DOTFILES}/lib/pretty.bash"
+
+# ============================================================================
+
+__dko_has 'pipx' || {
+  __dko_error 'pipx is not installed'
+  exit 1
+}
+
+__main() {
+  while read -r package; do
+    pipx install "$package"
+  done < "${DOTFILES}/bootstrap/pipx-packages"
+  pipx upgrade-all
+}
+
+__main "$@"

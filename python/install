@@ -6,7 +6,7 @@
 
 if [[ -z "$DOTFILES" ]]; then
   cd -- "$(dirname "$0")/.." || exit 1
-  DOTFILES="$(pwd)"
+  DOTFILES="$PWD"
 fi
 . "${DOTFILES}/lib/helpers.sh"
 . "${DOTFILES}/lib/pretty.bash"
@@ -18,7 +18,7 @@ export PATH="${DOTFILES}/bin:${PATH}"
 
 __install() {
   # Make sure not using system python and pip
-  if pip --version | grep -q /usr/lib; then
+  if python -m pip --version | grep -q /usr/lib; then
     __dko_err  "System pip detected, not running. Use a userspace python's pip."
     exit 1
   fi
@@ -29,16 +29,16 @@ __install() {
     exit 1
   fi
 
-  if pyenv version | grep system >/dev/null; then
+  if pyenv version | grep -q system; then
     __dko_err  "Using system pyenv. Use real pyenv instead."
     exit 1
   fi
 
   __dko_status "Updating global pip"
-  pip install --upgrade pip
+  python -m pip install --upgrade pip
 
   __dko_status "Updating global pip requirements"
-  pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
+  python -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 }
 
 __install "$@"

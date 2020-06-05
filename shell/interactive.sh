@@ -1,19 +1,32 @@
 # shell/interactive.sh
 
-DKO_SOURCE="${DKO_SOURCE} -> shell/interactive.sh {"
-
-if [ -f "${HOME}/.dotfiles/local/dotfiles.lock" ]; then
+export DKO_SOURCE="${DKO_SOURCE} -> shell/interactive.sh[interactive] {"
+[ -f "${HOME}/.local/dotfiles.lock" ] &&
   "${DOTFILES}/shell/dko-wait-for-dotfiles-lock"
-fi
 
 # need this here in case not starting a login shell
 . "${DOTFILES}/lib/helpers.sh"
-. "${DOTFILES}/shell/functions.sh" # shell functions
-. "${DOTFILES}/shell/aliases.sh"   # generic aliases
+
+# ==============================================================================
+# env management -- Node, PHP, Python, Ruby - These add to path
+# ==============================================================================
+
+. "${DOTFILES}/shell/go.sh"
+. "${DOTFILES}/shell/java.sh"
+. "${DOTFILES}/shell/node.sh"
+. "${DOTFILES}/shell/php.sh"
+. "${DOTFILES}/shell/python.sh"
+. "${DOTFILES}/shell/ruby.bash"
+. "${DOTFILES}/shell/rust.sh"
 
 # ============================================================================
-# os specific aliases
+# interactive aliases and functions
+# source aliases late so command -v (as in __dko_has) doesn't detect them
 # ============================================================================
+
+. "${DOTFILES}/shell/functions.sh" # shell functions
+
+. "${DOTFILES}/shell/aliases.sh"   # generic aliases
 
 if [ "$DOTFILES_OS" = 'Linux' ]; then
   . "${DOTFILES}/shell/aliases-linux.sh"
@@ -22,8 +35,10 @@ if [ "$DOTFILES_OS" = 'Linux' ]; then
     . "${DOTFILES}/shell/aliases-${DOTFILES_DISTRO}.sh"
     ;;
   esac
+else
+  . "${DOTFILES}/shell/aliases-darwin.sh"
 fi
 
 # ============================================================================
 
-export DKO_SOURCE="${DKO_SOURCE} }"
+DKO_SOURCE="${DKO_SOURCE} }"

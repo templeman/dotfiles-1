@@ -15,10 +15,11 @@ __fxc() {
     +m \
     --cycle \
     --exit-0 \
-    --height=25% \
+    --height=25% --no-hscroll --no-multi \
     --nth=1 \
     --prompt="$current> ") \
   && sudo xcode-select --switch "${version}" \
   && echo "Now using ${version}"
 }
-__fxc
+
+[[ "$OSTYPE" == *'arwin'* ]] && __fxc

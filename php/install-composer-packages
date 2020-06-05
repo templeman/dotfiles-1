@@ -16,16 +16,10 @@ fi
 # Main
 # =============================================================================
 
-# [ ! -x 'composer' ] && {
-#   __dko_err "composer is not installed"
-#   exit 1
-# }
-
-if ! [ -x "$(command -v composer)" ]; then
-  # echo 'Error: git is not installed.' >&2
+[ ! -x 'composer' ] && {
   __dko_err "composer is not installed"
   exit 1
-fi
+}
 
 __install() {
   composer diagnose

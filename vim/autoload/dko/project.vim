@@ -25,15 +25,15 @@ set cpoptions&vim
 " Look for project config files in these paths
 let s:default_roots = [
       \   '',
-      \   'config/',
       \ ]
 
 " Look for project root using these file markers if not a git project
 let s:markers = [
-      \   'package.json',
-      \   'composer.json',
-      \   'requirements.txt',
       \   'Gemfile',
+      \   'composer.json',
+      \   'package.json',
+      \   'requirements.txt',
+      \   'tsconfig.json',
       \ ]
 
 " @param {mixed} { bufnr } or number/string bufnr
@@ -54,7 +54,7 @@ function! dko#project#MarkBuffer(...) abort
   let l:bufnr = s:BufnrFromArgs(a:000)
   call dko#project#SetRoot('')      " clear
   call dko#project#GetRoot(l:bufnr) " force reset
-  let b:dko_branch = dko#git#GetBranch(expand('%:p:h'))
+  call setbufvar(l:bufnr, 'dko_branch', dko#git#GetBranch(expand('%:p:h')))
 endfunction
 
 " ============================================================================
@@ -67,23 +67,25 @@ endfunction
 " @return {String} project root path or empty string
 function! dko#project#GetRoot(...) abort
   let l:bufnr = s:BufnrFromArgs(a:000)
-  let l:existing = getbufvar(l:bufnr, 'dko_project_root')
-  if !empty(l:existing) | return l:existing | endif
+  if empty(getbufvar(l:bufnr, 'dko_project_root', ''))
+    let l:existing = getbufvar(l:bufnr, 'dko_project_root')
+    if !empty(l:existing) | return l:existing | endif
 
-  " Look for markers FIRST, that way we support things like browsing through
-  " node_modules/ and monorepos
-  let l:root = dko#project#GetRootByFileMarker(s:markers)
+    " Look for markers FIRST, that way we support things like browsing through
+    " node_modules/ and monorepos
+    let l:root = dko#project#GetRootByFileMarker(s:markers)
 
-  " Try git root
-  let l:path = dko#project#GetFilePath(get(a:, 1, ''))
-  let l:gitroot = dko#project#GetGitRootByFile(l:path)
-  if !empty(l:gitroot)
-    let b:dko_project_gitroot = l:gitroot
-    if empty(l:root) | let l:root = l:gitroot | endif
+    " Try git root
+    let l:path = dko#project#GetFilePath(get(a:, 1, ''))
+    let l:gitroot = dko#project#GetGitRootByFile(l:path)
+    if !empty(l:gitroot)
+      call setbufvar(l:bufnr, 'dko_project_gitroot', l:gitroot)
+      if empty(l:root) | let l:root = l:gitroot | endif
+    endif
+
+    call setbufvar(l:bufnr, 'dko_project_root', l:root)
   endif
-
-  let b:dko_project_root = l:root
-  return b:dko_project_root
+  return getbufvar(l:bufnr, 'dko_project_root', '')
 endfunction
 
 function! dko#project#SetRoot(root) abort
@@ -126,11 +128,13 @@ endfunction
 
 " Buffer-cached gitroot
 "
+" @cached
 " @param {String} path
 " @return {String} git root of file or empty string
 function! dko#project#GetGitRootByFile(path) abort
-  if exists('b:dko_project_gitroot') | return b:dko_project_gitroot | endif
-  let b:dko_project_gitroot = dko#git#GetRoot(a:path)
+  if !exists('b:dko_project_gitroot')
+    let b:dko_project_gitroot = dko#git#GetRoot(a:path)
+  endif
   return b:dko_project_gitroot
 endfunction
 
@@ -147,25 +151,33 @@ function! dko#project#GetRootByFileMarker(markers) abort
   return l:result
 endfunction
 
-" @return {String}
+" @cached
+" @return {String[]}
 function! dko#project#Type() abort
-  if expand('%:p') =~? 'app/\(mu-plugins\|plugins\|themes\)'
-    return 'wordpress'
+  if !exists('b:dko_project_type')
+    let b:dko_project_type = []
+    if expand('%:p') =~? 'content/\(mu-plugins\|plugins\|themes\)'
+      let b:dko_project_type += 'wordpress'
+    endif
   endif
-  return ''
+  return b:dko_project_type
 endfunction
 
 " Get array of possible config file paths for a project -- any dirs where
 " files like .eslintrc, package.json, etc. might be stored. These will be
 " paths relative to the root from dko#project#GetRoot
 "
+" @cached
 " @return {String[]} config paths relative to dko#project#GetRoot
 function! dko#project#GetPaths() abort
-  return get(
-        \   b:, 'dko#project#roots', get(
-        \   g:, 'dko#project#roots',
-        \   s:default_roots
-        \ ))
+  if !exists('b:dko_project_paths')
+    let b:dko_project_paths = get(
+          \   b:, 'dko_project_roots', get(
+          \   g:, 'dko_project_roots',
+          \   s:default_roots
+          \ ))
+  endif
+  return b:dko_project_paths
 endfunction
 
 " Get full path to a dir in a project
@@ -273,6 +285,7 @@ let s:prettierrc_candidates = [
       \   'prettier.config.js',
       \ ]
 
+" @cached
 " @return {String} prettierrc filename
 function! dko#project#GetPrettierrc() abort
   if !exists('b:dko_project_prettierrc')

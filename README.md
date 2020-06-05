@@ -1,97 +1,84 @@
 <img alt="dotfiles" width="200" src="https://cdn.rawgit.com/davidosomething/dotfiles/master/meta/dotfiles-logo.png">
 
-[![Build Status](https://travis-ci.org/davidosomething/dotfiles.svg?branch=dev)](https://travis-ci.org/davidosomething/dotfiles) [![Updates](https://pyup.io/repos/github/davidosomething/dotfiles/shield.svg)](https://pyup.io/repos/github/davidosomething/dotfiles/) [![Greenkeeper badge](https://badges.greenkeeper.io/davidosomething/dotfiles.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/davidosomething/dotfiles.svg?branch=dev)](https://travis-ci.org/davidosomething/dotfiles) [![Updates](https://pyup.io/repos/github/davidosomething/dotfiles/shield.svg)](https://pyup.io/repos/github/davidosomething/dotfiles/)
 
 My dotfiles. <https://github.com/davidosomething/dotfiles>
 
-- macOS/OS X, Arch Linux, and Debian compatible
+- I use macOS, Manjaro, and Debian. Limited Fedora support.
 - [XDG] compliance wherever possible to keep `$HOME` clean
-    - See [Archlinux wiki for XDG Base Directory Support]
+    - See [Arch Linux wiki for XDG Base Directory Support]
     - See [Debian DotFilesList]
-    - See [grawity's dotfile notes] and [environ notes]
-- ZSH and BASH configs
-- VIM and Neovim configs
-- RC files for Lua, markdown, node, PHP, python, R, ruby, and others
+    - See [grawity's notes] and [environ notes]
+- ZSH (preferred) and BASH configs
+- Neovim (preferred) and VIM configs
+- RC files for Lua, markdownlint, node, PHP, python, R, ruby, and others
 
 ![terminal screenshot][screenshot]
 > Screenshot of my ZSH prompt
 
+My [/uses] post my be of interest to you!
+
 ## Installation
 
-_For mac, see full install details in [mac/README.md](mac/README.md)._
+See macOS specific notes in [mac/README.md](mac/README.md)
 
-Clone and run the symlink script:
+Generally:
 
 ```sh
 git clone --recurse-submodules https://github.com/davidosomething/dotfiles ~/.dotfiles
-~/.dotfiles/bootstrap/symlink
 ```
 
-After symlinking, `~/.dotfiles/bootstrap/cleanup` can detect and move
-pre-existing dotfiles that conflict with these.
+Then, run the [bootstrap/symlink](bootstrap/symlink) script for linux or
+[bootstrap/mac](bootstrap/mac) for macOS.
 
-### Using a different repository path
+After symlinking, [bootstrap/cleanup](bootstrap/cleanup) can detect and move
+pre-existing dotfiles that conflict with these (mac does this).
 
-Installation assumes the repo is in `~/.dotfiles` but you can set a different
-path setting the `DOTFILES` environment variable beforehand:
-
-```sh
-DOTFILES=~/.dot ~/.dot/bootstrap/symlink
-```
-
-### Post-Installation
-
-#### Recommended steps
-
-- Create XDG child directories (run `bootstrap/xdg`). The X Desktop will
-  export them in `/etc/xdg/autostart/user-dirs-update-gtk.desktop`.
-- Install and use [Fira (Fura) Mono for Powerline] font (install
-  to `${XDG_DATA_HOME}/fonts` on \*nix)
-- Install ZSH and set it as the default (ensure its presence in
-  `/etc/shells`); restart the terminal and zplugin will self-install
-- See OS specific notes in [mac/README.md](mac/README.md) and
-  [linux/README.md](linux/README.md) and [linux/arch.md](linux/arch.md)
-- Useful Chrome extensions are in [chromium/README.md](chromium/README.md)
-- Install node and the default npm packages; `rm` will then alias to the
-  [trash-cli] script.
-
-#### Dev environment setup
+### Dev environment setup
 
 Install these using the system package manager. For macOS/OS X there are helper
 scripts.
 
-- `chruby`, `ruby-install`, then use `ruby-install` to install a version of
-  ruby (preferably latest, and into `~/.config/rubies/ruby-1.2.3` using flags)
-- Install [nvm](https://github.com/creationix/nvm) MANUALLY via git clone into
-  `$XDG_CONFIG_HOME`, then use it to install a version of `node` (and
-  `npm install --global npm@latest`)
+- For user-land ruby, install [chruby] and `ruby-install`. Then, use
+  `ruby-install` to install a version of ruby. Preferably install the latest
+  ruby. The dotfiles alias ruby-install to use `${XDG_DATA_HOME}/rubies` as the
+  installation path.
+
+  ```sh
+  ruby-install --latest ruby
+  ```
+
+- For user-land node, install [nvm] MANUALLY via git clone into
+  `$XDG_CONFIG_HOME`, then use it to install a version of `node`
 - `php`, `composer`, use composer to install `wp-cli`
-- Use [pyenv-installer] for [pyenv], [pyenv-virtualenv], then create a new env
-  with a new python/pip.
-    - Create virtualenvs for Neovim.
+- For user-land python, use [pyenv-installer] to install [pyenv] and
+  [pyenv-virtualenv].
+    - Create virtualenvs for Neovim using [bootstrap/pyenv](bootstrap/pyenv)
 
 ### Provisioning scripts
 
 These will assist in installing packages and dotfiles. Best to have the
 environment set up first.
 
-- `bootstrap/cleanup` moves some dotfiles into their XDG Base Directory
-  supported directories
-- `bootstrap/symlink` symlinks rc files for bash, ZSH, ack, (Neo)vim, etc.
-- `bootstrap/terminfo` will copy/compile terminfo files for user to
-  `~/.terminfo/*`
-- `bootstrap/x11` symlinks `.xbindkeysrc`, `.xprofile`
-- `npm/install` install default packages, requires you set up nvm and
-  install node first
-- `ruby/install-default-gems` requires you set up chruby and install a ruby
-  first.
-- `python/install` installs default pip packages. Requires [pyenv] already set
-  up,
+- [bootstrap/cleanup](bootstrap/cleanup) moves some dotfiles into their XDG
+  Base Directory supported directories and deletes unnecessary things (with
+  confirmation).
+- [bootstrap/mac](bootstrap/mac) provision macOS. Runs other bootstrappers.
+- [bootstrap/pipx](bootstrap/pipx) installs python CLI tools using `pipx`
+- [bootstrap/pyenv](bootstrap/pyenv) creates a Neovim pyenv and installs
+  `pynvim`
+- [bootstrap/symlink](bootstrap/symlink) symlinks rc files for bash, ZSH,
+  ack, (Neo)vim, etc.
+- [node/install](node/install) install default packages, requires you set up
+  [nvm] and install node first
+- [ruby/install-default-gems](ruby/install-default-gems) requires you set up
+  [chruby] and install a ruby first.
+- [python/install](python/install) installs default pip packages. Requires
+  [pyenv] already set up
 
 ## Updating
 
-The sourced `dko.dotfiles.main()` function is available as the alias `u`.
-Use `u` without arguments for usage.
+`u` is an alias to [dot](bin/dot). Use `u` without arguments for usage.
 
 ## Notes
 
@@ -108,9 +95,7 @@ Use `u` without arguments for usage.
       also reflected in a custom Vim highlighting syntax in
       `vim/after/syntax/gitcommit.vim`.
 - `python/`
-    - Never `sudo pip`. Set up a [pyenv], and use a [pyenv-virtualenv] (which
-      will delegate to `pyvenv`) if doing project specific work, and
-      `pip install` into that userspace [pyenv] or virtualenv.
+    - Never `sudo pip`. Set up a [pyenv], and use a [pyenv-virtualenv].
 - `ruby/`
     - Never `sudo gem`. Set up a [chruby] env first, and then you can install
       gems into the userspace local to the active ruby env.
@@ -122,16 +107,18 @@ Use `u` without arguments for usage.
 
 ### rc script source order
 
-If you have node installed, the `dkosourced`
-([bin/dkosourced](bin/dkosourced)) command will show you (not exhaustively)
-the order scripts get sourced. Without node `echo $DKO_SOURCE` works.
+If you have node installed, the [dkosourced](bin/dkosourced) command will show
+you (not exhaustively) the order scripts get sourced. Without node `echo
+$DKO_SOURCE` works.
 
 For X apps (no terminal) the value may be:
 
-    /etc/profile
-    .xprofile
-      shell/vars
-        shell/xdg
+```text
+/etc/profile
+.xprofile
+  shell/vars
+    shell/xdg
+```
 
 ## Shell script code style
 
@@ -165,17 +152,19 @@ For X apps (no terminal) the value may be:
 
 > _Logo from [jglovier/dotfiles-logo]_
 
-[Archlinux wiki for XDG Base Directory Support]: https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
+[Arch Linux wiki for XDG Base Directory Support]: https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
 [Debian DotFilesList]: https://wiki.debian.org/DotFilesList
 [Fira (Fura) Mono for Powerline]: https://github.com/powerline/fonts
 [XDG]: https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 [chruby]: https://github.com/postmodern/chruby
 [environ notes]: https://github.com/grawity/dotfiles/blob/master/.environ.notes
 [google shell style]: https://google.github.io/styleguide/shell.xml
-[grawity's dotfile notes]: https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
+[grawity's notes]: https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
 [jglovier/dotfiles-logo]: https://github.com/jglovier/dotfiles-logo
+[nvm]: https://github.com/nvm-sh/nvm
 [pyenv-installer]: https://github.com/yyuu/pyenv-installer
 [pyenv-virtualenv]: https://github.com/pyenv/pyenv-virtualenv
 [pyenv]: https://github.com/pyenv/pyenv
-[screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/0f8a58661c3a3c111d9cc1332d5ab3962aaf1dd9/meta/terminal-potatopro.png
-[trash-cli]: https://github.com/sindresorhus/trash-cli
+[screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/744f9dc096a240906d71af35cfe0eaad7d9c2abb/meta/terminal-potatonuc.png
+[/uses]: https://www.davidosomething.com/uses/
+

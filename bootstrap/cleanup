@@ -5,7 +5,7 @@
 
 if [[ -z "$DOTFILES" ]]; then
   cd -- "$(dirname "$0")/.." || exit 1
-  DOTFILES="$(pwd)"
+  DOTFILES="$PWD"
 fi
 . "${DOTFILES}/lib/helpers.sh"
 . "${DOTFILES}/lib/pretty.bash"
@@ -14,11 +14,10 @@ fi
 # ENV validation
 # ============================================================================
 
-if [[ -z "$BDOTDIR" ]] \
-  || [[ -z "$XDG_CONFIG_HOME" ]] \
-  || [[ -z "$XDG_DATA_HOME" ]]
-then
-  __dko_err  "DOTFILES are not set up, run this after symlinking and restarting"
+if [[ -z "$BDOTDIR" ]] ||
+  [[ -z "$XDG_CONFIG_HOME" ]] ||
+  [[ -z "$XDG_DATA_HOME" ]]; then
+  __dko_err "DOTFILES are not set up, run this after symlinking and restarting"
   __dko_err_ "shell"
   exit 1
 fi
@@ -32,7 +31,7 @@ fi
 # $2 full destination path
 __move() {
   [[ ! -e "$1" ]] && __dko_ok "${1} not found" && return 0
-  [[ -e "$2" ]] && __dko_err  "${2} exists, cannot move ${1}" && return 1
+  [[ -e "$2" ]] && __dko_err "${2} exists, cannot move ${1}" && return 1
 
   __dko_status "Move ${1} to ${2}"
   dko-maybemkdir "$(dirname "${2}")" || return 1
@@ -47,8 +46,8 @@ __merge_dir() {
 
   __dko_status "Merge ${1} into ${2}"
   dko-maybemkdir "$2" || return 1
-  mv -- "${1}/*"   "$2" && __dko_ok "${1}/* moved into ${2}"
-  mv -- "${1}/.*"  "$2" && __dko_ok "${1}/.* moved into ${2}"
+  mv -- "${1}/*" "$2" && __dko_ok "${1}/* moved into ${2}"
+  mv -- "${1}/.*" "$2" && __dko_ok "${1}/.* moved into ${2}"
   [[ -d "$1" ]] && rmdir -- "$1" && __dko_ok "${1} removed"
 }
 
@@ -56,7 +55,7 @@ __merge_dir() {
 # $1 path to completely remove
 __remove() {
   [[ ! -e "$1" ]] && __dko_ok "${1} not found" && return 0
-  if [[ -f "$1" ]] || [[ -h "$1" ]]; then
+  if [[ -f "$1" ]] || [[ -L "$1" ]]; then
     rm -i -- "$1" && __dko_ok "${1} removed"
   elif [[ -d "$1" ]]; then
     rm -ir -- "$1" && __dko_ok "${1} removed"
@@ -65,8 +64,8 @@ __remove() {
 
 # Logic for NVM
 __clean_nvm() {
-  [[ -z "$NVM_DIR" ]] \
-    || [[ "${NVM_DIR}" != "${XDG_CONFIG_HOME}/nvm" ]] && {
+  [[ -z "$NVM_DIR" ]] ||
+    [[ "${NVM_DIR}" != "${XDG_CONFIG_HOME}/nvm" ]] && {
     __dko_err "NVM_DIR not set properly. Should be ${XDG_CONFIG_HOME}/nvm"
     return 1
   }
@@ -80,12 +79,19 @@ __clean_nvm() {
 # main
 # ============================================================================
 
-__move      "${HOME}/.bash_history"   "${HOME}/.local/bash_history"
-__move      "${HOME}/.zhistory"       "${HOME}/.local/zsh_history"
-__move      "${HOME}/.gimp-2.8"       "${XDG_CONFIG_HOME}/GIMP/2.8"
-__move      "${HOME}/.inputrc"        "${XDG_CONFIG_HOME}/readline/inputrc"
-__merge_dir "${HOME}/.fonts"          "${XDG_DATA_HOME}/fonts"
+__move "${HOME}/.bash_history" "${HOME}/.local/bash_history"
+__move "${HOME}/.ctags.d" "${XDG_CONFIG_HOME}/ctags"
+__move "${HOME}/.gimp-2.8" "${XDG_CONFIG_HOME}/GIMP/2.8"
+__move "${HOME}/.grip" "${XDG_CONFIG_HOME}/grip"
+__move "${HOME}/.hyper.js" "${XDG_CONFIG_HOME}/hyper/.hyper.js"
+__move "${HOME}/.inputrc" "${XDG_CONFIG_HOME}/readline/inputrc"
+__move "${HOME}/.solargraph" "${XDG_CACHE_HOME}/solargraph"
+__move "${HOME}/.vagrant.d" "${XDG_DATA_HOME}/vagrant"
+__move "${HOME}/.zhistory" "${HOME}/.local/zsh_history"
 
+__merge_dir "${HOME}/.fonts" "${XDG_DATA_HOME}/fonts"
+
+[[ -n "$CARGO_HOME" ]] && __move "${HOME}/.cargo" "$CARGO_HOME"
 [[ -n "$COMPOSER_HOME" ]] && __move "${HOME}/.composer" "$COMPOSER_HOME"
 [[ -n "$GNUPGHOME" ]] && [[ -d "${HOME}/.gnupg" ]] && {
   rmdir "${HOME}/.gnupg" 2>/dev/null || __move "${HOME}/.gnupg" "$GNUPGHOME"
@@ -94,28 +100,46 @@ __merge_dir "${HOME}/.fonts"          "${XDG_DATA_HOME}/fonts"
 [[ -n "$YARN_CACHE_FOLDER" ]] && __move "${HOME}/.yarn-cache" "$YARN_CACHE_FOLDER"
 
 # Removes
-! dko-same "${HOME}/.dotfiles/bash/dot.bash_profile" "${HOME}/.bash_profile" \
-  && __remove "${HOME}/.bash_profile"
+! dko-same "${HOME}/.dotfiles/bash/dot.bash_profile" "${HOME}/.bash_profile" &&
+  __remove "${HOME}/.bash_profile"
 ! dko-same "${HOME}/.dotfiles/bash/dot.bashrc" "${HOME}/.bashrc" \
-__remove "${HOME}/.bashrc"
+  __remove "${HOME}/.bashrc"
 ! dko-same "${HOME}/.dotfiles/zsh/dot.zshenv" "${HOME}/.zshenv" \
-__remove "${HOME}/.zshenv"
-# should be ~/.ctags.d/universal.ctags
+  __remove "${HOME}/.zshenv"
+# support dropped in 2.2.0
+__remove "${HOME}/.agignore"
+# should be ~/.config/ctags/*.ctags
 __remove "${HOME}/.ctags"
+# should be in XDG_CONFIG_HOME/fzf/fzf.bash and fzf.zsh or /usr/share/fzf
+__remove "${HOME}/.fzf.bash"
+__remove "${HOME}/.fzf.zsh"
 # alias points to dotfile
 __remove "${HOME}/.mdlrc"
+# should be in XDG as of 0.9.0
+__remove "${HOME}/.proselint"
 # should be in XDG
 __remove "${HOME}/.pulse-cookie"
+# should be "${XDG_DATA_HOME}/forgit"
+__remove "${HOME}/.forgit"
 # should be symlinked in XDG
 __remove "${HOME}/.gitconfig"
 # should be symlinked in XDG
 __remove "${HOME}/.gitignore"
 # should be in .local; probably created on ZSH startup
 __remove "${HOME}/.wget-hsts"
-# should be .tern-config
+# stopped using tern
+__remove "${HOME}/.tern-config"
 __remove "${HOME}/.tern-project"
 # should be ~/.config/tldr
 __remove "${HOME}/.tldr"
+# should be ~/.dotfiles/zsh/.zshrc
+__remove "${HOME}/.zshrc"
+
+# should be XDG_DATA_HOME/zinit
+__remove "${DOTFILES}/zsh/.zinit"
+__remove "${DOTFILES}/zsh/.zplugin"
+
+"${DOTFILES}/bin/dko-fix-git-completion"
 
 # NVM
 __clean_nvm

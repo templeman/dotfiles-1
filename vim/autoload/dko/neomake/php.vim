@@ -3,8 +3,9 @@
 let s:phpcs_psr2 = [ '--standard=PSR2' ]
 
 let s:phpcs_wordpress = [
-      \   '--standard='.expand('~/src/wpcs/phpcs.xml.dist'),
+      \   '--standard=WordPress-Extra',
       \   '--runtime-set', 'installed_paths', expand('~/src/wpcs'),
+      \   '--exclude=WordPress.PHP.YodaConditions',
       \ ]
 
 function! dko#neomake#php#Setup() abort
@@ -12,10 +13,10 @@ function! dko#neomake#php#Setup() abort
   if exists('b:did_dkoneomake_' . l:safeft) | return | endif
   let b:did_dkoneomake_{l:safeft} = 1
 
-  call dko#neomake#utils#LocalMaker({
+  call dko#neomake#LocalMaker({
         \   'ft':     'php',
         \   'maker':  'phpcs',
-        \   'exe':    expand('~/.config/composer/vendor/bin/phpcs'),
+        \   'exe':    'vendor/bin/phpcs',
         \ })
 
   call dko#neomake#php#Phpcs()
@@ -24,7 +25,7 @@ endfunction
 
 function! dko#neomake#php#Phpcs() abort
   let b:neomake_php_phpcs_args = neomake#makers#ft#php#phpcs().args +
-        \ (dko#project#Type() ==# 'wordpress'
+        \ (index(dko#project#Type(), 'wordpress') >= 0
         \   ? s:phpcs_wordpress
         \   : s:phpcs_psr2)
 endfunction

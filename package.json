@@ -3,32 +3,38 @@
   "private": true,
   "version": "0.0.1",
   "description": "@davidosomething/dotfiles",
+  "engines": {
+    "node": ">=10.15.3"
+  },
   "main": "index.js",
   "directories": {
     "lib": "lib",
     "test": "tests"
   },
+  "config": {
+    "bashfiles": "find . -type f -name \"*.bash\" -not -path \"*.tox/*\" -not -path \"*.zinit/*\" -not -path \"*/vendor/*\" -not -path \"*tmp/*\"",
+    "mdfiles": "find . -type f -name \"*.md\" -not -path \"./tmux/plugins*\" -not -path \"*.zinit/*\" -not -path \"*/chromium/*\" -not -path \"*/node_modules/*\" -not -path \"*tmp/*\" -not -path \"*/vendor/*\"",
+    "shfiles": "find . -type f -name \"*.sh\" -not -path \"*/vim/.tmp/*\" -not -path \"*.tox/*\" -not -path \"*.zinit/*\" -not -path \"*/vendor/*\" -not -path \"*/tmux/plugins*\"",
+    "vimfiles": "find . -type f -name \"*.vim\" -path \"./vim/*\" -not -name \"plug.vim\" -not -path \"*/vendor/*\" -not -path \"*tmp/*\"",
+    "yamlfiles": "find . -type f -regex \".*\\.y\\(a\\)*ml\" -not -path \".github/*\" -not -path \"*.tox/*\""
+  },
   "scripts": {
-    "_header": "npx --ignore-existing --quiet boxen-cli --padding 0",
     "_markdownlint": "npx --ignore-existing --quiet markdownlint-cli --config ./markdownlint/dot.markdownlintrc",
     "_parallel": "npx --ignore-existing --quiet npm-run-all --silent --aggregate-output --continue-on-error --parallel",
     "lint": "npm run --silent _parallel -- lint:**",
-    "lint:editorconfig": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"                && npx --ignore-existing --quiet echint && echo ' ✓ passed\n'",
-    "lint:bash:bashate": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"                && bashate --ignore=E003,E005,E006 -- $(npx --ignore-existing --quiet glob-cli2 \"{bash/*,**/*.bash}\") && echo ' ✓ passed\n'",
-    "lint:bash:shellcheck": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"             && shellcheck --exclude=SC1090 --shell=bash -- $(npx --ignore-existing --quiet glob-cli2 \"{bash/*,**/*.bash}\") && echo ' ✓ passed\n'",
-    "lint:python": "if [ -z \"$CI\" ]; then npm run --silent _header -- \"  ${npm_lifecycle_event}  \"  && flake8 -- $(npx --ignore-existing --quiet glob-cli2 \"bitbar/mine/*.py\") && echo ' ✓ passed\n'; fi",
-    "lint:readmes": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"                     && npm run --silent _markdownlint -- $(npx --ignore-existing --quiet glob-cli2 \"{.,*,vim/mine/*}/README.md\") && echo ' ✓ passed\n'",
-    "lint:shell:shellcheck": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"            && shellcheck --exclude=SC1090,SC2148 --shell=sh -- $(npx --ignore-existing --quiet glob-cli2 \"{shell,bitbar/mine}/*.sh\") && echo ' ✓ passed\n'",
-    "lint:vim:after": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"     && vint -- vim/after          && echo ' ✓ passed\n'",
-    "lint:vim:autoload": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"  && vint -- vim/autoload/dko*  && echo ' ✓ passed\n'",
-    "lint:vim:ftplugin": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"  && vint -- vim/ftplugin       && echo ' ✓ passed\n'",
-    "lint:vim:rc": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"        && vint -- $(npx --ignore-existing --quiet glob-cli2 \"vim/{gvimrc,vimrc,*.vim}\") && echo ' ✓ passed\n'",
-    "lint:vim:mine": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"      && vint -- vim/mine   && echo ' ✓ passed\n'",
-    "lint:vim:plugin": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"    && vint -- vim/plugin && echo ' ✓ passed\n'",
-    "lint:yaml": "npm run --silent _header -- \"  ${npm_lifecycle_event}  \"          && yamllint -- . && echo ' ✓ passed\n'",
-    "pretest": "npm run --silent lint",
-    "test": "./bootstrap/symlink",
-    "posttest": "echo DONE"
+    "lint:editorconfig": "./bin/dko-header \"  ${npm_lifecycle_event}  \"                && npx --ignore-existing --quiet echint && echo ' ✓ passed\n'",
+    "lint:bash:bashate": "./bin/dko-header \"  ${npm_lifecycle_event}  \"                && bashate --ignore=E003,E005,E006,E011,E043 -- $(eval \"$npm_package_config_bashfiles\") && echo ' ✓ passed\n'",
+    "lint:bash:shellcheck": "./bin/dko-header \"  ${npm_lifecycle_event}  \"             && shellcheck --exclude=SC1090 --shell=bash -- $(eval \"$npm_package_config_bashfiles\") && echo ' ✓ passed\n'",
+    "lint:readmes": "./bin/dko-header \"  ${npm_lifecycle_event}  \"                     && npm run --silent _markdownlint -- $(eval \"$npm_package_config_mdfiles\") && echo ' ✓ passed\n'",
+    "lint:shell:shellcheck": "./bin/dko-header \"  ${npm_lifecycle_event}  \"            && shellcheck --exclude=SC1090,SC2148 --shell=sh -- $(eval \"$npm_package_config_shfiles\") && echo ' ✓ passed\n'",
+    "lint:vim:after": "./bin/dko-header \"  ${npm_lifecycle_event}  \"     && vint -- vim/after          && echo ' ✓ passed\n'",
+    "lint:vim:autoload": "./bin/dko-header \"  ${npm_lifecycle_event}  \"  && vint -- vim/autoload/dko*  && echo ' ✓ passed\n'",
+    "lint:vim:ftplugin": "./bin/dko-header \"  ${npm_lifecycle_event}  \"  && vint -- vim/ftplugin       && echo ' ✓ passed\n'",
+    "lint:vim:rc": "./bin/dko-header \"  ${npm_lifecycle_event}  \"        && vint -- $(eval \"$npm_package_config_vimfiles\") && echo ' ✓ passed\n'",
+    "lint:vim:mine": "./bin/dko-header \"  ${npm_lifecycle_event}  \"      && vint -- vim/mine   && echo ' ✓ passed\n'",
+    "lint:vim:plugin": "./bin/dko-header \"  ${npm_lifecycle_event}  \"    && vint -- vim/plugin && echo ' ✓ passed\n'",
+    "lint:yaml": "./bin/dko-header \"  ${npm_lifecycle_event}  \"          && yamllint -- $(eval \"$npm_package_config_yamlfiles\") && echo ' ✓ passed\n'",
+    "test": "npm run --silent lint"
   },
   "repository": {
     "type": "git",
@@ -42,31 +48,33 @@
   "homepage": "https://github.com/davidosomething/dotfiles#readme",
   "echint": {
     "ignore": [
+      "**/*.app/**",
       "**/*.md",
       "**/*.py",
       "**/*.xml",
-      "bitbar/enabled/*",
-      "bitbar/vendor/*",
-      "hammerspoon/Spoons/**",
-      "iterm2/*.itermcolors",
       "linux/**",
       "local/**",
       "logs/**",
+      "mac/hammerspoon/Spoons/**",
+      "mac/iterm2/*.itermcolors",
       "mac/*.terminal",
       "meta/**",
-      "openbox/**",
+      "ruby/Gemfile.lock",
       "terminfo/**",
       "tests/**",
       "tmux/plugins/**",
       "vim/autoload/plug.vim*",
       "vim/spell/**",
       "vim/vendor/**",
-      "weechat/**",
       "xresources/**"
     ]
   },
+  "dependencies": {},
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-config-davidosomething": "^2.0.0"
+    "eslint": "7.1.0",
+    "eslint-config-davidosomething": "4.1.0",
+    "js-yaml": "3.14.0",
+    "lodash": "4.17.15",
+    "plist": "3.0.1"
   }
 }

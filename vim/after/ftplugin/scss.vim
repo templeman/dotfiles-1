@@ -1,4 +1,8 @@
 " after/ftplugin/scss.vim
 
-" see after/ftplugin/css.vim
+call dko#TwoSpace()
 setlocal iskeyword+=-
+
+if dkoplug#IsLoaded('jumpy.vim')
+  call jumpy#map('^[^ \t{}/]', '')
+endif

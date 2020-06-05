@@ -5,6 +5,10 @@
 
 export DKO_SOURCE="${DKO_SOURCE} -> shell/vars.sh"
 
+# dot.bash_profile did this early
+DOTFILES_OS="${DOTFILES_OS:-$(uname)}"
+export DOTFILES_OS
+
 # ============================================================================
 # Locale
 # ============================================================================
@@ -40,9 +44,9 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 # and should have those vars. I am just using the defaults but want them
 # explicitly defined.
 # shellcheck source=/dev/null
-[ -f "${XDG_CONFIG_HOME}/user-dirs.dirs" ] \
-  && . "${XDG_CONFIG_HOME}/user-dirs.dirs" \
-  && export \
+[ -f "${XDG_CONFIG_HOME}/user-dirs.dirs" ] &&
+  . "${XDG_CONFIG_HOME}/user-dirs.dirs" &&
+  export \
     XDG_DESKTOP_DIR \
     XDG_DOWNLOAD_DIR \
     XDG_TEMPLATES_DIR \
@@ -50,8 +54,8 @@ export XDG_DATA_HOME="${HOME}/.local/share"
     XDG_DOCUMENTS_DIR \
     XDG_MUSIC_DIR \
     XDG_PICTURES_DIR \
-    XDG_VIDEOS_DIR \
-  && DKO_SOURCE="${DKO_SOURCE} -> ${XDG_CONFIG_HOME}/user-dirs.dirs"
+    XDG_VIDEOS_DIR &&
+  DKO_SOURCE="${DKO_SOURCE} -> ${XDG_CONFIG_HOME}/user-dirs.dirs"
 
 # ----------------------------------------------------------------------------
 # Defaults if not set in user-dirs
@@ -83,14 +87,14 @@ export CVSIGNORE="${DOTFILES}/git/.gitignore"
 # editor
 # ----------------------------------------------------------------------------
 
-export EDITOR="vim"
-export VISUAL="vim"
+export EDITOR='vim'
+export VISUAL='vim'
 
 # ----------------------------------------------------------------------------
 # pager
 # ----------------------------------------------------------------------------
 
-export PAGER="less"
+export PAGER='less'
 export GIT_PAGER="$PAGER"
 
 # ----------------------------------------------------------------------------
@@ -103,16 +107,14 @@ export GIT_PAGER="$PAGER"
 export ACKRC="${DOTFILES}/ack/dot.ackrc"
 
 # atom editor
-export ATOM_HOME="${XDG_CONFIG_HOME}/atom"
+export ATOM_HOME="${XDG_DATA_HOME}/atom"
 
 # aws
 export AWS_CONFIG_FILE="${DOTFILES}/aws/config"
 # credentials are per system
 
-# bat
-export BAT_PAGER=""
-export BAT_STYLE="numbers"
-export BAT_THEME="zenburn"
+# babel
+export BABEL_CACHE_PATH="${HOME}/.local/babel.json"
 
 # bazaar
 export BZRPATH="${XDG_CONFIG_HOME}/bazaar"
@@ -126,11 +128,8 @@ export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 # docker
 export DOCKER_CONFIG="${XDG_CONFIG_HOME}/docker"
 
-# fasd
-export _FASD_DATA="${HOME}/.local/fasd"
-
-# gnupg
-# This mirrors the value in mac/dotfiles.plist
+# gpg
+# on mac this should already set by dotfiles.plist using launchd
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 
 # go
@@ -163,8 +162,9 @@ export MYSQL_HISTFILE="${XDG_CACHE_HOME}/mysql_histfile"
 # node moved to shell/node loaded in shell/before
 
 # neovim
-#export NVIM_PYTHON_LOG_FILE="${DOTFILES}/logs/nvim_python.log"
-export NVIM_LISTEN_ADDRESS="${HOME}/.local/nvimsocket"
+export NVIM_PYTHON_LOG_FILE="${DOTFILES}/logs/nvim_python.log"
+export NVIM_LISTEN_ADDRESS=localhost:90210
+#"${HOME}/.local/nvimsocket"
 
 # php moved to shell/php loaded in shell/before
 
@@ -177,8 +177,6 @@ export R_LIBS_USER="${HOME}/.local/lib/R/library/"
 # readline
 export INPUTRC="${DOTFILES}/shell/dot.inputrc"
 
-# ruby moved to shell/ruby loaded in shell/before
-
 # -shellcheck
 export SHELLCHECK_OPTS="--exclude=SC1090,SC2148"
 
@@ -190,10 +188,8 @@ export SHELLCHECK_OPTS="--exclude=SC1090,SC2148"
 export TRAVIS_CONFIG_PATH="${XDG_CONFIG_HOME}/travis"
 
 # vagrant
-export VAGRANT_HOME="${XDG_CONFIG_HOME}/vagrant"
-
-# weechat
-export WEECHAT_HOME="${DOTFILES}/weechat"
+export VAGRANT_HOME="${XDG_DATA_HOME}/vagrant"
+export VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases"
 
 # wp cli
 export WP_CLI_CONFIG_PATH="${XDG_CONFIG_HOME}/wp-cli"

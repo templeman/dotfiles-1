@@ -9,8 +9,8 @@
 
 - Custom statusline with minimal junk, showing short directory
 - FZF for Most Recently Used files and fuzzy file finder
-- Neomake + local use of eslint, custom detection of .eslint, .scss-lint,
-  etc.
+- CoC for language server and misc utilities
+- Neomake for non-language server makers/linters
 - Language emphasis: JavaScript, VimL, PHP, HTML, SCSS (but not exclusive)
 - Lazy loaded plugins and keybindings -- a brand new Vim instance opens in
   <200ms (without plugins Vim takes around 100ms)
@@ -18,31 +18,28 @@
 
 ## Installation
 
-Best used with rest of dotfiles. Should self-install plugins via curl and
-[vim-plug] on first load.
+Best used with rest of dotfiles. `coc/extensions/dot.npmrc` will enforce using
+the main npmjs package registry. Commands in `.vimrc` will auto-install
+plugins if curl is available.
 
 Keep `(g)vimrc` (no dot in filename) in `~/.vim/` -- Vim knows to look in there.
 
 ### Python Settings
 
+See [bootstrap/pyenv] for a scripted version of this
+
 - Using `pyenv`, install python 3+.
 - Set up a virtualenv using `pyenv-virtualenv`: `pyenv virtualenv neovim3`
 - Activate the virtualenv `pyenv activate neovim3`
-- `pip install neovim` in the virtualenv
-- `pip install jedi` for python completion while still in the virtualenv
+- `python -m pip install pynvim` in the virtualenv
 - You can now switch back to whatever python (`pyenv deactivate`) you want,
   `init.vim` for Neovim startup is already configured to find the `neovim3`
   virtualenv.
+
+Finally
+
 - `:UpdateRemotePlugins` if installing/upgrading python-based plugins
-- `:CheckHealth` to see if the python3 setup and plugins are working. iTerm
-  should use xterm-256color-italic terminfo if the backspace message is there.
-
-### Ruby Settings
-
-- Not used for anything right now.
-- Using `chruby` install and use a ruby.
-- Install the `neovim` gem
-- `:CheckHealth` to see if Neovim can find the gem.
+- `:checkhealth` to see if the python3 setup and plugins are working.
 
 ### JavaScript Settings
 
@@ -67,14 +64,14 @@ is generally a wrapper around them that checks for
 
 #### Super-non-standard keys
 
-- `<C-f>` -- Expand neosnippet. I use `<C-u>`/`<C-d>` to jump pages instead.
+- `<C-f>` -- Expand snippet. I use `<C-u>`/`<C-d>` to jump pages instead.
 - `gs` no longer sleeps. It's an operator prefix for vim-operator-surround.
 
 #### Function Keys
 
 |                 Key | Desc                                                    |
 | ------------------: | :------------------------------------------------------ |
-|  `<F1>` or `<A-g>`  | :FZFGrepper! - custom, rg/ag with preview or git-grep |
+|  `<F1>` or `<A-g>`  | :FZFGrepper - custom, rg/ag with preview or git-grep |
 |  `<F2>`             | :FZFRelevant - custom, dirty/new files vs git master |
 |  `<F3>`             | :FZFProject - custom, :FZFFiles but from project root |
 |  `<F4>` or `<A-m>`  | :FZFMRU - custom MRU |
@@ -82,10 +79,10 @@ is generally a wrapper around them that checks for
 |  `<F6>`             | :Neomake  |
 |  `<F7>`             | :Neomake! |
 |  `<F8>`             | unused |
-|  `<F9>`             | UI - :QuickfixsignsToggle (on by default) |
+|  `<F9>`             | unused |
 | `<F10>`             | do not use -- gnome-terminal menu key |
-| `<F11>`             | UI - dkotabline#Toggle() |
-| `<F12>`             | UI - set pastetoggle |
+| `<F11>`             | unused |
+| `<F12>`             | unused |
 | `<A-b>`             | :FZFBuffers |
 | `<A-c>`             | :FZFCommands |
 | `<A-p>`             | :FZFProject |
@@ -94,7 +91,6 @@ is generally a wrapper around them that checks for
 | `<A-v>`             | :FZFVim - ~/.vim |
 | `<C-s>`             | Extract - cycle paste prev |
 | `<C-S>`             | Extract - cycle paste next |
-|    `/`              | UI - incsearch |
 |    `\`              | UI - :OverCommandLine |
 
 See `plugin/mappings.vim` (and other `plugin/*` files) for other mappings.
@@ -137,7 +133,7 @@ sparingly (typically for `setlocal` ftplugin settings).
 
 ----
 
-[screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/4fb16e4a785fe81488d09af1e77a62792c55e688/meta/vim-potatopro.png
+[screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/d759d42f59b4f2be66aa6957bfd595e90096e223/meta/vim-potatonuc.png
 [Syntax-Checkers]: https://github.com/scrooloose/syntastic/wiki/Syntax-Checkers
 [syntastic]: https://github.com/scrooloose/syntastic
 [neomake]: https://github.com/neomake/neomake

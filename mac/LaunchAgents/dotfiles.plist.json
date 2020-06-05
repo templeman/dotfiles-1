@@ -1,0 +1,10 @@
+{
+  "Label": "davidosomething.dotfiles.env",
+  "ProgramArguments": [
+    "sh",
+    "-c",
+    "launchctl setenv GNUPGHOME \"${HOME}/.config/gnupg\""
+  ],
+  "KeepAlive": false,
+  "RunAtLoad": true
+}

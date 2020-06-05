@@ -1,5 +1,8 @@
 let g:mapleader = "\<Space>"
 
+" Use IntelliJ to cleverly merge constructs when doing a J
+set ideajoin
+
 set incsearch
 set smartcase
 
@@ -15,6 +18,9 @@ nnoremap <C-x> :action CloseContent<CR>
 nnoremap / :action Find<CR>
 nnoremap n :action FindNext<CR>
 nnoremap N :action FindPrevious<CR>
+
+nnoremap [b :action PrevTab<CR>
+nnoremap ]b :action NextTab<CR>
 
 " ============================================================================
 " Mode and env

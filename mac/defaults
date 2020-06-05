@@ -16,13 +16,11 @@ sudo -v
 [[ -f "/etc/zshenv" ]] && mv /etc/zshenv /etc/zprofile
 
 # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-# disable startup chime
-# sudo nvram SystemAudioVolume=" "
-
-# disable power button sleep, hold down for power off menu
-defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool no
+while true; do
+  sudo -n true
+  sleep 60
+  kill -0 "$$" || exit
+done 2>/dev/null &
 
 # ============================================================================
 # System preferences for hardware
@@ -64,32 +62,11 @@ defaults write NSGlobalDomain AppleFontSmoothing -int 2
 # defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
 
 # ----------------------------------------------------------------------------
-# Dashboard
-# ----------------------------------------------------------------------------
-
-# Disable dashboard
-defaults write com.apple.dashboard mcx-disabled -boolean YES
-
-# Don’t show Dashboard as a Space
-defaults write com.apple.dock dashboard-in-overlay -bool true
-
-# ----------------------------------------------------------------------------
 # Finder
 # ----------------------------------------------------------------------------
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
-
-# Disable window animations and Get Info animations in Finder
-# 2016-06-01 -- UNDONE because of the tiny finder window bug:
-# https://discussions.apple.com/message/25915421#message25915421
-#defaults write com.apple.finder DisableAllAnimations -bool false
-
-# Disable window animations
-defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
-
-# Column view as default
-defaults write com.apple.finder FXPreferredViewStyle -string "clmv"
 
 # Show all filename extensions in Finder
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
@@ -139,15 +116,10 @@ defaults write com.apple.dock persistent-apps -array
 defaults write com.apple.finder ShowPathbar -bool true
 
 # Disable the warning when changing a file extension
-# defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Enable text selection in quicklook
 defaults write com.apple.finder QLEnableTextSelection -bool true
-
-# Automatically open a new Finder window when a volume is mounted
-defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
-defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
-defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
@@ -164,13 +136,18 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 # Avoid creating .DS_Store files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
+# Automatically open a new Finder window when a volume is mounted
+defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
+defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
+defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
+
 # Show item info near icons on the desktop and in other icon views
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
 
 # Show item info to the right of the icons on the desktop
-# /usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom false" ~/Library/Preferences/com.apple.finder.plist
+/usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom false" ~/Library/Preferences/com.apple.finder.plist
 
 # Enable snap-to-grid for icons on the desktop and in other icon views
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
@@ -181,17 +158,6 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
 # /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
 # /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-
-# Increase the size of icons on the desktop and in other icon views
-# /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-
-# ----------------------------------------------------------------------------
-# Menu bar: Set date and time format e.g. Sun 11 Aug 16:55
-# ----------------------------------------------------------------------------
-
-# defaults write com.apple.menuextra.clock DateFormat -string "E MMM d HH:mm"
 
 # ----------------------------------------------------------------------------
 # Messages
@@ -264,31 +230,31 @@ defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 # Change indexing order and disable some file types
 # defaults write com.apple.spotlight orderedItems -array \
-#   '{"enabled" = 1;"name" = "APPLICATIONS";}' \
-#   '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
-#   '{"enabled" = 1;"name" = "DIRECTORIES";}' \
-#   '{"enabled" = 1;"name" = "PDF";}' \
-#   '{"enabled" = 1;"name" = "FONTS";}' \
-#   '{"enabled" = 0;"name" = "DOCUMENTS";}' \
-#   '{"enabled" = 0;"name" = "MESSAGES";}' \
-#   '{"enabled" = 0;"name" = "CONTACT";}' \
-#   '{"enabled" = 0;"name" = "EVENT_TODO";}' \
-#   '{"enabled" = 0;"name" = "IMAGES";}' \
-#   '{"enabled" = 0;"name" = "BOOKMARKS";}' \
-#   '{"enabled" = 0;"name" = "MUSIC";}' \
-#   '{"enabled" = 0;"name" = "MOVIES";}' \
-#   '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
-#   '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-#   '{"enabled" = 0;"name" = "SOURCE";}'
+#  '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+#  '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+#  '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+#  '{"enabled" = 1;"name" = "PDF";}' \
+#  '{"enabled" = 1;"name" = "FONTS";}' \
+#  '{"enabled" = 0;"name" = "DOCUMENTS";}' \
+#  '{"enabled" = 0;"name" = "MESSAGES";}' \
+#  '{"enabled" = 0;"name" = "CONTACT";}' \
+#  '{"enabled" = 0;"name" = "EVENT_TODO";}' \
+#  '{"enabled" = 0;"name" = "IMAGES";}' \
+#  '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+#  '{"enabled" = 0;"name" = "MUSIC";}' \
+#  '{"enabled" = 0;"name" = "MOVIES";}' \
+#  '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+#  '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+#  '{"enabled" = 0;"name" = "SOURCE";}'
 
 # Load new settings before rebuilding the index
-killall mds > /dev/null 2>&1
+killall mds >/dev/null 2>&1
 
 # Make sure indexing is enabled for the main volume
-sudo mdutil -i on / > /dev/null
+sudo mdutil -i on / >/dev/null
 
 # Rebuild the index from scratch
-sudo mdutil -E / > /dev/null
+sudo mdutil -E / >/dev/null
 
 # ----------------------------------------------------------------------------
 # Text Edit
@@ -323,15 +289,18 @@ defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Kill affected applications
 for app in \
+  "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
   Dashboard \
   Dock \
   Dock \
   Finder \
   Mail \
+  Messages \
+  Photos \
   Safari \
   SystemUIServer \
   Terminal \
   Twitter \
-  ; do killall "$app" >/dev/null 2>&1; done
+  iCal; do killall "$app" >/dev/null 2>&1; done
 
 # vim: ft=sh :

@@ -2,21 +2,18 @@
 branches:
   except:
     - master
-sudo: false
-addons:
-  apt:
-    packages:
-      - shellcheck
 language: python
-os:
-  - linux
-python:
-  - '2.7'
+sudo: required
+dist: xenial
+python: "3.8"
 before_install:
-  - nvm install --lts
+  - nvm install 14
+install:
+  - python -m pip install --requirement=requirements.txt
+  - npm ci
 script:
-  - tox
   - npm test --silent
+  - ./bootstrap/symlink
 deploy:
   skip_cleanup: true
   provider: script

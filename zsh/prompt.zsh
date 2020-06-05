@@ -89,7 +89,7 @@ __dko_prompt::env::version() {
 # $3 optional version compute string
 # $4 optional color compute string
 __dko_prompt::env() {
-  __dko_has "$2" || return
+  __dko_has "$2" || return 1
   __dko_prompt::env::separator
   __dko_prompt::env::symbol "$1"
   (( $# == 2 )) && __dko_prompt::env::version "$2"
@@ -97,21 +97,55 @@ __dko_prompt::env() {
   (( $# == 4 )) && __dko_prompt::env::version "$2" "$3" "$4"
 }
 
+__dko_prompt::env::js::get_version() {
+  __nodir="${NVM_BIN/$NVM_DIR\/versions\/node\/v}"
+  echo "${__nodir%\/bin}"
+}
+
 # Get node version provided by NVM using the env vars instead of calling slow
 # NVM functions
-__dko_prompt::env "js" "nvm" '$(dko-nvm-node-version)' \
-  '$( [[ "$(dko-nvm-node-version)" = "$DKO_DEFAULT_NODE_VERSION" ]] && echo "%F{blue}" || echo "%F{red}")'
+__dko_prompt::env "js" "nvm" '$(__dko_prompt::env::js::get_version)' \
+  '$( [[ "$(__dko_prompt::env::js::get_version)" = "$DKO_DEFAULT_NODE_VERSION" ]] && echo "%F{blue}" || echo "%F{red}")'
 
 __dko_prompt::env "go" "goenv"
 
-__dko_prompt::env::py() {
-  if [ -n "$VIRTUAL_ENV" ]; then
-    echo "${VIRTUAL_ENV##*/}"
-  else
-    echo "${$(pyenv version-name 2>/dev/null):-sys}"
-  fi
+__dko_prompt::env "j" "jenv"
+
+__dko_prompt::env::py::get_version() {
+  python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'
 }
-__dko_prompt::env "py" "pyenv" '$(__dko_prompt::env::py)'
+
+__dko_prompt::env::py::system() {
+  [ -z "$system_py" ] && system_py="$(__dko_prompt::env::py::get_version)"
+  echo "sys(${system_py})"
+}
+
+# virtualenv name if in one
+# sys(1.2.3) if using system python
+# 1.2.3 if using pyenv version
+__dko_prompt::env::py() {
+  [ -n "$VIRTUAL_ENV" ] && echo "${VIRTUAL_ENV##*/}" && return
+
+  local pyenv_version_file="${PYENV_ROOT}/version"
+  # Not using pyenv version-name because it opens a slow bash subprocess
+  # https://github.com/pyenv/pyenv/blob/c3b17c4bbbeb0069a9528f326d5ebd9262435afb/libexec/pyenv-version-name#L18
+  [ ! -f "$pyenv_version_file" ] && {
+    __dko_prompt::env::py::system
+    return
+  }
+
+  declare -a lines
+  lines=( "${(@f)"$(<$pyenv_version_file)"}" )
+  declare -a grepped
+  grepped=( ${(M)lines:#*system*} )
+  [ -n "$grepped" ] && {
+    __dko_prompt::env::py::system
+    return
+  }
+
+  __dko_prompt::env::py::get_version
+}
+__dko_prompt::env "py" "python" '$(__dko_prompt::env::py)'
 
 __dko_prompt::env "rb" "chruby" '${RUBY_VERSION:-sys}'
 
@@ -124,8 +158,10 @@ __dko_prompt::precmd::state() {
   local left_len=${#left_raw}
   local right_raw=" ${(ej::)__dko_prompt_right_parts}"
   local right_len=${#right_raw}
-  # $COLUMNS is not always right on iterm so use modern tput
-  local cols=$(tput cols)
+
+  local cols
+  cols=${COLUMNS:-$(tput cols 2>/dev/null)}
+  cols=${cols:-80}
 
   local left=''
   # colorize

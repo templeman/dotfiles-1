@@ -1,21 +1,8 @@
 " autoload/dkoline.vim
 scriptencoding utf-8
 
-" let g:dkoline#refresh = 0
-" let g:dkoline#trefresh = 0
-" let g:dkoline#srefresh = 0
-
 function! dkoline#GetTabline() abort
-  "let g:dkoline#trefresh += 1
-  let l:tabnr = tabpagenr()
-  let l:winnr = tabpagewinnr(l:tabnr)
-  let l:bufnr = winbufnr(l:winnr)
-  let l:cwd   = has('nvim') ? getcwd(l:winnr) : getcwd()
-
-  let l:x = {
-        \   'bufnr': l:bufnr,
-        \   'ww': 9999,
-        \ }
+  let l:view = dkoline#GetView(winnr())
 
   let l:contents = '%#StatusLine#'
 
@@ -24,8 +11,9 @@ function! dkoline#GetTabline() abort
   " ==========================================================================
 
   " Search context
+  let l:lastpat = @/
   let l:contents .= dkoline#Format(
-        \ dkoline#Anzu(),
+        \ empty(l:lastpat) ? '' : ' ' . l:lastpat . ' ',
         \ '%#dkoStatusKey# ? %(%#Search#',
         \ '%)')
 
@@ -38,55 +26,37 @@ function! dkoline#GetTabline() abort
   let l:maxwidth = l:maxwidth > 0 ? l:maxwidth : 0
   let l:contents .= '%#StatusLine# %= '
 
-  let l:project_root = dko#IsNonFile(l:bufnr)
-        \ ? '' : dko#ShortenPath(dko#project#GetRoot(l:bufnr), 0)
-  let l:lcd = dkoline#ShortPath(l:bufnr, l:cwd, 0)
-  let l:is_in_project_root = l:lcd ==# l:project_root 
-  let l:cdkey = l:is_in_project_root ? 'ʟᴄᴅ/ᴘʀᴏᴊ' : 'ʟᴄᴅ'
-
-  " Replace project_root with ᴘʀᴏᴊ/ in lcd
-  if !l:is_in_project_root && dko#StartsWith(l:project_root, l:lcd)
-    let l:lcd = ' ᴘʀᴏᴊ/' . strcharpart(l:lcd, strchars(l:project_root))
-  endif
-
-  let l:contents .= dkoline#Format(
-        \ l:lcd,
-        \ '%#dkoStatusKey# ' . l:cdkey . ' %(%#dkoStatusValue#%<',
-        \ '%)')
-
-  if !l:is_in_project_root
+  if dkoplug#IsLoaded('coc.nvim')
     let l:contents .= dkoline#Format(
-          \ l:project_root,
-          \ '%#dkoStatusKey# ᴘʀᴏᴊ %(%#dkoStatusValue#%<',
-          \ '%)')
+          \ dkoline#CocStatus(l:view),
+          \ '%(%#dkoStatusValue#',
+          \ ' %)'
+          \)
   endif
 
   let l:contents .= dkoline#Format(
-        \ dkoline#GitBranch(l:bufnr),
-        \ '%#dkoStatusKey# ∆ %(%#dkoStatusValue#',
+        \ ' ' . get(l:view, 'cwd', '~') . ' ',
+        \ '%#dkoStatusKey# ʟᴄᴅ %(%#dkoStatusValue#%<',
         \ '%)')
 
-  "let l:contents .= ''
+  let l:contents .= !empty(get(g:, 'coc_git_status', ''))
+        \ ? '%#dkoStatusKey# ' . g:coc_git_status . ' '
+        \ : dkoline#Format(
+        \     dkoline#GitBranch(l:view),
+        \     '%#dkoStatusKey# ∆ %(%#dkoStatusValue#',
+        \     '%)'
+        \   )
 
   " ==========================================================================
 
   return l:contents
 endfunction
 
-" a:winnr from dkoline#Refresh() or 0 on set statusline
 function! dkoline#GetStatusline(winnr) abort
-  if empty(a:winnr) | return | endif
-  " let g:dkoline#srefresh += 1
-
-  let l:winnr = a:winnr > winnr('$') ? 1 : a:winnr
-  let l:bufnr = winbufnr(l:winnr)
-  let l:ww    = winwidth(l:winnr)
-  let l:cwd   = has('nvim') ? getcwd(l:winnr) : getcwd()
-
-  let l:x = {
-        \   'bufnr': l:bufnr,
-        \   'ww': l:ww,
-        \ }
+  if empty(a:winnr) || a:winnr > winnr('$')
+    return
+  endif
+  let l:view = dkoline#GetView(a:winnr)
 
   let l:contents = ''
 
@@ -94,34 +64,32 @@ function! dkoline#GetStatusline(winnr) abort
   " Left side
   " ==========================================================================
 
-  let l:contents .= '%#StatusLineNC# %3(' . dkoline#Mode(l:winnr) . '%)'
+  let l:contents .= dkoline#Mode(l:view.winnr)
+
+  " Restore color to ensure parts aren't hidden on inactive buffers
+  let l:contents .= '%#StatusLine#'
 
   " Filebased
-  let l:ft = dkoline#Filetype(l:bufnr)
   let l:contents .= dkoline#Format(
-        \   dkoline#Filetype(l:bufnr),
-        \   (dkoline#If({ 'winnr': l:winnr }, l:x)
-        \     ? '%#dkoStatusValue#' : '%#StatusLineNC#' )
-        \ )
+        \ dkoline#Filetype(l:view.ft),
+        \ dkoline#ActiveColor(l:view, '%#dkoStatusKey#'))
 
-  let l:maxwidth = l:ww - 4 - len(l:ft) - 16
-  let l:maxwidth = l:maxwidth > 0 ? l:maxwidth : 48
+  " Parent dir and filename
   let l:contents .= dkoline#Format(
-        \   dkoline#TailDirFilename(l:bufnr, l:cwd),
-        \   '%0.' . l:maxwidth . '('
-        \     . (dkoline#If({ 'winnr': l:winnr }, l:x)
-        \       ? '%#StatusLine#'
-        \       : '%#StatusLineNC#'),
-        \   '%)'
-        \ )
-  let l:contents .= dkoline#Format(dkoline#Dirty(l:bufnr), '%#DiffAdded#')
+        \ dkoline#TailDirFilename(l:view),
+        \ dkoline#ActiveColor(l:view, '%#StatusLine#'))
+  let l:contents .= dkoline#Format(
+        \ dkoline#Dirty(l:view.bufnr),
+        \ dkoline#ActiveColor(l:view, '%#DiffAdded#'))
 
   " Toggleable
-  if !has('nvim')
-    let l:contents .= dkoline#Format(dkoline#Paste(), '%#DiffText#')
-  endif
+  let l:contents .= dkoline#Format(
+        \ has('nvim') ? dkoline#Paste() : '',
+        \ dkoline#ActiveColor(l:view, '%#DiffText#'))
 
-  let l:contents .= dkoline#Format(dkoline#Readonly(l:bufnr), '%#dkoLineImportant#')
+  let l:contents .= dkoline#Format(
+        \ dkoline#Readonly(l:view.bufnr),
+        \ dkoline#ActiveColor(l:view, '%#dkoLineImportant#'))
 
   " ==========================================================================
   " Right side
@@ -129,20 +97,17 @@ function! dkoline#GetStatusline(winnr) abort
 
   let l:contents .= '%*%='
 
-  " Tagging
-  let l:contents .= dkoline#Format(
-        \ dkoline#If({
-        \   'winnr': l:winnr,
-        \   'normal': 1,
-        \ }, l:x) ? dkoline#GutentagsStatus() : '',
-        \ '%#dkoStatusTransient#')
-
   " Linting
+  if dkoplug#IsLoaded('coc.nvim')
+    let l:contents .= dkoline#CocDiagnostics(l:view)
+  endif
   if dkoplug#IsLoaded('neomake') && exists('*neomake#GetJobs')
-    let l:contents .= dkoline#Neomake(l:winnr, l:bufnr)
+    let l:contents .= dkoline#Neomake(l:view)
   endif
 
-  let l:contents .= dkoline#Format(dkoline#Ruler(), '%#dkoStatusItem#')
+  let l:contents .= dkoline#Format(
+        \ dkoline#Ruler(),
+        \ dkoline#ActiveColor(l:view, '%#dkoStatusItem#'))
 
   return l:contents
 endfunction
@@ -151,6 +116,8 @@ endfunction
 " Output functions
 " ============================================================================
 
+" Display an atom if not empty with prefix/suffix
+"
 " @param {String} content
 " @param {String} [before]
 " @param {String} [after]
@@ -162,22 +129,11 @@ function! dkoline#Format(...) abort
   return empty(l:content) ? '' : l:before . l:content . l:after
 endfunction
 
-function! dkoline#If(conditions, values) abort
-  if has_key(a:conditions, 'winnr')
-    if winnr() != a:conditions.winnr | return 0 | endif
-  endif
-
-  if has_key(a:conditions, 'ww')
-    if a:values.ww < a:conditions.ww | return 0 | endif
-  endif
-
-  if has_key(a:conditions, 'normal')
-    if !getbufvar(a:values.bufnr, '&buflisted') | return 0 | endif
-  endif
-
-  return 1
+function! dkoline#ActiveColor(view, color) abort
+  return a:view.winnr == winnr() ? a:color : '%#StatusLineNC#'
 endfunction
 
+" @param {Number} winnr
 " @return {String}
 function! dkoline#Mode(winnr) abort
   " blacklist
@@ -186,6 +142,8 @@ function! dkoline#Mode(winnr) abort
   let l:modeflag = mode()
   if a:winnr != winnr()
     let l:modeflag = ' '
+  elseif l:modeflag ==# 'c'
+    let l:modecolor = '%#DiffDelete#'
   elseif l:modeflag ==# 'i'
     let l:modecolor = '%#dkoStatusItem#'
   elseif l:modeflag ==# 'R'
@@ -213,67 +171,37 @@ function! dkoline#Readonly(bufnr) abort
   return getbufvar(a:bufnr, '&readonly') ? ' ʀ ' : ''
 endfunction
 
-" Ignore some filetypes
-"
-" @param {Int} bufnr
+" @param {String} ft
 " @return {String}
-function! dkoline#Filetype(bufnr) abort
-  let l:ft = getbufvar(a:bufnr, '&filetype')
-  return empty(l:ft) || index([
-        \   'javascript',
-        \   'java',
-        \   'vim',
-        \ ], l:ft) > -1
-        \ ? ''
-        \ : ' ' . l:ft . ' '
-endfunction
-
-" File path of buffer, or just the helpfile name if it is a help file
-"
-" @param {Int} bufnr
-" @param {String} path
-" @return {String}
-function! dkoline#RelativeFilepath(bufnr, path) abort
-  if dko#IsNonFile(a:bufnr)
-    return ''
-  endif
-
-  let l:filename = bufname(a:bufnr)
-  if empty(l:filename)
-    let l:contents = '[No Name]'
-  else
-    let l:contents = dko#IsHelp(a:bufnr)
-          \ ? '%t'
-          \ : fnamemodify(substitute(l:filename, a:path, '.', ''), ':~:.')
-  endif
-
-  return ' ' . l:contents . ' '
+function! dkoline#Filetype(ft) abort
+  return empty(a:ft) ? '' : ' ' . a:ft . ' '
 endfunction
 
 " Show buffer's filename and immediate parent directory
 "
-" @param {Int} bufnr
-" @param {String} cwd
+" @param {Dict} view
 " @return {String}
-function! dkoline#TailDirFilename(bufnr, cwd) abort
-  if dko#IsNonFile(a:bufnr)
+function! dkoline#TailDirFilename(view) abort
+  if dko#IsNonFile(a:view.bufnr)
     return ''
   endif
 
-  let l:filename = bufname(a:bufnr)
-  if empty(l:filename)
-    let l:contents = '[No Name]'
-  else
-    if dko#IsHelp(a:bufnr)
-      let l:contents = '%t'
-    else
-      let l:parent_dir = fnamemodify(l:filename, ':h:t')
-      let l:parent_dir = l:parent_dir !=# '.' ? l:parent_dir : fnamemodify(a:cwd, ':t')
-      let l:contents = l:parent_dir . '/' . fnamemodify(l:filename, ':t')
-    endif
+  if empty(a:view.bufname)
+    return ' ᴜɴɴᴀᴍᴇᴅ '
   endif
 
-  return ' ' . l:contents . ' '
+  if dko#IsHelp(a:view.bufnr)
+    return ' ' . a:view.bufname . ' '
+  endif
+
+  let l:parent0 = fnamemodify(a:view.bufname, ':p:h:t')
+  let l:parent1 = fnamemodify(a:view.bufname, ':p:h:h:t')
+  let l:parent2 = fnamemodify(a:view.bufname, ':p:h:h:h:t')
+  let l:filename = fnamemodify(a:view.bufname, ':t')
+  return ' ' . substitute(
+        \   join([ l:parent2, l:parent1, l:parent0, l:filename ], '/'),
+        \   '//', '', 'g'
+        \ ) . ' '
 endfunction
 
 " @param {Int} bufnr
@@ -282,57 +210,39 @@ function! dkoline#Dirty(bufnr) abort
   return getbufvar(a:bufnr, '&modified') ? ' + ' : ''
 endfunction
 
-" @return {String}
-function! dkoline#Anzu() abort
-  if !exists('*anzu#search_status')
-    return ''
-  endif
-
-  let l:anzu = anzu#search_status()
-  return empty(l:anzu)
-        \ ? ''
-        \ : ' %{anzu#search_status()} '
-endfunction
-
-" Use dko#ShortenPath conditionally
+" Get the git branch for the file in buffer
 "
-" @param {Int} bufnr
-" @param {String} path
-" @param {Int} max
+" @param {Dict} view
 " @return {String}
-function! dkoline#ShortPath(bufnr, path, max) abort
-  if dko#IsNonFile(a:bufnr)
-    return ''
-  endif
-  let l:path = dko#ShortenPath(a:path, a:max)
-  return empty(l:path)
+function! dkoline#GitBranch(view) abort
+  return dko#IsNonFile(a:view.bufnr)
+        \ || empty(getbufvar(a:view.bufnr, 'dko_branch'))
         \ ? ''
-        \ : l:path
+        \ : ' ' . getbufvar(a:view.bufnr, 'dko_branch') . ' '
 endfunction
 
-" Uses fugitive or gita to get cached branch name, or b:dko_branch
-"
-" @param {Int} bufnr
+" @param {Dict} view
 " @return {String}
-function! dkoline#GitBranch(bufnr) abort
-  return dko#IsNonFile(a:bufnr)
-        \ ? ''
-        \ : dkoplug#IsLoaded('gina.vim') ? ' ' . gina#component#repo#branch() . ' '
-        \ : dkoplug#IsLoaded('fugitive.vim') ? ' ' . fugitive#head(7) . ' '
-        \ : !empty(get(b:, 'dko_branch')) ? ' ' . b:dko_branch . ' '
-        \ : ''
+function! dkoline#CocDiagnostics(view) abort
+  if dko#IsNonFile(a:view.bufnr) | return '' | endif
+  let l:d = getbufvar(a:view.bufnr, 'coc_diagnostic_info')
+  return empty(l:d) ? '' :
+        \ dkoline#Format(
+        \   !l:d.error ? '' : ' ⚑' . l:d.error . ' ',
+        \   '%(%#dkoStatusError#', '%)') .
+        \ dkoline#Format(
+        \   !l:d.warning ? '' : ' ⚑' . l:d.warning . ' ',
+        \   '%(%#dkoStatusWarning#', '%)') .
+        \ dkoline#Format(
+        \   !l:d.information ? '' : ' ⚑' . l:d.information . ' ',
+        \   '%(%#dkoStatusInfo#', '%)') .
+        \ dkoline#Format(
+        \   !l:d.hint ? '' : ' ⚑' . l:d.hint . ' ',
+        \   '%(%#dkoStatusItem#', '%)')
 endfunction
 
-" @return {String}
-function! dkoline#GutentagsStatus() abort
-  if !exists('g:loaded_gutentags')
-    return ''
-  endif
-
-  let l:tagger = substitute(gutentags#statusline(''), '\[\(.*\)\]', '\1', '')
-  return empty(l:tagger)
-        \ ? ''
-        \ : ' ᴛ:' . l:tagger . ' '
+function! dkoline#CocStatus(view) abort
+  return get(g:, 'coc_status', '')
 endfunction
 
 " @return {string} job1,job2,job3
@@ -345,12 +255,13 @@ function! dkoline#NeomakeJobs(bufnr) abort
   return join(map(l:running_jobs, 'v:val.name'), ',')
 endfunction
 
-function! dkoline#Neomake(winnr, bufnr) abort
-  if !a:bufnr | return '' | endif
-  let l:result = neomake#statusline#get(a:bufnr, {
+" @param {Dict} view
+" @return {String}
+function! dkoline#Neomake(view) abort
+  let l:result = neomake#statusline#get(a:view.bufnr, {
         \   'format_running':         '%#dkoLineNeomakeRunning# ᴍ:'
-        \                             . dkoline#NeomakeJobs(a:bufnr) . ' ',
-        \   'format_loclist_ok':      '%#dkoStatusGood# ⚑ ',
+        \                             . dkoline#NeomakeJobs(a:view.bufnr) . ' ',
+        \   'format_loclist_ok':      '%#dkoStatusGood# ✓ ',
         \   'format_loclist_unknown': '',
         \   'format_loclist_type_E':  '%#dkoStatusError# ⚑{{count}} ',
         \   'format_loclist_type_W':  '%#dkoStatusWarning# ⚑{{count}} ',
@@ -368,8 +279,34 @@ endfunction
 " Utility
 " ============================================================================
 
+" Get cached properties for a window. Cleared on status line refresh
+"
+" @param {Int} winnr
+" @return {Dict} properties derived from the active window
+function! dkoline#GetView(winnr) abort
+  let l:cached_view = get(s:view_cache, a:winnr, {})
+  if !empty(l:cached_view)
+    return l:cached_view
+  endif
+  let l:bufnr = winbufnr(a:winnr)
+  let l:bufname = bufname(l:bufnr)
+  let l:cwd = has('nvim') ? getcwd(a:winnr) : getcwd()
+  let l:ft = getbufvar(l:bufnr, '&filetype')
+  let l:ww = winwidth(a:winnr)
+  let s:view_cache[a:winnr] = {
+        \   'winnr': a:winnr,
+        \   'bufnr': l:bufnr,
+        \   'bufname': l:bufname,
+        \   'cwd': l:cwd,
+        \   'ft': l:ft,
+        \   'ww':  l:ww,
+        \ }
+  return s:view_cache[a:winnr]
+endfunction
+
 function! dkoline#Init() abort
-  set statusline=%!dkoline#GetStatusline(1)
+  call dkoline#SetStatus(winnr())
+
   call dkoline#RefreshTabline()
   set showtabline=2
 
@@ -380,46 +317,46 @@ function! dkoline#Init() abort
 
   " BufWinEnter will initialize the statusline for each buffer
   let l:refresh_hooks = [
-        \   'BufEnter',
-        \   'BufWinEnter',
+        \   'BufDelete *',
+        \   'BufWinEnter *',
+        \   'BufWritePost *',
+        \   'BufEnter *',
+        \   'FileType *',
+        \   'WinEnter *',
+        \   'User CocDiagnosticChange',
+        \   'User NeomakeCountsChanged',
+        \   'User NeomakeFinished',
         \ ]
         " \   'SessionLoadPost',
         " \   'TabEnter',
         " \   'VimResized',
-        " \   'WinEnter',
-        " \   'FileType',
         " \   'FileWritePost',
         " \   'FileReadPost',
-        " \   'BufEnter' for different buffer
-        " \   'CursorMoved' is for updating anzu search status accurately,
-        "     using Plug mapping instead.
+  if has('nvim')
+    call add(l:refresh_hooks, 'DirChanged *')
+  endif
 
-  let l:user_refresh_hooks = [
-        \   'GutentagsUpdating',
-        \   'GutentagsUpdated',
-        \   'NeomakeFinished',
+  let l:tab_refresh_hooks = [
+        \   'User CocStatusChange',
         \ ]
-  " 'NeomakeCountsChanged',
+  if has('nvim')
+    call add(l:tab_refresh_hooks, 'DirChanged *')
+  endif
 
   augroup dkoline
     autocmd!
-    if !empty(l:refresh_hooks)
-      execute 'autocmd dkoline ' . join(l:refresh_hooks, ',') . ' *'
-            \ . ' call dkoline#RefreshStatus()'
-    endif
-    if !empty(l:user_refresh_hooks)
-      execute 'autocmd dkoline User ' . join(l:user_refresh_hooks, ',')
-            \ . ' call dkoline#RefreshStatus()'
-    endif
+    for l:hook in l:tab_refresh_hooks
+      execute 'autocmd ' . l:hook . ' call dkoline#RefreshTabline()'
+    endfor
+    for l:hook in l:refresh_hooks
+      execute 'autocmd ' . l:hook . ' call dkoline#SetStatus(winnr())'
+    endfor
   augroup END
 endfunction
 
-function! dkoline#RefreshStatus() abort
-  " let g:dkoline#refresh += 1
-  for l:winnr in range(1, winnr('$'))
-    let l:fn = '%!dkoline#GetStatusline(' . l:winnr . ')'
-    call setwinvar(l:winnr, '&statusline', l:fn)
-  endfor
+function! dkoline#SetStatus(winnr) abort
+  let s:view_cache = {}
+  exec 'setlocal statusline=%!dkoline#GetStatusline(' . a:winnr . ')'
 endfunction
 
 function! dkoline#RefreshTabline() abort

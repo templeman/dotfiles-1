@@ -2,40 +2,44 @@
 
 # Used by /bin/sh shell
 # Sourced on login shells only
-# Sourced by ~/.bash_profile if in a BASH login shell
-# Sourced by $ZDOTDIR/.zprofile if in a ZSH login shell
-# NOTE: macOS always starts a login shell
+# Sourced by bash/dot.bashrc if in a BASH login shell
+# Sourced by zsh/.zshrc if in a ZSH login shell
+#
+# This file is sourced manually in the .*rc file so it loads when running
+# a nested shell, e.g. zsh from within bash
 
-DKO_SOURCE="${DKO_SOURCE} -> dot.profile {"
-[ -z "$DKO_INIT" ] && . "${HOME}/.dotfiles/shell/init.sh"
+export DKO_SOURCE="${DKO_SOURCE} -> dot.profile {"
+[ -z "$DKO_INIT" ] && {
+  export DKO_INIT=1
+  . "${HOME}/.dotfiles/shell/vars.sh"
+  . "${DOTFILES}/shell/path.sh" # depends on vars
 
-# ==============================================================================
-# env management -- Node, PHP, Python, Ruby - These add to path
-# ==============================================================================
+  # ============================================================================
+  # Local path -- everything after the path setting this may use "command" to
+  # check for presence
+  # ============================================================================
 
-. "${DOTFILES}/lib/helpers.sh"
-. "${DOTFILES}/shell/go.sh"
-. "${DOTFILES}/shell/java.sh"
-. "${DOTFILES}/shell/node.sh"
-. "${DOTFILES}/shell/php.sh"
-. "${DOTFILES}/shell/python.sh"
-. "${DOTFILES}/shell/ruby.sh"
+  PATH="${HOME}/.local/bin:${PATH}"
+  PATH="${DOTFILES}/bin:${PATH}"
+
+  # ==========================================================================
+  # os config
+  #
+  # OS specific overrides, OSTYPE is not POSIX so these won't run except in
+  # modern shells
+  #
+  # @TODO split out interactive parts in these files?
+  # ==========================================================================
+
+  case "$DOTFILES_OS" in
+  Darwin) . "${DOTFILES}/shell/os-darwin.zsh" ;;
+  Linux) . "${DOTFILES}/shell/os-linux.sh" ;;
+  esac
+}
+
+tty -s && . "${DOTFILES}/shell/interactive.sh"
 
 # ============================================================================
-# Local path
-# ============================================================================
 
-PATH="${HOME}/.local/bin:${PATH}"
-PATH="${DOTFILES}/bin:${PATH}"
-export PATH
-
-# ============================================================================
-# POSIX sh support
-# ============================================================================
-
-[ -n "$DKO_SH" ] && . "${DOTFILES}/shell/interactive.sh"
-
-# ============================================================================
-
-export DKO_SOURCE="${DKO_SOURCE} }"
-# vim: ft=sh :
+DKO_SOURCE="${DKO_SOURCE} }"
+# vim: ft=sh

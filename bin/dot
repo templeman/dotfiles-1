@@ -5,7 +5,11 @@
 . "${DOTFILES}/lib/pretty.bash"
 
 [[ -d "$PYENV_ROOT" ]] && eval "$(pyenv init -)"
-[[ -n "$NVM_DIR" ]] && __dko_source "${NVM_DIR}/nvm.sh"
+[[ -s "${NVM_DIR}/nvm.sh" ]] && __dko_source "${NVM_DIR}/nvm.sh"
+
+# ==============================================================================
+
+latest_xcode_major="11"
 
 # ==============================================================================
 # Command functions
@@ -41,6 +45,8 @@ __dko_dotfiles__usage() {
     gem         -- update rubygems and global gems for current ruby
     go          -- golang
     pip         -- update all versions of pip (OS dependent)
+    pipx        -- update pipx-installed cli tools
+    neovim      -- update neovim to latest prerelease build
     neopy       -- update neovim pyenvs
     wpcs        -- update the WordPress-Coding-Standards git repo in src/wpcs
 
@@ -52,7 +58,7 @@ __dko_dotfiles__usage() {
 
   System: macOS/OS X
     brew        -- homebrew packages
-    mac         -- repair permissions and check software updates
+    mac         -- software updates
 '
 }
 
@@ -66,7 +72,7 @@ __dko_dotfiles__cd() {
 __dko_dotfiles__update() {
   __dko_status "Updating dotfiles"
 
-  local lockfile="${LDOTDIR}/dotfiles.lock"
+  local lockfile="${HOME}/.local/dotfiles.lock"
   # shellcheck disable=SC2064
   trap "rm -f \"$lockfile\"" EXIT
   touch "$lockfile"
@@ -96,50 +102,34 @@ __dko_dotfiles__update_secret() {
 __dko_dotfiles__update_daily() {
   __dko_dotfiles__update_secret
 
-  if [[ -x "/usr/local/opt/fzf/install" ]] || [[ -d "${HOME}/.fzf" ]]; then
+  if [ -x /usr/bin/fzf ]; then
+    __dko_ok "fzf installed by system package manager"
+  elif [[ -x "${DKO_BREW_PREFIX}/opt/fzf/install" ]] ||
+    [[ -d "${XDG_CONFIG_HOME}/fzf" ]] ||
+    [[ -d "${HOME}/.fzf" ]]; then
     __dko_dotfiles__update_fzf
   else
     __dko_warn "fzf is not installed"
   fi
 
-  if __dko_dotfiles__node__require_nvm --silent; then
-    __dko_dotfiles__node__update_nvm
-  else
-    __dko_warn "NVM not found, skipping update NVM"
-  fi
+  __dko_dotfiles__node__require_nvm && __dko_dotfiles__node__update_nvm
 
-  if __dko_dotfiles__go__require_go --silent; then
-    __dko_dotfiles__go__update_go_packages
-  else
-    __dko_warn "Go not found, skipping update Go dependencies"
-  fi
+  __dko_dotfiles__go__require_go && __dko_dotfiles__go__update_go_packages
 
-  if ! __dko_dotfiles__ruby__require_chruby --silent; then
-    __dko_warn "Chruby not found, skipping update ruby gems"
-  elif ! __dko_dotfiles__ruby__require_rubygems; then
-    __dko_warn "Rubygems not found, skipping update ruby gems"
-  else
-    __dko_dotfiles__ruby__update_gems
-  fi
+  __dko_dotfiles__ruby__require_chruby &&
+    __dko_dotfiles__ruby__require_rubygems && __dko_dotfiles__ruby__update_gems
 
-  if ! __dko_dotfiles__php__require_composer --silent; then
-    __dko_warn "Composer not found, skipping update composer and packages"
-  else
+  __dko_dotfiles__php__require_composer && {
     __dko_dotfiles__php__update_composer
-    if __dko_dotfiles__php__require_phpcs --silent; then
-      __dko_dotfiles__php__update_wpcs
-    else
-      __dko_warn "PHPCS not found, skipping update WPCS"
-    fi
-  fi
+    __dko_dotfiles__php__require_phpcs && __dko_dotfiles__php__update_wpcs
+  }
 
-  if ! __dko_has "pyenv"; then
-    __dko_warn "pyenv not found"
-  else
+  __dko_has "pyenv" && {
     __dko_dotfiles__py__update_pyenv
-    __dko_dotfiles__py__update_pip "pip"
+    __dko_dotfiles__py__update_pip
+    __dko_dotfiles__py__update_pipx
     __dko_dotfiles__py__update_neovim_python
-  fi
+  }
 }
 
 # ------------------------------------------------------------------------------
@@ -150,7 +140,8 @@ __dko_dotfiles__pyenv_system() {
   # switch to brew's python (fallback to system if no brew python)
   __dko_has "pyenv" &&
     __dko_status "Switching to system python to upgrade brew packages" &&
-    pyenv shell system || exit 1
+    pyenv shell system || exit 1 &&
+    python --version
 }
 
 # probably don't need this as long as running updates in subshells
@@ -167,9 +158,11 @@ __dko_dotfiles__pyenv_global() {
 __dko_dotfiles__update_fzf() {
   local installer
 
-  if [[ -x "/usr/local/opt/fzf/install" ]]; then
+  if [ -x /usr/bin/fzf ]; then
+    __dko_ok "fzf installed by system package manager"
+  elif [[ -x "${DKO_BREW_PREFIX}/opt/fzf/install" ]]; then
     __dko_status "fzf was installed via brew, re-running installer"
-    installer="/usr/local/opt/fzf/install"
+    installer="${DKO_BREW_PREFIX}/opt/fzf/install"
   elif [[ -d "${HOME}/.fzf" ]]; then
     __dko_status "fzf was installed in ~/.fzf"
     installer="${HOME}/.fzf/install"
@@ -187,7 +180,8 @@ __dko_dotfiles__update_fzf() {
   # Install/update shell extensions
   if [[ -n "$installer" ]]; then
     __dko_status "Updating fzf shell extensions"
-    "$installer" --bin || return 1
+    "$installer" --xdg --key-bindings --completion --no-update-rc --64 ||
+      return 1
   fi
 }
 
@@ -273,10 +267,19 @@ __dko_dotfiles__node__require_nvm() {
     return 1
   fi
 
-  if (($# == 0)) && [[ ! -d "$NVM_DIR" ]]; then
+  if (($# == 0)) && [[ ! -d "${NVM_DIR}/.git" ]]; then
     __dko_status "Installing nvm"
-    git clone https://github.com/creationix/nvm.git "$NVM_DIR" ||
+    rm "${NVM_DIR}/default-packages"
+
+    git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR" ||
       { __dko_err "Could not install nvm" && return 1; }
+    pushd "$NVM_DIR" || return 1
+    git checkout "$(git describe --abbrev=0 --tags --match "v[0-9]*" "$(git rev-list --tags --max-count=1)")"
+    popd || return 1
+
+    dko-symlink "node/default-packages" \
+      "${NVM_DIR}/default-packages"
+    [[ -s "${NVM_DIR}/nvm.sh" ]] && __dko_source "${NVM_DIR}/nvm.sh"
   fi
 }
 
@@ -332,24 +335,29 @@ __dko_dotfiles__node__update_nvm() {
 
   (
     cd -- "$NVM_DIR" || exit 1
+    git fetch --tags origin || {
+      __dko_err "Could not fetch tags"
+      exit 1
+    }
+    readonly previous_nvm="v$(nvm --version)"
+    readonly latest_nvm="$(
+      git describe --abbrev=0 --tags --match "v[0-9]*" \
+        "$(git rev-list --tags --max-count=1)"
+    )"
 
-    __dko_status "Updating nvm"
-    readonly previous_nvm="$(git describe --abbrev=0 --tags)"
-
-    __dko_status_ "Found nvm ${previous_nvm}"
-    { git checkout master && git pull --tags; } ||
-      { __dko_err "Could not fetch" && exit 1; }
-    readonly latest_nvm="$(git describe --abbrev=0 --tags)"
     # Already up to date
-    [[ "$previous_nvm" == "$latest_nvm" ]] &&
-      { __dko_ok "Already have nvm ${latest_nvm}" && exit 0; }
-
-    __dko_status "Fast-forwarding to nvm ${latest_nvm}"
-    git checkout --quiet --progress "$latest_nvm" ||
-      { __dko_err "Could not fast-forward" && exit 1; }
-
-    exit 0
+    if [[ "$previous_nvm" != "$latest_nvm" ]]; then
+      __dko_status "Updating nvm from ${previous_nvm} to ${latest_nvm}"
+      git checkout --quiet --progress "$latest_nvm" || {
+        __dko_err "Could not fast-forward"
+        exit 1
+      }
+    else
+      __dko_ok "Using latest nvm ${previous_nvm}"
+    fi
   ) || return 1
+
+  . "${NVM_DIR}/nvm.sh"
 }
 
 # ----------------------------------------------------------------------------
@@ -370,31 +378,48 @@ __dko_dotfiles__py__update_pyenv() {
 
 # $1 pip command (e.g. `pip2`)
 __dko_dotfiles__py__update_pip() {
-  local pip_command=${1:-pip}
-  __dko_status "Updating $pip_command"
-  ! __dko_has "$pip_command" &&
-    __dko_warn "${pip_command} not found" && return 1
-  "$pip_command" install --upgrade setuptools || return 1
-  "$pip_command" install --upgrade pip || return 1
-  "$pip_command" install --upgrade \
+  pyenv version | grep -q system && __dko_warn "Not in a pyenv" && return 1
+
+  __dko_status "Updating pip"
+  ! python -m pip --version >/dev/null 2>&1 &&
+    __dko_warn "pip not found" && return 1
+  python -m pip install --upgrade setuptools || return 1
+  python -m pip install --upgrade wheel || return 1
+  python -m pip install --upgrade pip || return 1
+  python -m pip install --upgrade \
     --requirement "${DOTFILES}/python/requirements.txt"
+}
+
+__dko_dotfiles__py__update_pipx() {
+  __dko_status "Updating pipx tools"
+  ! __dko_has pipx &&
+    __dko_warn "pipx not found" && return 1
+  pipx upgrade-all
+}
+
+__dko_dotfiles__py__update_neovim() {
+  if __dko_has "brew"; then
+    brew install --force --verbose --HEAD neovim
+  elif __dko_has "pamac"; then
+    pamac build neovim-git
+  fi
+  local res=$?
+  [ $res -ne 0 ] &&
+    __dko_err "Could not update to latest neovim prerelease build" &&
+    return 1
+
+  nvim --version
+  __dko_ok "Updated to latest neovim prerelease build"
 }
 
 __dko_dotfiles__py__update_neovim_python() {
   ! __dko_has "pyenv" &&
     __dko_err "pyenv is not installed" && return 1
 
-  __dko_status "Updating neovim2" &&
-    pyenv activate neovim2 &&
-    __dko_dotfiles__py__update_pip &&
-    pip install --upgrade neovim &&
-    pip install --upgrade pynvim
-
   __dko_status "Updating neovim3" &&
     pyenv activate neovim3 &&
     __dko_dotfiles__py__update_pip &&
-    pip install --upgrade neovim &&
-    pip install --upgrade pynvim
+    python -m pip install --upgrade pynvim
 
   pyenv deactivate
 }
@@ -406,7 +431,7 @@ __dko_dotfiles__py__update_neovim_python() {
 # pass any arg to silence
 __dko_dotfiles__php__require_composer() {
   __dko_has "composer" && return 0
-  __dko_warn "composer is not installed"
+  (( $# == 0 )) && __dko_warn "composer is not installed"
   return 1
 }
 
@@ -414,7 +439,7 @@ __dko_dotfiles__php__update_composer() {
   __dko_status "Updating composer"
   __dko_dotfiles__php__require_composer || return 1
 
-  if [[ -x "/usr/local/bin/composer" ]]; then
+  if [[ -x "${DKO_BREW_PREFIX}/bin/composer" ]]; then
     __dko_ok "composer was installed via brew (yay)"
   else
     __dko_status_ "Updating composer itself"
@@ -436,8 +461,10 @@ __dko_dotfiles__php__update_composer() {
 # pass any arg to silence
 __dko_dotfiles__php__require_phpcs() {
   __dko_has "phpcs" && return 0
-  __dko_warn "phpcs is not installed. Install via composer global require"
-  __dko_warn_ "and run again, or set installed_paths manually"
+  (( $# == 0 )) && {
+    __dko_warn "phpcs is not installed. Install via composer global require"
+    __dko_warn_ "and run again, or set installed_paths manually"
+  }
   return 1
 }
 
@@ -532,10 +559,6 @@ __dko_dotfiles__linux__arch__update() {
   if __dko_has "pacaur"; then
     # update system
     pacaur -Syu
-  elif __dko_has "yaourt"; then
-    # -Sy         -- get new file list
-    yaourt --sync --refresh
-    yaourt -Syua
   elif __dko_has "aura"; then
     aura -Syua
   else
@@ -577,16 +600,20 @@ __dko_dotfiles__darwin__update_mac() {
 
 # pass any arg to silence
 __dko_dotfiles__darwin__require_latest_xcode() {
-  local latest_xcode="10.1"
-  xcodebuild -version | grep -q "$latest_xcode" && return 0
-  __dko_err "Using an outdated Xcode, please install/switch to latest version."
+  local v
+  v="$(xcodebuild -version | awk 'NR==1{print $2}')"
+  if [[ "$v" == "${latest_xcode_major}."* ]]; then
+    __dko_ok "Found Xcode ${v}"
+    return 0
+  fi
+  __dko_err "Found Xcode ${v}, please install ${latest_xcode_major}.x.x"
   return 1
 }
 
 # pass any arg to silence
 __dko_dotfiles__darwin__require_brew() {
   __dko_has "brew" && return 0
-  __dko_warn "Homebrew is not installed"
+  (( $# == 0 )) && __dko_warn "Homebrew is not installed"
   return 1
 }
 
@@ -601,11 +628,11 @@ __dko_dotfiles__darwin__update_brew() {
     # vendor bundle that will cause use of local gems
     __dko_dotfiles__cd || exit 1
     __dko_dotfiles__pyenv_system
+
     # Brew some makefiles like macvim use tput for output so need to reset
     # from xterm-256color-italic I use in iterm
-    TERM="xterm-256color"
 
-    brew update
+    TERM="xterm-256color" brew update
 
     # check if needed
     local outdated
@@ -618,7 +645,7 @@ __dko_dotfiles__darwin__update_brew() {
 
     # Upgrade remaining
     __dko_status "Upgrading packages"
-    brew upgrade
+    TERM="xterm-256color" brew upgrade
     __dko_dotfiles__darwin__update_brew_postupgrade "$outdated"
   ) && {
     __dko_status "Clean up old versions and prune dead symlinks"
@@ -653,14 +680,14 @@ __dko_dotfiles__darwin__update_brew_postupgrade() {
     readonly phpimagick="$(brew ls | grep 'php.*imagick')"
     if [[ -n "$phpimagick" ]]; then
       __dko_status "Rebuilding ${phpimagick} for new imagemagick"
-      brew reinstall --build-from-source "$phpimagick"
+      TERM="xterm-256color" brew reinstall --build-from-source "$phpimagick"
     fi
   fi
 
   # Detect if brew's python3 (not pyenv) was outdated
   if grep -q "python3" <<<"$outdated"; then
     __dko_status "Python3 was outdated, upgrading python3"
-    brew upgrade python3
+    TERM="xterm-256color" brew upgrade python3
   fi
 
   __dko_ok "Post-upgrade complete"
@@ -685,15 +712,17 @@ __dko_dotfiles() {
   go) __dko_dotfiles__go__update_go_packages ;;
   node) __dko_dotfiles__update_node "$2" ;;
   nvm) __dko_dotfiles__node__update_nvm ;;
-  pip) __dko_dotfiles__py__update_pip "pip" ;;
+  pip) __dko_dotfiles__py__update_pip ;;
+  pipx) __dko_dotfiles__py__update_pipx ;;
   pyenv) __dko_dotfiles__py__update_pyenv ;;
+  neovim) __dko_dotfiles__py__update_neovim ;;
   neopy) __dko_dotfiles__py__update_neovim_python ;;
   wpcs) __dko_dotfiles__php__update_wpcs ;;
 
   *)
     case "$OSTYPE" in
     linux*) __dko_dotfiles__linux__update "$@" ;;
-    darwin*) __dko_dotfiles__darwin__update "$@" ;;
+    *arwin*) __dko_dotfiles__darwin__update "$@" ;;
     esac
     ;;
   esac

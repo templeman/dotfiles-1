@@ -6,19 +6,15 @@
 #
 
 [[ -n "$TMUX" ]] && DKO_SOURCE="${DKO_SOURCE} -> ____TMUX____ {"
-DKO_SOURCE="${DKO_SOURCE} -> .bashrc {"
-
-# Just in case...
-[[ -z "$DOTFILES" ]] && . "${HOME}/.dotfiles/shell/init.sh"
-
-. "${DOTFILES}/shell/dot.profile"
+export DKO_SOURCE="${DKO_SOURCE} -> .bashrc {"
 
 # Non-interactive? Some shells/OS will source bashrc and bash_profile out of
 # order or skip one entirely
-[[ -z "$PS1" ]] && export DKO_SOURCE="${DKO_SOURCE} }" && return
+[[ -z "$PS1" ]] && DKO_SOURCE="${DKO_SOURCE} }" && return
 
-# Interactive -- continue
-. "${DOTFILES}/shell/interactive.sh"
+# dot.bashprofile was sourced instead, which sourced dot.bashrc, so we need
+# to define stuff here
+. "${HOME}/.dotfiles/shell/dot.profile"
 
 # ============================================================================
 # BASH settings
@@ -60,7 +56,7 @@ __dko_source "${NVM_DIR}/bash_completion"
 
 # Enable tab completion for `g` by marking it as an alias for `git`
 type _git &>/dev/null \
-  && [[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]] \
+  && [[ -f "${DKO_BREW_PREFIX}/etc/bash_completion.d/git-completion.bash" ]] \
   && complete -o default -o nospace -F _git g
 
 # WP-CLI Bash completions
@@ -70,9 +66,7 @@ __dko_source "${WP_CLI_CONFIG_PATH}/vendor/wp-cli/wp-cli/utils/wp-completion.bas
 # Plugins
 # ==============================================================================
 
-__dko_has "fasd" && eval "$(fasd --init auto)"
-
-__dko_source "${HOME}/.fzf.bash"
+__dko_source "${XDG_CONFIG_HOME}/fzf/fzf.bash"
 
 # ============================================================================
 # Prompt -- needs to be after plugins since it might use them
@@ -87,9 +81,5 @@ __dko_source "${HOME}/.fzf.bash"
 . "${DOTFILES}/shell/after.sh"
 __dko_source "${LDOTDIR}/bashrc"
 
-export DKO_SOURCE="${DKO_SOURCE} }"
-# vim: ft=sh :
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+DKO_SOURCE="${DKO_SOURCE} }"
+# vim: ft=sh

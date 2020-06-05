@@ -13,39 +13,33 @@ scriptencoding utf-8
 " Settings vars
 " ============================================================================
 
-" no longer using comma so I can reverse repeat fFtT searches
-" no longer using \ so I can type escaped chars :/
-" needs to be before bundle so plugins map correctly
 let g:mapleader = "\<Space>"
 
-" Just for debugging
 let g:dko_rtp_original = &runtimepath
 
 " flags
-let g:dko_tab_completion = 0 " use (s-)tab to navigate PUM?
+let g:dko_is_iterm = $TERM_PROGRAM ==# 'iTerm.app'
 
 " Plugin settings
-let g:dko_use_completion = has('nvim-0.2.2') && has('python3')
-let g:dko_use_js_langserver = executable('javascript-typescript-stdio')
-let g:dko_use_tern_lsp = g:dko_use_completion && executable('npm')
-let g:dko_use_composer = g:dko_use_completion && executable('composer')
+let g:dko_autoinstall_vim_plug = executable('git')
+let g:dko_use_completion = has('nvim-0.3') && executable('node')
+let g:dko_use_fzf = v:version >= 704 && exists('&autochdir')
+let g:dko_fzf_float = 0 && has('nvim-0.4')
 
-" This must be a g: variable to access with the Plug command
-let g:fzf_dir = isdirectory('/usr/local/opt/fzf')
-      \ ? '/usr/local/opt/fzf'
-      \ : isdirectory(expand('~/.fzf'))
-      \ ? '~/.fzf'
-      \ : ''
+" Fallback for vims with no env access like Veonim
+let g:vdotdir = empty($VDOTDIR) ? expand('$HOME/.vim') : $VDOTDIR
 
 " ============================================================================
 " My defaults
 " May be overridden by **/plugins, after/plugins and **/ftplugins
 " ============================================================================
 
-set modeline
+" Only check one line
+if exists('+modelines') | set modelines=1 | endif
+" Prior versions are super dangerous
+if !has('patch-8.1.1365') && !has('nvim-0.3.6') | set nomodeline | endif
 
-" Pretty quick... errorprone on old vim so only apply to nvim
-if has('nvim') | set updatetime=250 | endif
+if exists('+pyxversion') && has('python3') | set pyxversion=3 | endif
 
 " ----------------------------------------------------------------------------
 " Display
@@ -73,31 +67,19 @@ set colorcolumn=+3
 set colorcolumn+=120
 set cursorline
 
-set synmaxcol=512                     " don't syntax highlight long lines
-
-if exists('+signcolumn') | set signcolumn=yes | endif
-
 set background=dark
 
-" ------------------------------------
-" Tab line
-" ------------------------------------
+set synmaxcol=512                     " don't syntax highlight long lines
+
+if exists('+signcolumn')
+  let &signcolumn = has('nvim-0.4') ? 'auto:3' : 'yes'
+endif
 
 set showtabline=0                     " start OFF, toggle =2 to show tabline
-
-" ------------------------------------
-" Status line
-" ------------------------------------
-
 set laststatus=2                      " always show all statuslines
-
-" ------------------------------------
-" Command line
-" ------------------------------------
 
 " This is slow on some terminals and often gets hidden by msgs so leave it off
 set noshowcmd
-
 set noshowmode                        " don't show -- INSERT -- in cmdline
 
 " ----------------------------------------------------------------------------
@@ -116,16 +98,15 @@ set ttimeout
 " ----------------------------------------------------------------------------
 
 set browsedir=buffer                  " browse files in same dir as open file
-set wildmenu                          " Enhanced command line completion.
-set wildmode=list:longest,full        " Complete files using a menu AND list
+set wildmode=list:longest,full
 let &wildignorecase = v:version >= 704
 
 " wildignore prevents things from showing up in cmd completion
 " It's for things you'd NEVER open in Vim, like caches and binary files
-" @see https://github.com/tpope/vim-fugitive/issues/121#issuecomment-38720847
-" @see https://github.com/kien/ctrlp.vim/issues/63
-" @see https://github.com/tpope/vim-vinegar/issues/61#issuecomment-167432416
-" @see http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html#comment-1396330403
+" https://github.com/tpope/vim-fugitive/issues/121#issuecomment-38720847
+" https://github.com/kien/ctrlp.vim/issues/63
+" https://github.com/tpope/vim-vinegar/issues/61#issuecomment-167432416
+" http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html#comment-1396330403
 "
 " So don't do this! There are cases where you'd edit them or their contents
 "set wildignore+=.git
@@ -156,45 +137,18 @@ set wildignore+=*.swp,.lock,.DS_Store,._*,tags.lock
 " File saving
 " ----------------------------------------------------------------------------
 
-" reload files if they were edited elsewhere?
-set autoread
-au FocusGained * :checktime
-
 set fileformats=unix,mac,dos
 " Not modifiable if no window (e.g. resourcing vimrc)
 if !&modifiable | set fileformat=unix | endif
-
-" ----------------------------------------------------------------------------
-" shada
-" viminfo is in autoload/dko/old.vim
-" ----------------------------------------------------------------------------
-
-if has('shada')
-  " Bumped '100 to '1000 to save more previous files
-  " Bumped <50 to <100 to save more register lines
-  " Bumped s10 to s100 for to allow up to 100kb of data per item
-  set shada=!,'1000,<100,s100,h
-endif
-
-" ----------------------------------------------------------------------------
-" Temp dirs
-" ----------------------------------------------------------------------------
-
-" ----------------------------------------------------------------------------
-" Writing swaps
-" ----------------------------------------------------------------------------
 
 " If we have a swap conflict, FZF has issues opening the file (and doesn't
 " prompt correctly)
 set noswapfile
 
-" ----------------------------------------------------------------------------
-" Write backups
-" ----------------------------------------------------------------------------
-
 " Use backup files when writing (create new file, replace old one with new
 " one)
-set writebackup
+" Disabled for coc.nvim compat
+set nowritebackup
 " but do not leave around backup.xyz~ files after that
 set nobackup
 " backupcopy=yes is the default, just be explicit. We need this for
@@ -228,7 +182,6 @@ set undoreload=10000
 " Don't consider = symbol as part filename.
 set isfname-==
 
-set complete-=i                       " don't complete includes
 set complete-=t                       " don't complete tags
 set completeopt-=longest              " ncm2 requirement
 set completeopt-=preview              " don't open scratch (e.g. echodoc)
@@ -240,8 +193,9 @@ set completeopt+=menu,menuone         " show PUM, even for one thing
 " Message output on vim actions
 " ----------------------------------------------------------------------------
 
-set shortmess-=f                      " (file x of x) instead of just (x of x)
-set shortmess+=ilmnrxoOtWI
+" Some of these are the defaults, but explicitly match vim and nvim-4.0
+set shortmess-=f
+set shortmess+=ilmnrxoOtWIF
 " Disable "Pattern not found" messages
 if has('patch-7.4.314') | set shortmess+=c | endif
 
@@ -251,7 +205,6 @@ if has('patch-7.4.314') | set shortmess+=c | endif
 
 set splitbelow
 set splitright
-set fillchars=vert:│                  " Vertical sep between windows (unicode)
 
 set hidden                            " remember undo after quitting
 
@@ -261,11 +214,11 @@ set switchbuf=useopen
 
 set nostartofline                     " don't jump to col1 on switch buffer
 
-
 " ----------------------------------------------------------------------------
 " Code folding
 " ----------------------------------------------------------------------------
 
+set foldlevel=999                     " very high === all folds open
 set foldlevelstart=99                 " show all folds by default
 set nofoldenable
 
@@ -301,19 +254,17 @@ set diffopt+=iwhite                   " Ignore whitespace changes
 " ----------------------------------------------------------------------------
 
 set formatoptions=
-set formatoptions+=c                  " Auto-wrap comments using textwidth
 set formatoptions+=r                  " Continue comments by default
 set formatoptions-=o                  " do not continue comment using o or O
-set formatoptions+=q                  " continue comments with gq
 set formatoptions-=a                  " auto-gq on type in comments?
 set formatoptions+=n                  " Recognize numbered lists
 set formatoptions+=2                  " Use indent from 2nd line of a paragraph
 set formatoptions-=l                  " break lines that are already long?
 set formatoptions+=1                  " Break before 1-letter words
-" Vim 7.4 only: no // comment when joining commented lines
+" Vim >=7.4 only: no // comment when joining commented lines. This is not
+" a default neovim setting despite what :help says. Various filetypes override
+" it
 if v:version >= 704 | set formatoptions+=j | endif
-
-set nrformats-=octal                  " never use octal when <C-x> or <C-a>
 
 " ----------------------------------------------------------------------------
 " Whitespace
@@ -325,8 +276,6 @@ set nojoinspaces                      " J command doesn't add extra space
 " ----------------------------------------------------------------------------
 " Indenting - overridden by indent plugins
 " ----------------------------------------------------------------------------
-
-set autoindent                        " indent when creating newline
 
 " For autoindent, use same spaces/tabs mix as previous line, even if
 " tabs/spaces are mixed. Helps for docblock, where the block comments have a
@@ -361,32 +310,22 @@ set nocindent
 " this is OFF so block comments don't get fudged when using ">>" and "<<"
 set noshiftround
 
-" When on, a <Tab> in front of a line inserts blanks according to
-" 'shiftwidth'. 'tabstop' or 'softtabstop' is used in other places.
-set smarttab
-set tabstop=2
-set expandtab
-
-set backspace=indent,eol,start        " bs anything
-
 " ----------------------------------------------------------------------------
 " Match and search
 " ----------------------------------------------------------------------------
 
 set matchtime=1                       " tenths of a sec
-set showmatch                         " briefly jump to matching paren?
-set hlsearch
-set incsearch
+set noshowmatch                       " briefly jump to matching paren?
 set wrapscan                          " Searches wrap around end of the file.
 set ignorecase
 " Follow smartcase and ignorecase when doing tag search
 if exists('+tagcase') && has('patch-7.4.2230') | set tagcase=followscs | endif
 set smartcase
 
-if !empty(dko#GetGrepper())
-  let &g:grepprg = dko#GetGrepper().command . ' '
-        \ . join(dko#GetGrepper().options, ' ')
-  let &g:grepformat = dko#GetGrepper().format
+if !empty(dko#grepper#Get().command)
+  let &g:grepprg = dko#grepper#Get().command . ' '
+        \ . join(dko#grepper#Get().options, ' ')
+  let &g:grepformat = dko#grepper#Get().format
 endif
 
 " ----------------------------------------------------------------------------
@@ -408,8 +347,11 @@ if !has('nvim') | call dko#old#Settings() | endif
 " vim-markdown plugin (which is bundled with vim7.4 now)
 " There are more syntaxes, but checking for them makes editing md very slow
 let g:markdown_fenced_languages = [
-      \   'javascript', 'js=javascript', 'json=javascript', 'jsx=javascript',
-      \   'sh',
+      \   'javascript', 'js=javascript', 'javascriptreact',
+      \   'json',
+      \   'bash=sh', 'sh',
+      \   'vim',
+      \   'help',
       \ ]
 
 " ----------------------------------------
@@ -463,30 +405,30 @@ let g:vimsyn_embed = 'lpPr'
 let g:loaded_2html_plugin = 1
 let g:loaded_getscriptPlugin = 1
 let g:loaded_gzip = 1
+let g:loaded_man = 1
 let g:loaded_LogiPat = 1
 let g:loaded_tarPlugin = 1
+let g:loaded_tutor_mode_plugin = 1
 let g:loaded_zipPlugin = 1
 
-" Upstream matchparen -- it is inaccurate.
+" % matching replaced by vim-matchup, which sets the following
+"let g:loaded_matchit = 1
+" Upstream matchparen -- it is inaccurate. Replaced by vim-matchup
 let g:loaded_matchparen = 1
 
 " used to download spellfile and enable gx mapping
 "let g:loaded_netrwPlugin = 0
 
-" ----------------------------------------------------------------------------
-" Plugins: netrw
-" ----------------------------------------------------------------------------
-
 " netrw in details format when no vimfiler
 let g:netrw_liststyle      = 3
 let g:netrw_home           = expand(g:dko#vim_dir . '/.tmp/cache')
-let g:netrw_browsex_viewer = has('mac') ? 'open' : 'xdg-open'
+let g:netrw_browsex_viewer = 'dko-open'
 
 " ----------------------------------------------------------------------------
 " Plugins: autoinstall vim-plug, define plugins, install plugins if needed
 " ----------------------------------------------------------------------------
 
-if executable('git')
+if g:dko_autoinstall_vim_plug
   let s:has_plug = !empty(glob(expand(g:dko#vim_dir . '/autoload/plug.vim')))
   " Load vim-plug and its plugins?
   if !s:has_plug && executable('curl')
@@ -508,35 +450,33 @@ endif
 " Autocommands
 " ============================================================================
 
-" Disable linting and syntax highlighting for large and minified files
-augroup dkofile
-  autocmd BufReadPre *
-        \ if getfsize(expand("%")) > 10000000 | syntax off | endif
-  autocmd BufReadPre *.min.* syntax off
-augroup END
-
 augroup dkowindow
   autocmd!
   autocmd VimResized * wincmd =
 augroup END
 
+augroup dkolines
+  autocmd!
+  if dkoplug#IsLoaded('coc.nvim')
+    autocmd User CocNvimInit ++nested call dkoline#Init()
+  elseif has('nvim')
+    autocmd VimEnter * ++nested call dkoline#Init()
+  else
+    autocmd VimEnter * nested call dkoline#Init()
+  endif
+augroup END
+
 augroup dkoproject
   autocmd!
   autocmd BufNewFile,BufRead,BufWritePost * call dko#project#MarkBuffer()
+  autocmd User CocNvimInit call dko#lint#SetupCoc()
+  autocmd User neomake call dko#lint#Setup()
 augroup END
 
+" Auto-reload the colorscheme if it was edited in vim
 augroup dkocoloredit
   autocmd!
-  autocmd BufWritePost */colors/*.vim
-        \   so <afile>
-        \ | if dkoplug#IsLoaded('vim-css-color')
-        \ |   call css_color#reinit()
-        \ | endif
-augroup END
-
-augroup dkolines
-  autocmd!
-  autocmd VimEnter * nested call dkoline#Init()
+  autocmd BufWritePost */colors/*.vim so <afile>
 augroup END
 
 " Read only mode (un)mappings
@@ -545,6 +485,32 @@ augroup dkoreadonly
   autocmd BufEnter * call dko#readonly#Unmap()
 augroup END
 
+" Disable linting and syntax highlighting for large and minified files
+augroup dkohugefile
+  autocmd BufReadPre *
+        \   if getfsize(expand("%")) > 10000000
+        \|    syntax off
+        \|    let b:dko_hugefile = 1
+        \|  endif
+  autocmd BufReadPre *.min.* syntax off
+augroup END
+
+" Automatically assign file marks for filetype when switch buffer so you can
+" easily go between e.g., css/html using `C `H
+" https://old.reddit.com/r/vim/comments/df4jac/how_do_you_use_marks/f317a1l/
+augroup dkoautomark
+  autocmd!
+  autocmd BufLeave *.css,*.less,*.scss  normal! mC
+  autocmd BufLeave *.html               normal! mH
+  autocmd BufLeave *.js*,*.ts*          normal! mJ
+  autocmd BufLeave *.md                 normal! mM
+  autocmd BufLeave *.yml,*.yaml         normal! mY
+augroup END
+
+augroup dkorestoreposition
+  autocmd!
+  autocmd BufWinEnter * call dko#RestorePosition()
+augroup END
 
 " ============================================================================
 " Security
@@ -553,9 +519,3 @@ augroup END
 " Disallow unsafe local vimrc commands
 " Leave down here since it trims local settings
 set secure
-
-
-" ============================================================================
-" Load Custom Settings
-" ============================================================================
-execute 'source' . g:dko_nvim_dir . '/settings.vim'

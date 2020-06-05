@@ -9,7 +9,7 @@
 
 if [[ -z "$DOTFILES" ]]; then
   cd -- "$(dirname "$0")/.." || exit 1
-  DOTFILES="$(pwd)"
+  DOTFILES="$PWD"
 fi
 . "${DOTFILES}/lib/helpers.sh"
 . "${DOTFILES}/lib/pretty.bash"
@@ -21,32 +21,43 @@ __dko_has 'pyenv' || {
   exit 1
 }
 
-__versions=$(pyenv versions)
-__venvs=$(pyenv virtualenvs)
 
 __create_neovim_venv() {
-  local name="${1}"
+  local __versions
+  __versions=$(pyenv versions)
+
+  local __venvs
+  __venvs=$(pyenv virtualenvs)
+
+  local name="$1"
   local version="$2"
 
   if grep -q "$name" <<< "$__venvs"; then
     __dko_ok "${name} exists"
+
   elif ! grep -q "$version" <<< "$__versions"; then
-    __dko_warn "python version ${version} not found"
-  else
-    __dko_status "Creating ${name} and installing neovim python client"
-    pyenv virtualenv "$version" "$name" \
-      && pyenv activate "$name" \
-      && pip install neovim \
-      && pyenv deactivate
+    local pyenv_install="pyenv install"
+
+    [[ "$OSTYPE" == *'arwin'* ]] &&
+      pyenv_install="${DOTFILES}/bin/mac-pyenv-install"
+
+    "$pyenv_install" "$version" || return 1
   fi
+
+  __dko_status "Creating ${name} and installing pynvim"
+  pyenv uninstall neovim3
+  pyenv virtualenv "$version" "$name" \
+    && pyenv activate "$name" \
+    && python -m pip install --upgrade pip \
+    && python -m pip install pynvim \
+    && pyenv deactivate
 }
 
 __main() {
-  local p2="$1"
-  local p3="$2"
+  local p3="$1"
 
-  if [[ -z "$p2" ]] || [[ -z "$p3" ]]; then
-    __dko_usage "$0 2.7.14 3.7.0"
+  if [[ -z "$p3" ]]; then
+    __dko_usage "$0 3.7.7"
     return 1
   fi
 
@@ -63,10 +74,8 @@ __main() {
   fi
 
   __dko_status "pyenv-virtualenv setup"
-  __dko_echo "desired python2: ${p2}"
   __dko_echo "desired python3: ${p3}"
 
-  __create_neovim_venv "neovim2" "$p2"
   __create_neovim_venv "neovim3" "$p3"
 }
 

@@ -5,10 +5,11 @@ rules:
     ignore-shebangs: true
     require-starting-space: true
   document-start: disable
+  truthy:
+    check-keys: false
 ignore: |
   node_modules/
   tmux/plugins/
-  vale/styles/
   vim/vendor/
   vim/.tmp/
-  zsh/.zplugin/
+  zsh/.zinit/

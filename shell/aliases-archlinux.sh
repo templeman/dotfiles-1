@@ -1,18 +1,16 @@
-# shell/aliases-archlinux.bash
+# shell/aliases-archlinux.sh
 
-alias paclast="expac --timefmt='%Y-%m-%d %T' '%l\\t%n' | sort | tail -20"
-
-if command -v pacaur >/dev/null; then
-  alias b='pacaur'
-elif command -v yaourt >/dev/null; then
-  alias b='yaourt'
-fi
-alias bi='b -S'
-alias bq='b -Qs'
-alias bs='b -Ss'
+export DKO_SOURCE="${DKO_SOURCE} -> shell/aliases-archlinux.sh"
 
 # Always create log file
 alias makepkg='makepkg --log'
 
-alias rphp='sudo systemctl restart php-fpm.service'
-alias rnginx='sudo systemctl restart nginx.service'
+alias pacunlock='sudo rm /var/lib/pacman/db.lck'
+
+alias sysreload='sudo systemctl daemon-reload'
+
+# It keeps dying on lock!
+fixpulse() {
+  sudo rm -rf ~/.config/pulse
+  systemctl --user start pulseaudio
+}

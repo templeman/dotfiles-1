@@ -23,8 +23,13 @@ alias cdd='cd -- "${DOTFILES}"'
 alias cdv='cd -- "${VDOTDIR}"'
 alias dirs='dirs -v' # default to vert, use -l for list
 alias down='cd -- "${XDG_DOWNLOAD_DIR}"'
-alias downs='down'
 alias tree='tree -CF'
+
+# ----------------------------------------------------------------------------
+# ansible
+# ----------------------------------------------------------------------------
+
+alias ap='ansible-playbook -vvv'
 
 # ----------------------------------------------------------------------------
 # cat (prefer bat)
@@ -34,28 +39,29 @@ alias c='bat --paging never'
 alias crm='bat --plain README.md'
 alias cpj='bat --plain package.json'
 alias pyg='pygmentize -O style=rrt -f console256 -g'
-alias d='icdiff -line-numbers --tabsize=4 --numlines=8'
 
 # ----------------------------------------------------------------------------
 # docker
 # ----------------------------------------------------------------------------
 
 alias dps='docker ps'
+alias dockup='docker-compose up -d'
+alias dockdown='docker-compose down'
 
 # ----------------------------------------------------------------------------
 # editors
 # ----------------------------------------------------------------------------
 
-alias a='atom-beta'
-alias e='vim'
 alias ehosts='se /etc/hosts'
 alias etmux='e "${DOTFILES}/tmux/tmux.conf"'
+alias essh='e "${HOME}/.ssh/config"'
+alias ega='e "${DOTFILES}/git/aliases.gitconfig"'
 alias esd='e "${DOTFILES}/bin/dot"'
 alias evr='e "${VDOTDIR}/vimrc"'
 alias evp='e "${VDOTDIR}/autoload/dkoplug/plugins.vim"'
 alias eze='e "${ZDOTDIR}/dot.zshenv"'
-alias ezl='e "${DOTFILES}/local/zshrc"'
-alias ezp='e "${ZDOTDIR}/zplugin.zsh"'
+alias ezi='e "${ZDOTDIR}/zinit.zsh"'
+alias ezl='e "${LDOTDIR}/zshrc"'
 alias ezr='e "${ZDOTDIR}/.zshrc"'
 
 # ----------------------------------------------------------------------------
@@ -65,26 +71,15 @@ alias ezr='e "${ZDOTDIR}/.zshrc"'
 alias gemrm='gem uninstall --all'
 
 # ----------------------------------------------------------------------------
-# geth
-# ----------------------------------------------------------------------------
-
-alias gethsync='geth --syncmode "fast" --cache 1024 console'
-
-# ----------------------------------------------------------------------------
 # git
 # ----------------------------------------------------------------------------
 
-alias g='git'
-alias g-='g checkout -'
-alias gb='g branch --verbose'
-alias gi='g ink'
-alias gg='g grep --line-number --break --heading'
-alias gl='g l --max-count 25'
-alias gm='g checkout master'
-alias gp='g push'
-alias gpo='g push origin'
-alias gs='g status'
-alias gt='g take'
+alias g-='git checkout -'
+alias gb='git branch --verbose'
+alias gg='git grep --line-number --break --heading'
+alias gl='git l --max-count 20'
+alias gm='git checkout master'
+alias gp='git push'
 
 # ----------------------------------------------------------------------------
 # gradle
@@ -98,18 +93,8 @@ alias gwr='gw run'
 # greppers
 # ----------------------------------------------------------------------------
 
-alias f='find'
 alias grep='grep --color=auto'
-alias rg='rg --hidden --smart-case --ignore-file "${DOTFILES}/ag/dot.ignore"'
 
-# always prefer ripgrep
-if command -v rg >/dev/null; then
-  alias ag='rg'
-elif command -v ag >/dev/null; then
-  # --numbers is a default and not supported on old ag
-  # --one-device not supported on old ag
-  alias ag='ag --hidden --smart-case'
-fi
 # also see gg in git
 
 # ----------------------------------------------------------------------------
@@ -135,24 +120,18 @@ alias grunt='npx grunt'
 alias n='npm'
 alias ni='n install'
 alias no='n outdated --long'
-alias nolocks='n config set package-lock false'
 alias nomod='rm -rf ./node_modules'
 alias likereallynomod='find . -type d -iname node_modules -exec rm \-rf {} \;'
-alias packwipe='rm package-lock.json.*'
 alias nr='n run'
-alias nrm="n rm"
+alias nrm='n rm'
 alias ns='n start'
 alias nt='n test'
 alias nu='n update'
 alias nude='nvm use default'
-alias sme='source-map-explorer'
 alias y='yarn'
 alias yi='yarn install'
 alias yr='yarn run'
 alias yt='yarn test'
-nused() {
-  ag '(require|import).*'"$1"
-}
 
 # ----------------------------------------------------------------------------
 # php
@@ -172,9 +151,11 @@ alias py2='python2'
 alias py3='python3'
 alias py='python'
 
+# https://snarky.ca/why-you-should-use-python-m-pip/
+alias pip='python -m pip'
 alias pir='pip install --requirement=requirements.txt'
 
-alias getsubs="subliminal download -p opensubtitles -p shooter -p subscenter -p thesubdb -p tvsubtitles --language en "
+alias getsubs='pipx run subliminal download -p opensubtitles -p shooter -p subscenter -p thesubdb -p tvsubtitles --language en '
 
 # ----------------------------------------------------------------------------
 # ruby
@@ -183,6 +164,7 @@ alias getsubs="subliminal download -p opensubtitles -p shooter -p subscenter -p 
 alias bun='bundle'
 alias be='bun exec'
 alias cap='be cap'
+alias ruby-install='ruby-install --rubies-dir "$DKO_RUBIES"'
 
 # ----------------------------------------------------------------------------
 # shfmt
@@ -191,12 +173,13 @@ alias cap='be cap'
 alias shfmt='shfmt -i 2 -bn -ci -kp'
 
 # ----------------------------------------------------------------------------
-# ssh keys
-# @see {@link https://blog.g3rt.nl/upgrade-your-ssh-keys.html}
+# ssh
 # ----------------------------------------------------------------------------
 
 # useful for finding things like INSECURE keys (acceptable: RSA 4096 or Ed25519)
 alias sshlistkeys='for keyfile in ~/.ssh/id_*; do ssh-keygen -l -f "${keyfile}"; done | uniq'
+
+# @see {@link https://blog.g3rt.nl/upgrade-your-ssh-keys.html}
 # Keep this up to date with latest security best practices
 alias sshkeygen='ssh-keygen -o -a 100 -t ed25519'
 
@@ -220,14 +203,14 @@ alias ta='tmux attach'
 # ----------------------------------------------------------------------------
 
 alias archey='archey --offline'
-alias bashate='bashate -i E003,E006'
+alias bashate='bashate -i E003,E005,E006,E011,E043'
 alias brokensymlinks='find . -type l ! -exec test -e {} \; -print'
 alias cb='cdbk'
 alias curl='curl --config "${DOTFILES}/curl/dot.curlrc"'
 alias df='df -h'
+alias gpgreload='gpg-connect-agent reloadagent /bye'
 alias ln='ln -v'
 alias mdl='mdl --config "${DOTFILES}/mdl/dot.mdlrc"'
-alias neofetch='neofetch --image ~/Dropbox/_avatars/trafalgarlaw_W.png --size 240px --gap 20 --disable de wm'
 alias o='dko-open'
 alias publicip='\curl icanhazip.com'
 alias rsync='rsync --human-readable --partial --progress'
@@ -238,7 +221,6 @@ alias u='dot'
 alias vag='vagrant'
 alias vb='VBoxManage'
 alias vbm='vb'
-alias weechat='weechat -d "${DOTFILES}/weechat"'
 alias wget='wget --no-check-certificate --hsts-file="${XDG_DATA_HOME}/wget/.wget-hsts"'
 alias xit='exit' # dammit
 

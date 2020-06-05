@@ -34,10 +34,12 @@ if dkoplug#Exists('vim-operator-surround')
   map <silent>  gsa   <Plug>(operator-surround-append)
   map <silent>  gsd   <Plug>(operator-surround-delete)
   map <silent>  gsr   <Plug>(operator-surround-replace)
+  nmap <silent>  gs'   gsra"'
+  nmap <silent>  gs"   gsra'"
 endif
 
 if dkoplug#Exists('operator-camelize.vim')
-  nmap <special> <Leader>c <Plug>(operator-camelize-toggle)
+  map <special> <Leader>c <Plug>(operator-camelize-toggle)
 endif
 
 " ============================================================================

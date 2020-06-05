@@ -28,20 +28,25 @@ function! dkoplug#plugins#LoadAll() abort
   let g:bufferize_command = 'tabnew'
   Plug 'AndrewRadev/bufferize.vim', { 'on': [ 'Bufferize' ] }
 
+  " Required by Inspecthi, don't lazy
   Plug 'cocopon/colorswatch.vim'
-  Plug 'cocopon/pgmnt.vim'
 
-  " Mostly for zS to debug highlight group (:Bufferize scriptnames is nicer
-  " than :Scriptnames)
-  Plug 'tpope/vim-scriptease'
+  silent! nunmap zs
+  nnoremap <silent> zs :<C-U>Inspecthi<CR>
+  Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ] }
 
   " ==========================================================================
   " Colorscheme
   " ==========================================================================
 
-  " Plug g:dko#vim_dir . '/mine/vim-meh'
-  Plug 'rakr/vim-two-firewatch'
-  Plug 'kamwitsta/flatwhite-vim'
+  " let l:local_meh = expand('~/projects/davidosomething/vim-colors-meh')
+  " if isdirectory(l:local_meh)
+  "   Plug l:local_meh
+  " else
+  "   Plug 'davidosomething/vim-colors-meh'
+  " endif
+  " Plug 'rakr/vim-two-firewatch'
+  " Plug 'kamwitsta/flatwhite-vim'
   Plug 'lifepillar/vim-solarized8'
 
   " ==========================================================================
@@ -52,49 +57,37 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'Shougo/context_filetype.vim'
 
   " ==========================================================================
-  " File system, ctags
-  " ==========================================================================
-
-  " Store accessed files in redis
-  Plug 'neoclide/redismru.vim', PlugIf(executable('redis-cli'), {
-        \   'do': 'npm install --force',
-        \ })
-
-  "Plug 'ludovicchabant/vim-gutentags', PlugIf(executable('ctags'))
-
-  " ==========================================================================
   " Commands
   " ==========================================================================
 
-  let l:fzfable = !empty(g:fzf_dir)
-        \ && v:version >= 704
-        \ && (has('nvim') || $TERM_PROGRAM ==# 'iTerm.app')
-  if !empty(g:fzf_dir)
-    Plug g:fzf_dir, PlugIf(l:fzfable)
-    Plug 'junegunn/fzf.vim', PlugIf(l:fzfable)
-    Plug g:dko#vim_dir . '/mine/vim-dko-fzf', PlugIf(l:fzfable, { 'on': [
-          \   'FZFGrepper',
-          \   'FZFMRU',
-          \   'FZFProject',
-          \   'FZFRedisMRU',
-          \   'FZFRelevant',
-          \   'FZFTests',
-          \   'FZFVim',
-          \ ] })
-  endif
+  " Use the repo instead of the version in brew since it includes the help
+  " docs for fzf#run()
+  Plug 'junegunn/fzf', PlugIf(g:dko_use_fzf)
 
-  " gK to lookup
-  Plug 'keith/investigate.vim'
-
-  "Plug 'lambdalisue/gina.vim', PlugIf(exists('v:null'))
-
-  " :Bdelete to preserve windows
-  Plug 'moll/vim-bbye'
+  let g:fzf_command_prefix = 'FZF'
+  let g:fzf_layout = extend({ 'down': '~40%' }, g:dko_fzf_float
+        \   ? { 'window': 'call dko#float#Bordered()' }
+        \   : {}
+        \ )
+  let g:fzf_buffers_jump = 1
+  Plug 'junegunn/fzf.vim', PlugIf(g:dko_use_fzf)
 
   Plug 'nathanaelkane/vim-indent-guides'
 
   Plug 'osyo-manga/vim-over', { 'on': [ 'OverCommandLine' ] }
 
+  let g:git_messenger_max_popup_width = 70
+  let g:git_messenger_max_popup_height = 24
+  Plug 'rhysd/git-messenger.vim', PlugIf(exists('*nvim_win_set_config'))
+
+  let g:neoformat_enabled_json = [ 'dkoprettier', 'jq' ]
+  let g:neoformat_enabled_java = [ 'uncrustify' ]
+  let g:neoformat_enabled_javascript = [ 'standard' ]
+  let g:neoformat_enabled_less = [ 'dkoprettier' ]
+  let g:neoformat_enabled_lua = [ 'luafmt', 'luaformatter' ]
+  let g:neoformat_enabled_markdown = [ 'dkoremark' ]
+  let g:neoformat_enabled_python = [ 'autopep8', 'isort' ]
+  let g:neoformat_enabled_scss = [ 'dkoprettier' ]
   Plug 'sbdchd/neoformat'
 
   " Add file manip commands like Remove, Move, Rename, SudoWrite
@@ -106,26 +99,26 @@ function! dkoplug#plugins#LoadAll() abort
   " Better zoom plugin, accounts for command window and doesn't use sessions
   Plug 'troydm/zoomwintab.vim'
 
-  " in command mode, alt-f/b to go forward/back words
-  Plug 'vim-utils/vim-husk'
-
-
   " ==========================================================================
-  " FZF notes
+  " Notes
   " ==========================================================================
   Plug 'Alok/notational-fzf-vim'
-
 
   " ==========================================================================
   " Input, syntax, spacing
   " ==========================================================================
 
-  "Plug 'sgur/vim-editorconfig'
-
-  " highlight matching html tag
-  Plug 'gregsexton/MatchTag'
+  " highlight matching html/xml tag
+  "Plug 'gregsexton/MatchTag'
+  let g:matchup_delim_noskips = 2
+  let g:matchup_matchparen_deferred = 1
+  let g:matchup_matchparen_status_offscreen = 0
+  Plug 'andymass/vim-matchup', PlugIf(has('patch-7.4.1689'))
 
   " add gS on char to smart split lines at char, like comma lists and html tags
+  let g:splitjoin_trailing_comma = 0
+  let g:splitjoin_ruby_trailing_comma = 1
+  let g:splitjoin_ruby_hanging_args = 1
   Plug 'AndrewRadev/splitjoin.vim'
 
   " Compatible with Neovim or Vim with this patch level
@@ -136,9 +129,11 @@ function! dkoplug#plugins#LoadAll() abort
   " Editing keys
   " ==========================================================================
 
-  Plug 'cyansprite/Extract', PlugIf(has('nvim'))
+  " filetype custom [[ and ]] jumping
+  Plug 'arp242/jumpy.vim'
 
-  Plug 'godlygeek/tabular', { 'on': [ 'Tabularize' ] }
+  "Plug 'cyansprite/Extract', PlugIf(has('nvim'))
+  Plug 'svermeulen/vim-yoink', PlugIf(has('nvim'))
 
   Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
 
@@ -148,6 +143,8 @@ function! dkoplug#plugins#LoadAll() abort
   " My fork has a lot of removals like line movement and entities
   Plug 'davidosomething/vim-unimpaired'
 
+  Plug 'machakann/vim-highlightedyank'
+
   " used for line bubbling commands (instead of unimpared!)
   " Consider also t9md/vim-textmanip
   Plug 'matze/vim-move'
@@ -155,33 +152,23 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'kana/vim-operator-user'
   " gcc to toggle comment
   Plug 'tyru/caw.vim', { 'on': [ '<Plug>(caw' ] }
-  " <Leader>s(a/r/d) to modify surrounding the pending operator
+  " gs(a/r/d) to modify surrounding the pending operator
   Plug 'rhysd/vim-operator-surround', { 'on': [ '<Plug>(operator-surround' ] }
-  " <Leader>c to toggle CamelCase/snak_e the pending operator
+  " <Leader>c to toggle PascalCase/snak_e the pending operator
   Plug 'tyru/operator-camelize.vim', { 'on': [ '<Plug>(operator-camelize' ] }
 
   " Some textobjs are lazy loaded since they are ~4ms slow to load.
   " See plugin/textobj.vim to see how they're mapped.
   " -       Base textobj plugin
   Plug 'kana/vim-textobj-user'
-  " - d/D   for underscore section (e.g. `did` on foo_b|ar_baz -> foo__baz)
-  Plug 'machakann/vim-textobj-delimited', { 'on': [
-        \   '<Plug>(textobj-delimited'
-        \ ] }
   " - i     for indent level
   Plug 'kana/vim-textobj-indent', { 'on': [ '<Plug>(textobj-indent' ] }
-  " - l     for current line
-  Plug 'kana/vim-textobj-line', { 'on': [ '<Plug>(textobj-line' ] }
   " - P     for last paste
   Plug 'gilligan/textobj-lastpaste', { 'on': [ '<Plug>(textobj-lastpaste' ] }
   " - u     for url
   Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
   " - b     for any block type (parens, braces, quotes, ltgt)
   Plug 'rhysd/vim-textobj-anyblock'
-  " - x     for xml attr like `data-content="everything"`
-  Plug 'whatyouhide/vim-textobj-xmlattr', { 'on': [
-        \   '<Plug>(textobj-xmlattr',
-        \ ] }
 
   " HR with <Leader>f[CHAR]
   Plug g:dko#vim_dir . '/mine/vim-hr'
@@ -206,49 +193,54 @@ function! dkoplug#plugins#LoadAll() abort
 
   " --------------------------------------------------------------------------
   " Snippet engine
+  " Now using coc-snippets
   " --------------------------------------------------------------------------
 
-  Plug 'Shougo/neosnippet', WithCompl()
-  Plug 'Shougo/neosnippet-snippets', WithCompl()
+  " Provides some ultisnips snippets for use with neosnippet or coc-snippets
   Plug 'honza/vim-snippets', WithCompl()
 
   " --------------------------------------------------------------------------
   " Completion engine
   " --------------------------------------------------------------------------
 
-  Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-
-  " --------------------------------------------------------------------------
-  " Completion libraries
-  " --------------------------------------------------------------------------
-
-  " Include completion, include tags
-  " For what langs are supported, see:
-  " https://github.com/Shougo/neoinclude.vim/blob/master/autoload/neoinclude.vim
-  Plug 'Shougo/neoinclude.vim', WithCompl()
-
-  " --------------------------------------------------------------------------
-  " Completion: Syntax
-  " --------------------------------------------------------------------------
-
-  " Full syntax completion. Keyed as [S]
-  Plug 'Shougo/neco-syntax', WithCompl()
-
-  " --------------------------------------------------------------------------
-  " Completion: VimL
-  " --------------------------------------------------------------------------
-
-  Plug 'Shougo/neco-vim', WithCompl()
-  Plug 'neoclide/coc-neco', WithCompl()
+  let g:coc_global_extensions = [
+        \  'coc-calc',
+        \  'coc-css',
+        \  'coc-diagnostic',
+        \  'coc-eslint',
+        \  'coc-git',
+        \  'coc-html',
+        \  'coc-json',
+        \  'coc-markdownlint',
+        \  'coc-prettier',
+        \  'coc-pyright',
+        \  'coc-snippets',
+        \  'coc-solargraph',
+        \  'coc-tsserver',
+        \  'coc-vimlsp',
+        \  'coc-yaml'
+        \]
+  " Not working
+  "      \  'coc-python',
+  "      \  'coc-java',
+  " Doesn't redraw in sync with edits
+  "\  'coc-highlight',
+  Plug 'neoclide/coc.nvim', WithCompl({ 'branch': 'release' })
 
   " ==========================================================================
   " Multiple languages
   " ==========================================================================
 
-  Plug 'itchyny/vim-parenmatch'
+  " autoclose parens and blocks in various langs
+  "Plug 'tpope/vim-endwise'
+  " let g:lexima_enable_basic_rules = 0 " only on <CR>
+  "Plug 'cohama/lexima.vim' " Doesn't detect distant closer if whitespace
+  "Plug 'Raimondi/delimitMate' " Doesn't indent properly on <CR>
+  " let g:AutoPairsShortcutToggle = ''
+  " let g:AutoPairsShortcutFastWrap = ''
+  " Plug 'jiangmiao/auto-pairs'
 
-  " special end syntax for various langs
-  Plug 'tpope/vim-endwise'
+  Plug 'suy/vim-context-commentstring'
 
   " ==========================================================================
   " Language: ansible config
@@ -281,7 +273,12 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'tpope/vim-git'
 
   " show diff when editing a COMMIT_EDITMSG
+  let g:committia_open_only_vim_starting = 0
+  let g:committia_use_singlecolumn       = 'always'
   Plug 'rhysd/committia.vim'
+
+  " committia for git rebase -i
+  "Plug 'hotwatermorning/auto-git-diff'
 
   " ==========================================================================
   " Language: HTML, XML, and generators: mustache, handlebars
@@ -302,7 +299,7 @@ function! dkoplug#plugins#LoadAll() abort
   Plug g:dko#vim_dir . '/mine/vim-pj'
 
   " Order of these two matters
-  Plug 'elzr/vim-json'
+  "Plug 'elzr/vim-json'
   Plug 'neoclide/jsonc.vim'
 
   " provides coffee ft
@@ -315,9 +312,9 @@ function! dkoplug#plugins#LoadAll() abort
         \ }
 
   " TypeScript
-  Plug 'leafgarland/typescript-vim'
+  "Plug 'leafgarland/typescript-vim'
   " Alternatively
-  "Plug 'HerringtonDarkholme/yats.vim'
+  Plug 'HerringtonDarkholme/yats.vim'
 
   " ----------------------------------------
   " Syntax
@@ -329,13 +326,13 @@ function! dkoplug#plugins#LoadAll() abort
 
   " COMBINED AND MODIFIED pangloss + vim-jsx-pretty
   " Not well maintained
-  Plug 'neoclide/vim-jsx-improve'
+  "Plug 'neoclide/vim-jsx-improve'
 
   " PANGLOSS MODE - this is vim upstream now!
   " 1.  Preferring pangloss for now since I like the included indentexpr
   "     it also has a node ftdetect
   " 2.  After syntax, ftplugin, indent for JSX
-  " Plug 'pangloss/vim-javascript'
+  Plug 'pangloss/vim-javascript'
 
   " YAJS MODE
   " 1.  yajs.vim highlighting is a little more robust than the pangloss one.
@@ -343,7 +340,7 @@ function! dkoplug#plugins#LoadAll() abort
   "     jQuery,backbone,etc. and I've confirmed it is only compatible with
   "     yajs.vim as of 2016-11-03.
   " 3.  es.next support has possible jsx indent conflicts
-  "     @see https://github.com/othree/es.next.syntax.vim/issues/5
+  "     https://github.com/othree/es.next.syntax.vim/issues/5
   " Plug 'othree/yajs.vim'
   " Plug 'othree/javascript-libraries-syntax.vim'
   " Plug 'othree/es.next.syntax.vim'
@@ -354,10 +351,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Works with both pangloss/othree
   " Offers inline code highlighting in JSX blocks, as well as vim-jsx's hi
-  " Plug 'maxmellon/vim-jsx-pretty'
-
-  " ALTERNATE, original
-  "Plug 'mxw/vim-jsx'
+  Plug 'maxmellon/vim-jsx-pretty'
 
   " ----------------------------------
   " Template strings
@@ -378,6 +372,8 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Override vim included markdown ft* and syntax
   " The git repo has a newer syntax file than the one that ships with vim
+  " I'm using jumpy.vim for [[ and ]]
+  let g:no_markdown_maps = 1
   Plug 'tpope/vim-markdown'
 
   " after/syntax for GitHub emoji, checkboxes
@@ -397,7 +393,7 @@ function! dkoplug#plugins#LoadAll() abort
   "Plug 'chr4/nginx.vim'
 
   " Same as in official upstream, @mhinz tends to update more often
-  " @see http://hg.nginx.org/nginx/file/tip/contrib/vim
+  " http://hg.nginx.org/nginx/file/tip/contrib/vim
   " Plug 'mhinz/vim-nginx'
   "Plug 'moskytw/nginx-contrib-vim'
 
@@ -410,7 +406,7 @@ function! dkoplug#plugins#LoadAll() abort
   " ----------------------------------------
 
   " creates Twig ft
-  "Plug 'evidens/vim-twig'
+  " Plug 'evidens/vim-twig'
 
   " creates Blade ft
   Plug 'jwalton512/vim-blade'
@@ -426,18 +422,12 @@ function! dkoplug#plugins#LoadAll() abort
   " changes. It does not support embedded HTML with Neovim
   "Plug '2072/vim-syntax-for-PHP'
 
-  " Updated for php 7.1, Apr 2018 (newer than neovim 3.0 runtime)
+  " Updated for php 7.3 Mar 2019 (newer than neovim 5.0 runtime)
   Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
 
   " Indent
   " 2072 is included with vim, this is upstream
   Plug '2072/PHP-Indenting-for-VIm'
-
-  " Fix indent of HTML in all PHP files -- basically adds indent/html.vim when
-  " outside of PHP block.
-  " This actually never loads since 2072 sets b:did_indent
-  " Also not needed since 2072 uses <script.*> style indenting for HTML
-  "Plug 'captbaritone/better-indent-support-for-php-with-html'
 
   " ==========================================================================
   " Language: Python
@@ -447,8 +437,10 @@ function! dkoplug#plugins#LoadAll() abort
   " Not a valid plugin runtime structure, file needs to be in ftplugin/
   "Plug 'sullyj3/vim-ftplugin-python'
 
-  Plug 'lambdalisue/vim-pyenv', { 'for': [ 'python' ] }
+  "Plug 'lambdalisue/vim-pyenv', { 'for': [ 'python' ] }
   Plug 'Vimjas/vim-python-pep8-indent'
+
+  Plug 'vim-python/python-syntax'
 
   " ==========================================================================
   " Language: Ruby, rails, puppet
@@ -498,12 +490,21 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'hail2u/vim-css3-syntax'
   Plug 'cakebaker/scss-syntax.vim', { 'for': [ 'scss' ] }
 
-  " Hex (et al) color highlighting
-  "Plug 'Rykka/colorv.vim'    --  requires python
-  "Plug 'chrisbra/Colorizer'  --  slower and not as complete but more features
-  "                               like X11 colors and color translation for
-  "                               degraded terminals
-  Plug 'ap/vim-css-color'
+  " ==========================================================================
+  " Color highlighting
+  " ==========================================================================
+
+  " The vim fallback choice is vim-css-color because it offers stability and
+  " completeness. It can do multiple css colors on one line, which hexokinase
+  " cannot, and it updates immediately, which coc-highlight has trouble
+  " keeping up with.
+  let l:use_fancy_colors = has('nvim')
+        \ && exists('&termguicolors')
+        \ && &termguicolors
+
+  Plug 'ap/vim-css-color', PlugIf(!l:use_fancy_colors)
+  " Pure lua implementation, covers most cases and is fastest in neovim
+  Plug 'norcalli/nvim-colorizer.lua', PlugIf(l:use_fancy_colors)
 
   " ==========================================================================
   " Language: .tmux.conf
@@ -514,53 +515,37 @@ function! dkoplug#plugins#LoadAll() abort
   " Less feature filled but this is upstream for $VIMRUNTIME and more up-to-date
   Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim/' }
 
-  Plug 'christoomey/vim-tmux-navigator'
+  " ==========================================================================
+  " Language: TOML
+  " ==========================================================================
+
+  Plug 'cespare/vim-toml'
 
   " ==========================================================================
   " Language: VimL
+  " vim-lookup and vim-vimlint replaced by coc-vimlsp
   " ==========================================================================
 
   Plug 'machakann/vim-vimhelplint'
 
-  " gf to go to where autoloaded function is defined
-  Plug 'kana/vim-gf-user', { 'for': [ 'vim' ] }
-  Plug 'sgur/vim-gf-autoload', { 'for': [ 'vim' ] }
-
   Plug 'junegunn/vader.vim'
 
   " Auto-prefix continuation lines with \
-  Plug 'lambdalisue/vim-backslash'
-
-  "Plug 'syngan/vim-vimlint', PlugIf(executable('vimlparser'))
-
-  " ==========================================================================
-  " Search
-  " See after/plugin/search.vim for complex configuration
-  " ==========================================================================
-
-  " <Plug> to not move on * search function
-  Plug 'haya14busa/vim-asterisk'
+  " Error: <CR> recursive mapping
+  " Plug 'lambdalisue/vim-backslash'
 
   " ==========================================================================
   " UI -- load last!
   " ==========================================================================
 
-  " --------------------------------------------------------------------------
-  " VCS signs
-  " --------------------------------------------------------------------------
-
-  " Super slow start
-  "Plug 'chrisbra/changesPlugin', PlugIf(v:version >= 800)
-  " Slow start
-  "Plug 'airblade/vim-gitgutter', { 'on': [ 'GitGutterToggle' ] }
-  " Significatly faster than quickfixsigns_vim and the above
-  Plug 'mhinz/vim-signify'
+  Plug 'delphinus/vim-auto-cursorline', PlugIf(exists('*timer_start'))
 
   " --------------------------------------------------------------------------
   " Quickfix window
   " --------------------------------------------------------------------------
 
   Plug 'blueyed/vim-qf_resize'
+
   Plug 'romainl/vim-qf'
 
   " --------------------------------------------------------------------------
@@ -570,8 +555,13 @@ function! dkoplug#plugins#LoadAll() abort
   " Always show signs column with marks
   "Too many features, slow start
   "Plug 'tomtom/quickfixsigns_vim'
-  "Still slowish but better
-  Plug 'kshenoy/vim-signature'
+  "Still slowish but better 78ms
+  "Plug 'kshenoy/vim-signature'
+  " Fastest 91ms
+  " let g:showmarks_enable = 0 " enable manually
+  " let g:showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  " let g:showmarks_ignore_type = 'hpq'
+  " Plug 'bootleq/ShowMarks'
 
   " --------------------------------------------------------------------------
   " Window events
@@ -580,7 +570,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Disabled, not worth the overhead.
   " Alternatively use sjl/vitality.vim -- but that has some cursor shape stuff
   " that Neovim doesn't need.
-  " @see <https://github.com/sjl/vitality.vim/issues/31>
+  " https://github.com/sjl/vitality.vim/issues/31
   "Plug 'tmux-plugins/vim-tmux-focus-events'
 
   Plug 'wellle/visual-split.vim', { 'on': [
