@@ -1,5 +1,8 @@
+# locks
+Brewfile.lock.json
+
 # managed
-bitbar/enabled/
+mac/bitbar/enabled/
 node_modules/
 tmux/plugins/
 !tmux/plugins/tpm
@@ -11,7 +14,7 @@ logs/
 # deprecated
 z/.z
 z/.z.*
-zsh/.zplugin
+zsh/.zinit
 zsh/antibody
 
 # cache + logs

@@ -7,7 +7,7 @@ coverage/
 dist/
 node_modules/
 vendor/
-zsh/.zplugin/
+zsh/.zinit/
 
 *~
 *.crt
