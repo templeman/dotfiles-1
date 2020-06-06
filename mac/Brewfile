@@ -61,7 +61,7 @@ brew "tree"
 brew "uncrustify"
 brew "watchman"
 brew "wget"
-brew "wifi-password"
+#brew "wifi-password" # failing install
 brew "wtf"
 brew "xz" # for pyenv
 brew "yarn"
@@ -69,11 +69,11 @@ brew "zlib" # for pyenv
 brew "zsh"
 #cask "adobe-creative-cloud"
 cask "alfred"
-cask "arq"
+#cask "arq" # failing install
 #cask "beyond-compare"
 cask "bitbar"
 #cask "dash" # need to upgrade license
-cask "default-folder-x"
+#cask "default-folder-x" # failing install
 #cask "docker-edge"
 #cask "dropbox" # no shasum!
 #cask "electric-sheep"
@@ -92,17 +92,17 @@ cask "iterm2"
 #cask "keybase"
 #cask "lastpass"
 #cask "libreoffice" # sometimes fails via cask
-cask "mailmate"
+#cask "mailmate" # failing install
 cask "mutespotifyads"
 cask "ngrok"
 #cask "notable"
-cask "nvalt"
+#cask "nvalt" # failing install
 cask "postman"
 cask "raindropio"
-cask "skype"
+#cask "skype"
 cask "slack"
 cask "spotify"
-cask "the-unarchiver"
+#cask "the-unarchiver" # failing install
 #cask "vagrant"
 #cask "virtualbox"
 #cask "virtualbox-extension-pack"
