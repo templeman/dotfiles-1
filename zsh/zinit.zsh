@@ -6,16 +6,16 @@ export DKO_SOURCE="${DKO_SOURCE} -> zinit.zsh {"
 # Docker
 # ----------------------------------------------------------------------------
 
-zinit has'docker' for \
-  silent as'completion' is-snippet \
-  'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
-  \
-  lucid from'gh-r' as'program' \
-  'jesseduffield/lazydocker' \
-  \
-  lucid from'gh-r' as'program' \
-  mv'hadolint* -> hadolint' \
-  'hadolint/hadolint'
+# zinit has'docker' for \
+#   silent as'completion' is-snippet \
+#   'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
+#   \
+#   lucid from'gh-r' as'program' \
+#   'jesseduffield/lazydocker' \
+#   \
+#   lucid from'gh-r' as'program' \
+#   mv'hadolint* -> hadolint' \
+#   'hadolint/hadolint'
 
 # ----------------------------------------------------------------------------
 # Git
