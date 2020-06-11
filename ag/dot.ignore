@@ -17,6 +17,7 @@ zsh/.zinit/
 *.marko.js
 *.min.*
 *.po
+*.sql
 *.svg
 *.vim.old
 *-min.*
