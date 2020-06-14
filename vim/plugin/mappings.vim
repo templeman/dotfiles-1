@@ -51,6 +51,20 @@ inoreabbrev kbdup <kbd>↑</kbd>
 inoreabbrev kbdright <kbd>→</kbd>
 inoreabbrev kbddown <kbd>↓</kbd>
 
+inoreabbrev kbdopt <kbd>⌥</kbd>
+inoreabbrev kbdctrl <kbd>⌃</kbd>
+inoreabbrev kbdshift <kbd>⇧</kbd>
+inoreabbrev kbdcmd <kbd>⌘</kbd>
+inoreabbrev kbdesc <kbd>⎋</kbd>
+inoreabbrev kbdcaps <kbd>⇪</kbd>
+inoreabbrev kbdtab <kbd>⇥</kbd>
+inoreabbrev kbdeject <kbd>⏏︎</kbd>
+inoreabbrev kbddel <kbd>⌫</kbd>
+inoreabbrev kbdleft <kbd>←</kbd>
+inoreabbrev kbdup <kbd>↑</kbd>
+inoreabbrev kbdright <kbd>→</kbd>
+inoreabbrev kbddown <kbd>↓</kbd>
+
 " ============================================================================
 " Disable for reuse
 " ============================================================================

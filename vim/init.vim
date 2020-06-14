@@ -143,6 +143,13 @@ nnoremap <special> <Leader>vt :<C-U>vsplit term://$SHELL<CR>A
 let g:loaded_ruby_provider = 0
 let g:loaded_node_provider = 0
 
+nnoremap <special> <Leader>vt :<C-U>vsplit term://$SHELL<CR>A
+
+" ============================================================================
+
+let g:loaded_ruby_provider = 0
+let g:loaded_node_provider = 0
+
 " ============================================================================
 " Python setup
 " Skips if python is not installed in a pyenv virtualenv
