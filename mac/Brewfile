@@ -33,7 +33,7 @@ brew "kubectx"
 brew "launchctl-completion"
 brew "lynx"
 brew "mackup"
-brew "mas"
+#brew "mas" # failing install
 brew "mono"
 brew "moreutils"
 brew "multitail"
