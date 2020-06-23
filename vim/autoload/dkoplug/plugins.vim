@@ -105,6 +105,17 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'Alok/notational-fzf-vim'
 
   " ==========================================================================
+  " Sessions
+  " ==========================================================================
+
+  " Use :Obsess (with optional file/directory name) to start recording to
+  " a session file and :Obsess! to stop and throw it away.
+  " Plug 'tpope/vim-obsession'
+
+  " Automatic contextual session-switching
+  " Plug 'dhruvasagar/vim-prosession'
+
+  " ==========================================================================
   " Input, syntax, spacing
   " ==========================================================================
 
@@ -180,6 +191,9 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Toggle movement mode line-wise/display-wise
   Plug g:dko#vim_dir . '/mine/vim-movemode'
+
+  " Quickly align items on a given character
+  Plug 'junegunn/vim-easy-align'
 
   " ==========================================================================
   " Completion
