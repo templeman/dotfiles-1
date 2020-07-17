@@ -17,6 +17,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Notes on adding plugins:
   " - Absolutely do not use 'for' if the plugin provides an `ftdetect/`
 
+
   " ==========================================================================
   " Vim debugging
   " ==========================================================================
@@ -35,6 +36,7 @@ function! dkoplug#plugins#LoadAll() abort
   nnoremap <silent> zs :<C-U>Inspecthi<CR>
   Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ] }
 
+
   " ==========================================================================
   " Colorscheme
   " ==========================================================================
@@ -49,12 +51,14 @@ function! dkoplug#plugins#LoadAll() abort
   " Plug 'kamwitsta/flatwhite-vim'
   Plug 'lifepillar/vim-solarized8'
 
+
   " ==========================================================================
   " Embedded filetype support
   " ==========================================================================
 
   " tyru/caw.vim, some others use this to determine inline embedded filetypes
   Plug 'Shougo/context_filetype.vim'
+
 
   " ==========================================================================
   " Commands
@@ -99,10 +103,20 @@ function! dkoplug#plugins#LoadAll() abort
   " Better zoom plugin, accounts for command window and doesn't use sessions
   Plug 'troydm/zoomwintab.vim'
 
+
   " ==========================================================================
   " Notes
   " ==========================================================================
+
   Plug 'Alok/notational-fzf-vim'
+
+
+  " ==========================================================================
+  " Tasks
+  " ==========================================================================
+
+  Plug 'unfog-io/unfog-vim'
+
 
   " ==========================================================================
   " Sessions
@@ -114,6 +128,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Automatic contextual session-switching
   " Plug 'dhruvasagar/vim-prosession'
+
 
   " ==========================================================================
   " Input, syntax, spacing
@@ -135,6 +150,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Compatible with Neovim or Vim with this patch level
   Plug 'neomake/neomake', PlugIf(has('patch-7.4.503'))
   "Plug '~/projects/neomake'
+
 
   " ==========================================================================
   " Editing keys
@@ -195,6 +211,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Quickly align items on a given character
   Plug 'junegunn/vim-easy-align'
 
+
   " ==========================================================================
   " Completion
   " ==========================================================================
@@ -241,6 +258,7 @@ function! dkoplug#plugins#LoadAll() abort
   "\  'coc-highlight',
   Plug 'neoclide/coc.nvim', WithCompl({ 'branch': 'release' })
 
+
   " ==========================================================================
   " Multiple languages
   " ==========================================================================
@@ -256,12 +274,14 @@ function! dkoplug#plugins#LoadAll() abort
 
   Plug 'suy/vim-context-commentstring'
 
+
   " ==========================================================================
   " Language: ansible config
   " ==========================================================================
 
   " ft specific stuff only
   Plug 'pearofducks/ansible-vim'
+
 
   " ==========================================================================
   " Language: bash/shell/zsh
@@ -271,11 +291,13 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'chrisbra/vim-sh-indent'
   Plug 'chrisbra/vim-zsh'
 
+
   " ==========================================================================
   " Language: D
   " ==========================================================================
 
   Plug 'idanarye/vim-dutyl', { 'for': [ 'd' ] }
+
 
   " ==========================================================================
   " Language: Git
@@ -294,6 +316,7 @@ function! dkoplug#plugins#LoadAll() abort
   " committia for git rebase -i
   "Plug 'hotwatermorning/auto-git-diff'
 
+
   " ==========================================================================
   " Language: HTML, XML, and generators: mustache, handlebars
   " ==========================================================================
@@ -305,6 +328,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Creates html.handlebars and other fts and sets syn
   Plug 'mustache/vim-mustache-handlebars'
+
 
   " ==========================================================================
   " Language: JavaScript and derivatives, JSON
@@ -380,6 +404,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   Plug 'jparise/vim-graphql'
 
+
   " ==========================================================================
   " Language: Markdown, Pandoc
   " ==========================================================================
@@ -399,6 +424,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Use pandoc for markdown syntax
   " Plug 'vim-pandoc/vim-pandoc-syntax'
 
+
   " ==========================================================================
   " Language: Nginx
   " Disabled, rarely used.
@@ -410,6 +436,7 @@ function! dkoplug#plugins#LoadAll() abort
   " http://hg.nginx.org/nginx/file/tip/contrib/vim
   " Plug 'mhinz/vim-nginx'
   "Plug 'moskytw/nginx-contrib-vim'
+
 
   " ==========================================================================
   " Language: PHP, Twig, Blade, MJML
@@ -443,6 +470,7 @@ function! dkoplug#plugins#LoadAll() abort
   " 2072 is included with vim, this is upstream
   Plug '2072/PHP-Indenting-for-VIm'
 
+
   " ==========================================================================
   " Language: Python
   " ==========================================================================
@@ -456,6 +484,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   Plug 'vim-python/python-syntax'
 
+
   " ==========================================================================
   " Language: Ruby, rails, puppet
   " ==========================================================================
@@ -468,6 +497,7 @@ function! dkoplug#plugins#LoadAll() abort
 
   " creates ruby filetype
   "Plug 'vim-ruby/vim-ruby'
+
 
   " ==========================================================================
   " Language: Stylesheets
@@ -504,6 +534,7 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'hail2u/vim-css3-syntax'
   Plug 'cakebaker/scss-syntax.vim', { 'for': [ 'scss' ] }
 
+
   " ==========================================================================
   " Color highlighting
   " ==========================================================================
@@ -520,6 +551,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Pure lua implementation, covers most cases and is fastest in neovim
   Plug 'norcalli/nvim-colorizer.lua', PlugIf(l:use_fancy_colors)
 
+
   " ==========================================================================
   " Language: .tmux.conf
   " ==========================================================================
@@ -529,11 +561,13 @@ function! dkoplug#plugins#LoadAll() abort
   " Less feature filled but this is upstream for $VIMRUNTIME and more up-to-date
   Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim/' }
 
+
   " ==========================================================================
   " Language: TOML
   " ==========================================================================
 
   Plug 'cespare/vim-toml'
+
 
   " ==========================================================================
   " Language: VimL
@@ -547,6 +581,7 @@ function! dkoplug#plugins#LoadAll() abort
   " Auto-prefix continuation lines with \
   " Error: <CR> recursive mapping
   " Plug 'lambdalisue/vim-backslash'
+
 
   " ==========================================================================
   " UI -- load last!
