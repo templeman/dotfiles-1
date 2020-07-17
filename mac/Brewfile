@@ -73,7 +73,7 @@ cask "alfred"
 #cask "arq" # failing install
 #cask "beyond-compare"
 cask "bitbar"
-cask breaktimer
+cask "breaktimer"
 #cask "dash" # High Sierra not supported in latest version
 #cask "default-folder-x" # failing install
 #cask "docker-edge"
