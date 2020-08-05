@@ -1,5 +1,5 @@
 [alias]
-	a       = add
+	a       = add -u
 	aa      = add .
 
 	bl      = blame
