@@ -156,7 +156,7 @@ endfunction
 function! dko#project#Type() abort
   if !exists('b:dko_project_type')
     let b:dko_project_type = []
-    if expand('%:p') =~? 'content/\(mu-plugins\|plugins\|themes\)'
+    if expand('%:p') =~? 'app/\(mu-plugins\|plugins\|themes\)'
       let b:dko_project_type += 'wordpress'
     endif
   endif
