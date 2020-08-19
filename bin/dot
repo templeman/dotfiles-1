@@ -589,11 +589,11 @@ __dko_dotfiles__linux__deb__update() {
 # ------------------------------------------------------------------------------
 
 __dko_dotfiles__darwin__update_mac() {
-  __dko_status "macOS system update"
-  sudo softwareupdate --install --all
-
-  __dko_status "xcode and cli update"
-  sudo xcode-select --install
+  # __dko_status "macOS system update"
+  # sudo softwareupdate --install --all
+  # 
+  # __dko_status "xcode and cli update"
+  # sudo xcode-select --install
 
   __dko_has "mas" && mas upgrade
 }
@@ -618,7 +618,7 @@ __dko_dotfiles__darwin__require_brew() {
 }
 
 __dko_dotfiles__darwin__update_brew() {
-  __dko_dotfiles__darwin__require_latest_xcode || return 1
+  # __dko_dotfiles__darwin__require_latest_xcode || return 1
   __dko_dotfiles__darwin__require_brew || return 1
 
   __dko_status "Updating homebrew"
