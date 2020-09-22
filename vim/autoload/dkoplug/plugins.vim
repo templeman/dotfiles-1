@@ -179,8 +179,10 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'kana/vim-operator-user'
   " gcc to toggle comment
   Plug 'tyru/caw.vim', { 'on': [ '<Plug>(caw' ] }
+
   " gs(a/r/d) to modify surrounding the pending operator
   Plug 'rhysd/vim-operator-surround', { 'on': [ '<Plug>(operator-surround' ] }
+
   " <Leader>c to toggle PascalCase/snak_e the pending operator
   Plug 'tyru/operator-camelize.vim', { 'on': [ '<Plug>(operator-camelize' ] }
 
@@ -196,6 +198,8 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
   " - b     for any block type (parens, braces, quotes, ltgt)
   Plug 'rhysd/vim-textobj-anyblock'
+  " - al / il  for the current line
+  Plug 'kana/vim-textobj-line'
 
   " HR with <Leader>f[CHAR]
   Plug g:dko#vim_dir . '/mine/vim-hr'
