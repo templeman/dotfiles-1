@@ -72,6 +72,7 @@
 
 [commit]
 	template = "~/.dotfiles/git/commit-template"
+	gpgsign = true
 
 [core]
 	compression = -1
@@ -143,3 +144,4 @@
 [user]
 	name = Sam Templeman
 	email = sam.a.templeman@gmail.com
+	signingkey = 6335FF6B8CDFAEA0
