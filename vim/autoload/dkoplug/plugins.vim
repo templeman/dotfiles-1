@@ -468,6 +468,12 @@ function! dkoplug#plugins#LoadAll() abort
   "Plug '2072/vim-syntax-for-PHP'
 
   " Updated for php 7.3 Mar 2019 (newer than neovim 5.0 runtime)
+  let g:php_html_in_heredoc = 0
+  let g:php_html_in_nowdoc = 0
+  let g:php_html_load = 0
+  let g:php_sql_query = 0
+  let g:php_sql_heredoc = 0
+  let g:php_sql_nowdoc = 0
   Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
 
   " Indent
