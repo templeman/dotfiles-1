@@ -104,7 +104,7 @@ rules:
     - 2
     - include: true
   space-before-brace:
-    - 2
+    - 1
     - include: true
   space-before-colon: 2
   space-between-parens:
