@@ -50,6 +50,6 @@
 <!-- - transmit -->
 - tunnelbear
 <!-- - tunnelblick -->
-- vagrant
-- virtualbox
-- virtualbox-extension-pack
+<!-- - vagrant -->
+<!-- - virtualbox                -->
+<!-- - virtualbox-extension-pack -->
