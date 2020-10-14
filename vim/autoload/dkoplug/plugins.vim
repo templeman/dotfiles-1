@@ -322,7 +322,7 @@ function! dkoplug#plugins#LoadAll() abort
 
 
   " ==========================================================================
-  " Language: HTML, XML, and generators: mustache, handlebars
+  " Language: HTML, XML, Jinja2, and generators: mustache, handlebars
   " ==========================================================================
 
   " Syntax enhancements and htmlcomplete#CompleteTags function override
@@ -332,6 +332,9 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Creates html.handlebars and other fts and sets syn
   Plug 'mustache/vim-mustache-handlebars'
+
+  " Jinja2
+  Plug 'glench/vim-jinja2-syntax'
 
 
   " ==========================================================================
