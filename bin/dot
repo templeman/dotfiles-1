@@ -645,7 +645,8 @@ __dko_dotfiles__darwin__update_brew() {
 
     # Upgrade remaining
     __dko_status "Upgrading packages"
-    TERM="xterm-256color" brew upgrade
+    # TERM="xterm-256color" brew upgrade
+    TERM="xterm-256color" brew upgrade "$( brew outdated --quiet | sed s/'vagrant'// | sed s/'virtualbox-extension-pack'// | sed s/'virtualbox'// | tr '\n' ' ' )"
     __dko_dotfiles__darwin__update_brew_postupgrade "$outdated"
   ) && {
     __dko_status "Clean up old versions and prune dead symlinks"
