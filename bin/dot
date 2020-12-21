@@ -636,7 +636,8 @@ __dko_dotfiles__darwin__update_brew() {
 
     # check if needed
     local outdated
-    outdated="$(brew outdated --quiet)"
+    # Get outdated items and strip out any that we don't want upgraded
+    outdated="$( brew outdated --quiet | sed s/'vagrant'// | sed s/'virtualbox-extension-pack'// | sed s/'virtualbox'// | tr '\n' ' ' )"
 
     [[ -z "$outdated" ]] && {
       __dko_ok "Packages up-to-date"
@@ -646,7 +647,9 @@ __dko_dotfiles__darwin__update_brew() {
     # Upgrade remaining
     __dko_status "Upgrading packages"
     # TERM="xterm-256color" brew upgrade
-    TERM="xterm-256color" brew upgrade "$( brew outdated --quiet | sed s/'vagrant'// | sed s/'virtualbox-extension-pack'// | sed s/'virtualbox'// | tr '\n' ' ' )"
+    for word in $outdated; do
+      TERM="xterm-256color" brew upgrade "$word";
+    done
     __dko_dotfiles__darwin__update_brew_postupgrade "$outdated"
   ) && {
     __dko_status "Clean up old versions and prune dead symlinks"
