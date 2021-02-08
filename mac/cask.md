@@ -16,7 +16,7 @@
 <!-- - gimp -->
 - fantastical
 - firefox
-- folding-at-home
+<!-- - folding-at-home -->
 - franz
 - gitter
 - google-chrome
