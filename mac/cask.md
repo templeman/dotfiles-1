@@ -6,6 +6,7 @@
 - beyond-compare
 <!-- - betwixt         -->
 <!-- - bitwarden -->
+- breaktimer
 <!-- - cloudapp  -->
 - dash
 <!-- - discord          -->
