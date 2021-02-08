@@ -1,6 +1,7 @@
-# Other casks of note
+# Other casks of note - install as desired
 
 - adobe-creative-cloud
+- arq
 <!-- - balenaetcher    -->
 <!-- - bettertouchtool -->
 - beyond-compare
@@ -12,12 +13,13 @@
 <!-- - discord          -->
 <!-- - disk-inventory-x -->
 - docker
+- docker-edge
 - dropbox
 - electric-sheep
 <!-- - gimp -->
 - fantastical
 - firefox
-<!-- - folding-at-home -->
+- folding-at-home
 - franz
 - gitter
 - google-chrome
@@ -34,11 +36,13 @@
 <!-- - kitematic -->
 - lastpass
 - libreoffice
+- mailmate
 - marked
 - mjml
 - nordvpn
 - notable
 - notion
+- nvalt
 <!-- - qbittorrent -->
 <!-- - robo-3t     -->
 - sequel-pro
@@ -49,8 +53,9 @@
 - synologyassistant
 <!-- - telegram -->
 <!-- - transmit -->
+- the-unarchiver
 - tunnelbear
 <!-- - tunnelblick -->
-<!-- - vagrant -->
-<!-- - virtualbox                -->
-<!-- - virtualbox-extension-pack -->
+- vagrant
+- virtualbox
+- virtualbox-extension-pack

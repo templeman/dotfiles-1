@@ -91,7 +91,9 @@ The bootstrap script symlinks the plist. You'll have to manually use
       multiple times) and to throw apps to the next monitor
       (<kbd>⌃</kbd><kbd>⌘</kbd><kbd>⇧</kbd><kbd>f/h/l/z/[/]</kbd>)
 
-Install the rest of the packages from [cask.md](./cask.md) as desired.
+List Homebrew items in mac/Brewfile and run bootstrap/mac after editing to
+apply changes. Install additional packages from [cask.md](./cask.md) as
+desired.
 
 ## mackup
 
@@ -112,15 +114,12 @@ restore them (`mackup` is in the Brewfile).
 1. Add the public key to GitHub, GitLab, Bitbucket, etc.
 1. `ssh-add -K ~/.ssh/privatekeyfile` to store the key in Keychain.
 
-<<<<<<< HEAD
 ## Name the computer
 
 1. Go to https://www.npmjs.com/package/epithet
 2. Click "Test with RunKit" and generate snappy name
 3. System Preferences > Sharing and enter the new name
 
-=======
->>>>>>> upstream/dev
 ## Install development tools
 
 Installed packages before development tools. After you start using `pyenv` it

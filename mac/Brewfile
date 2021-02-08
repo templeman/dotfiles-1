@@ -68,43 +68,21 @@ brew "xz" # for pyenv
 brew "yarn"
 brew "zlib" # for pyenv
 brew "zsh"
-#cask "adobe-creative-cloud"
 cask "alfred"
-#cask "arq" # failing install
-#cask "beyond-compare"
 cask "bitbar"
 cask "breaktimer"
-#cask "dash" # High Sierra not supported in latest version
 #cask "default-folder-x" # failing install
-#cask "docker-edge"
 #cask "dropbox" # no shasum!
-#cask "electric-sheep"
-#cask "firefox"
 cask "firefox-developer-edition"
-#cask "folding-at-home"
 cask "font-firamono-nerd-font"
 cask "forklift"
-#cask "franz"
 #cask "google-chrome" # shasum invalidates frequently
 cask "gpg-suite-no-mail"
 cask "hammerspoon"
-#cask "imageoptim"
 cask "iterm2"
-#cask "karabiner-elements"
-#cask "keybase"
-#cask "lastpass"
-#cask "libreoffice" # sometimes fails via cask
-#cask "mailmate" # failing install
 cask "mutespotifyads"
 cask "ngrok"
 #cask "notable"
-#cask "nvalt" # failing install
 cask "postman"
 cask "raindropio"
-#cask "skype"
 cask "slack"
-cask "spotify"
-#cask "the-unarchiver" # failing install
-#cask "vagrant"
-#cask "virtualbox"
-#cask "virtualbox-extension-pack"
