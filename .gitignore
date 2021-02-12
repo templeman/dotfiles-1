@@ -6,6 +6,9 @@ mac/bitbar/enabled/
 node_modules/
 tmux/plugins/
 !tmux/plugins/tpm
+ruby-install-0.7.0
+chruby-0.3.9
+scss-lint
 
 # secrets
 local/
