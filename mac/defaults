@@ -1,12 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 set -eu
 
 # sources:
-# https://github.com/mathiasbynens/dotfiles/blob/master/.macos
-# https://github.com/mathiasbynens/dotfiles/blob/master/.osx
-# https://github.com/simonowendesign/dotfiles/blob/master/.osx
-# https://github.com/joeyhoer/starter/blob/master/system/dock.sh
+# https://github.com/mathiasbynens/dotfiles/blob/main/.macos
+# https://github.com/mathiasbynens/dotfiles/blob/main/.osx
+# https://github.com/simonowendesign/dotfiles/blob/main/.osx
 
 osascript -e 'tell application "System Preferences" to quit'
 
@@ -292,7 +291,6 @@ for app in \
   "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
   Dashboard \
   Dock \
-  Dock \
   Finder \
   Mail \
   Messages \
@@ -301,6 +299,8 @@ for app in \
   SystemUIServer \
   Terminal \
   Twitter \
-  iCal; do killall "$app" >/dev/null 2>&1; done
+  iCal; do
+  killall "$app" >/dev/null 2>&1
+done
 
-# vim: ft=sh :
+# vim: ft=zsh :

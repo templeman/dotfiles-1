@@ -17,6 +17,13 @@ function! dkoplug#plugins#LoadAll() abort
   " Notes on adding plugins:
   " - Absolutely do not use 'for' if the plugin provides an `ftdetect/`
 
+  " ==========================================================================
+  " Fixes
+  " ==========================================================================
+
+  " Fix CursorHold
+  " https://github.com/neovim/neovim/issues/12587
+  Plug 'antoinemadec/FixCursorHold.nvim', PlugIf(has('nvim'))
 
   " ==========================================================================
   " Vim debugging
@@ -58,7 +65,6 @@ function! dkoplug#plugins#LoadAll() abort
 
   " tyru/caw.vim, some others use this to determine inline embedded filetypes
   Plug 'Shougo/context_filetype.vim'
-
 
   " ==========================================================================
   " Commands
@@ -238,10 +244,13 @@ function! dkoplug#plugins#LoadAll() abort
   " Completion engine
   " --------------------------------------------------------------------------
 
+  " https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
   let g:coc_global_extensions = [
         \  'coc-calc',
         \  'coc-css',
+        \  'coc-cssmodules',
         \  'coc-diagnostic',
+        \  'coc-docthis',
         \  'coc-eslint',
         \  'coc-git',
         \  'coc-html',
@@ -249,11 +258,12 @@ function! dkoplug#plugins#LoadAll() abort
         \  'coc-markdownlint',
         \  'coc-prettier',
         \  'coc-pyright',
+        \  'coc-sh',
         \  'coc-snippets',
         \  'coc-solargraph',
         \  'coc-tsserver',
         \  'coc-vimlsp',
-        \  'coc-yaml'
+        \  'coc-yaml',
         \]
   " Not working
   "      \  'coc-python',
@@ -295,6 +305,8 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'chrisbra/vim-sh-indent'
   Plug 'chrisbra/vim-zsh'
 
+  " Freezes up on completion
+  "Plug 'tjdevries/coc-zsh'
 
   " ==========================================================================
   " Language: D
@@ -378,6 +390,9 @@ function! dkoplug#plugins#LoadAll() abort
   "     it also has a node ftdetect
   " 2.  After syntax, ftplugin, indent for JSX
   Plug 'pangloss/vim-javascript'
+
+  " YUEZK MODE - same maintainer as maxmellon/vim-jsx-pretty
+  "Plug 'yuezk/vim-js'
 
   " YAJS MODE
   " 1.  yajs.vim highlighting is a little more robust than the pangloss one.
@@ -563,7 +578,9 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'ap/vim-css-color', PlugIf(!l:use_fancy_colors)
   " Pure lua implementation, covers most cases and is fastest in neovim
   Plug 'norcalli/nvim-colorizer.lua', PlugIf(l:use_fancy_colors)
-
+  augroup dkonvimcolorizer
+    autocmd! User nvim-colorizer.lua lua require 'colorizer'.setup({ '*' }, { css = true })
+  augroup END
 
   " ==========================================================================
   " Language: .tmux.conf

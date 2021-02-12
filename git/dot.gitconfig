@@ -81,6 +81,7 @@
 	commentchar = ";"
 # pager = less -x4 ; removed so git will use the env GIT_PAGER
 	ignorecase = false
+	pager = delta
 
 [diff]
 	compactionHeuristic = true
@@ -93,9 +94,10 @@
 	required  = true
 
 [filter "lfs"]
-	clean     = git-lfs clean %f
-	smudge    = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 	required  = true
+	process = git-lfs filter-process
 
 [log]
 	mailmap = true
@@ -145,3 +147,5 @@
 	name = Sam Templeman
 	email = sam.a.templeman@gmail.com
 	signingkey = 6335FF6B8CDFAEA0
+[gpg]
+	program = gpg2

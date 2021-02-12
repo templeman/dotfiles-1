@@ -19,14 +19,14 @@ function! s:Unmap() abort
   set cpoptions&vim
 
   " Have to <NOP> these since the vim-move mappings are not <buffer> local
-  silent! nnoremap <buffer> <A-j> <NOP>
-  silent! vnoremap <buffer> <A-j> <NOP>
-  silent! nnoremap <buffer> <A-k> <NOP>
-  silent! vnoremap <buffer> <A-k> <NOP>
-  silent! nnoremap <buffer> <A-l> <NOP>
-  silent! vnoremap <buffer> <A-l> <NOP>
-  silent! nnoremap <buffer> <A-h> <NOP>
-  silent! vnoremap <buffer> <A-h> <NOP>
+  silent! nnoremap <buffer> <C-j> <NOP>
+  silent! vnoremap <buffer> <C-j> <NOP>
+  silent! nnoremap <buffer> <C-k> <NOP>
+  silent! vnoremap <buffer> <C-k> <NOP>
+  silent! nnoremap <buffer> <C-l> <NOP>
+  silent! vnoremap <buffer> <C-l> <NOP>
+  silent! nnoremap <buffer> <C-h> <NOP>
+  silent! vnoremap <buffer> <C-h> <NOP>
 
   let &cpoptions = s:cpo_save
   unlet s:cpo_save

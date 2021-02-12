@@ -22,7 +22,7 @@ everything.
 
     - [Display Menu]: Set higher/native resolutions
     - [Xcode]: select CLI tools in prefs
-    - This is __required__ to build some apps like neovim@HEAD
+        - This is __required__ to build some apps like neovim@HEAD
 
 ## Install homebrew
 
@@ -70,7 +70,6 @@ The bootstrap script symlinks the plist. You'll have to manually use
 
 - dropbox
     - Has app settings sync so wait for it to finish syncing.
-        - Including some `mackup` backups
     - If the shared directory is on an external volume, disable autostart and
       add [LoginItems/DelayedDropbox.app](LoginItems/DelayedDropbox.app) to
       your login items instead. It is a generic app made using Script Editor.
@@ -97,9 +96,16 @@ desired.
 
 ## mackup
 
-A `.mackup.cfg` defines some app settings (such as the itsycal plist) that
-I don't keep version controlled (just in dropbox). Run `mackup restore` to
-restore them (`mackup` is in the Brewfile).
+`mackup` backs up application settings. It will be installed if using this
+repo's Brewfile.
+
+`dot.mackup.cfg` defines some app settings (such as the itsycal plist). It is
+symlinked to `~/.mackup.cfg` by `bootstrap/symlink`.
+
+Mackup is configured to use `~/.local/Mackup` as the storage location. On my
+system this is a symlink to a private settings repository.
+
+Run `mackup restore` to restore settings from that repository.
 
 ## Install GPGTools and import key
 
@@ -135,23 +141,21 @@ operation. Use the `bi` alias for a clean room install if possible.
   1. `ruby-install ruby` to install latest
   1. `chruby` to that version
   1. Install gems using [ruby/install-default-gems](../ruby/install-default-gems)
-- Install [nvm] MANUALLY via git clone into `$XDG_CONFIG_HOME`, then use it to
-  install a version of `node` (and `npm`)
-  1. Use nvm managed node
+- Install [fnm] using [bootstrap/fnm](../bootstrap/fnm) and install a version
+  of `node` (and `npm`)
+  1. Use fnm managed node
   1. Install the default packages using [node/install](../node/install)
 - Install [pyenv] using `pyenv-installer` (rm `~/.local/pyenv` directory for
   clean install) and make sure to use the libs provided by brew. See the
   packages marked "for pyenv" in the [Brewfile](./Brewfile)
   1. Install the latest python using using
      [bootstrap/pyenv](../bootstrap/pyenv). This will also create a `neovim3`
-     virtualenv. It uses [bin/mac-pyenv-install](../bin/mac-pyenv-install) to
-     correctly set the SDK (which should have been installed by the mac
-     bootstrapper).
+     virtualenv.
   1. Set up the global pyenv as the latest stable (3.x). Check ansible
      compatibility first if it's needed (e.g. ansible is not 3.8.x ready).
 
 
-[nvm]: https://github.com/nvm-sh/nvm
+[fnm]: https://github.com/Schniz/fnm
 [pyenv]: https://github.com/pyenv/pyenv
 [unlock]: https://github.com/davidosomething/Unlock
 [Display Menu]: https://apps.apple.com/us/app/display-menu/id549083868?mt=12

@@ -1,8 +1,24 @@
+std = "max"
+
 globals = {
-    "hs", "hyper", "rawrequire", "ls", "spoon",
-    "success", "assertIsEqual",
+	"hyper",
 }
 
+--
+-- Read-only globals
+--
+read_globals = {
+	"assertIsEqual",
+	"hs",
+	"ls",
+	"rawrequire",
+	"spoon",
+	"success",
+}
+
+--
+-- Ignore Warnings
+--
 ignore = {
-    "631" -- Line is too long.
+	"631", -- Line is too long.
 }

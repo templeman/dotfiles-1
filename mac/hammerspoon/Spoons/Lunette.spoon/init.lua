@@ -1,4 +1,4 @@
--- luacheck: globals Command DefaultMapping history hs
+-- luacheck: globals Command DefaultMapping hs
 --
 local obj = {}
 obj.__index = obj
@@ -21,7 +21,6 @@ end
 obj.spoonPath = script_path()
 
 Command = dofile(obj.spoonPath.."/command.lua")
-history = dofile(obj.spoonPath.."/history.lua"):init()
 
 DefaultMapping = {
   leftHalf = {
@@ -66,37 +65,18 @@ DefaultMapping = {
   shrink = {
     {{"ctrl", "alt", "shift"}, "Left"},
   },
-  undo = {
-    {{"alt", "cmd"}, "Z"},
-  },
-  redo = {
-    {{"alt", "cmd", "shift"}, "Z"},
-  },
-  nextDisplay = {
-    {{"ctrl", "alt", "cmd"}, "Right"},
-  },
-  prevDisplay = {
-    {{"ctrl", "alt", "cmd"}, "Left"},
-  }
 }
 
 function obj.exec(commandName)
   local window = hs.window.focusedWindow()
+  if window == nil then
+    return
+  end
+
   local windowFrame = window:frame()
   local screen = window:screen()
   local screenFrame = screen:frame()
-  local currentFrame = window:frame()
-  local newFrame
-
-  if commandName == "undo" then
-    newFrame = history.retrievePrevState()
-  elseif commandName == "redo" then
-    newFrame = history.retrieveNextState()
-  else
-    newFrame = Command[commandName](windowFrame, screenFrame)
-    history.push(currentFrame, newFrame)
-  end
-
+  local newFrame = Command[commandName](windowFrame, screenFrame)
   window:setFrame(newFrame)
 end
 

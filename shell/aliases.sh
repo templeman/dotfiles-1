@@ -78,7 +78,7 @@ alias g-='git checkout -'
 alias gb='git branch --verbose'
 alias gg='git grep --line-number --break --heading'
 alias gl='git l --max-count 20'
-alias gm='git checkout master'
+alias gm='git checkout "$(git symbolic-ref refs/remotes/origin/HEAD | cut -f4 -d/)"'
 alias gp='git push'
 
 # ----------------------------------------------------------------------------
@@ -127,7 +127,6 @@ alias nrm='n rm'
 alias ns='n start'
 alias nt='n test'
 alias nu='n update'
-alias nude='nvm use default'
 alias y='yarn'
 alias yi='yarn install'
 alias yr='yarn run'
@@ -176,9 +175,6 @@ alias shfmt='shfmt -i 2 -bn -ci -kp'
 # ssh
 # ----------------------------------------------------------------------------
 
-# useful for finding things like INSECURE keys (acceptable: RSA 4096 or Ed25519)
-alias sshlistkeys='for keyfile in ~/.ssh/id_*; do ssh-keygen -l -f "${keyfile}"; done | uniq'
-
 # @see {@link https://blog.g3rt.nl/upgrade-your-ssh-keys.html}
 # Keep this up to date with latest security best practices
 alias sshkeygen='ssh-keygen -o -a 100 -t ed25519'
@@ -203,7 +199,6 @@ alias ta='tmux attach'
 # ----------------------------------------------------------------------------
 
 alias archey='archey --offline'
-alias bashate='bashate -i E003,E005,E006,E011,E043'
 alias brokensymlinks='find . -type l ! -exec test -e {} \; -print'
 alias cb='cdbk'
 alias cl='clear'

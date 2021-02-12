@@ -10,6 +10,9 @@ zinit lucid has'docker' for \
   as'completion' is-snippet \
   'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
   \
+  as'completion' is-snippet \
+  'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
+  \
   from'gh-r' as'program' \
   'jesseduffield/lazydocker' \
   \
@@ -21,9 +24,14 @@ zinit lucid has'docker' for \
 # Git
 # ----------------------------------------------------------------------------
 
+# - In the pick for gh, must specify the gh* directory so we don't get old
+#   version in cli--cli/.backup
+# - git-open is cloned with no cloneopts because we don't want to get the bats
+#   testing repo nested inside it
 zinit lucid as'program' for \
-  from'gh-r' pick'**/gh' \
-  atclone'cp -vf **/*.1 $ZPFX/share/man/man1' atpull'%atclone' \
+  from'gh-r' pick'gh*/**/gh' \
+  atclone'mkdir "${ZPFX}/share/man/man1" && cp -vf **/*.1 "${ZPFX}/share/man/man1"' \
+  atpull'%atclone' \
   '@cli/cli' \
   \
   'davidosomething/git-ink' \
@@ -87,7 +95,7 @@ zinit lucid from'gh-r' as'program' for \
   mv'shfmt* -> shfmt'       '@mvdan/sh'         \
   \
   mv'zoxide* -> zoxide' \
-  atload'eval "$(zoxide init zsh)" && alias j=z' \
+  atload'eval "$(zoxide init --no-aliases zsh)" && alias j=__zoxide_z' \
   'ajeetdsouza/zoxide' \
   \
   mv'ripgrep* -> rg' pick'rg/rg' \

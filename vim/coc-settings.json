@@ -9,6 +9,9 @@
   // Do it manually
   "coc.preferences.extensionUpdateCheck": "never",
 
+  // Don't try to run on files larger than this. Reduced from 10mb
+  "coc.preferences.maxFileSize": "1MB",
+
   // Hide the super noisy Actions, # of References etc virtualText that
   // appears at end of lines
   "codeLens.enable": false,
@@ -22,32 +25,24 @@
   "diagnostic.highlightOffset": 1000,
   "diagnostic.hintSign": "⚑",
   "diagnostic.infoSign": "⚑",
-  "diagnostic.joinMessageLines": false,
   "diagnostic.separateRelatedInformationAsDiagnostics": true,
   "diagnostic.level": "hint",
-  "diagnostic.locationlist": true,
   "diagnostic.messageTarget": "float",
-  "diagnostic.refreshAfterSave": false,
   "diagnostic.refreshOnInsertMode": true,
-  "diagnostic.signOffset": 99999999,
   "diagnostic.virtualText": false,
   "diagnostic.virtualTextPrefix": "» ",
   "diagnostic.warningSign": "⚑",
 
   "suggest.echodocSupport": true,
-  "suggest.minTriggerInputLength": 2,
+  "suggest.minTriggerInputLength": 1,
   "suggest.snippetIndicator": " ⭐︎",
-  "suggest.timeout": 5000,
+  "suggest.timeout": 2000, // down from 5000
 
   // =========================================================================
   // Language Servers
   // =========================================================================
 
   "languageserver": {
-    "lua": {
-      "command": "lua-lsp",
-      "filetypes": ["lua"]
-    },
     "sorbet": {
       "command": "srb",
       "args": ["tc", "--lsp", "--enable-all-experimental-lsp-features"],
@@ -75,7 +70,7 @@
     "css": [ "stylelint" ],
     "scss": [ "stylelint" ],
     "dockerfile": [ "hadolint" ],
-    "markdown": [ "markdownlint" ],
+    "markdown": [ "markdownlint" ]
     // neomake is still better for shellcheck and bashate since we can read
     // shebang first
   },
@@ -84,18 +79,19 @@
   //"diagnostic-languageserver.linters"
 
   // =========================================================================
-  // coc-eslint
+  // coc-docthis
   // =========================================================================
 
-  "eslint.enable": true,
-  "eslint.autoFix": false,
-  "eslint.autoFixOnSave": false,
-  "eslint.run": "onType",
-  "eslint.packageManager": "npm",
+  "docthis.returnsTag": false,
+  "docthis.includeMemberOfOnClassMembers": false,
+  "docthis.inferTypesFromNames": true,
 
   // =========================================================================
   // coc-git
   // =========================================================================
+
+  // "true" makes things real slow
+  "git.addGBlameToBufferVar": false,
 
   "git.enableGutters": true,
   "git.addedSign.hlGroup": "GitGutterAdd",
@@ -126,13 +122,13 @@
   // https://github.com/neoclide/coc-tsserver#configuration-options
   // =========================================================================
 
-  "typescript.validate.enable": false,
+  "typescript.validate.enable": true,
   "typescript.preferences.quoteStyle": "single",
   "typescript.updateImportsOnFileMove.enable": false,
 
-  "javascript.validate.enable": false,
+  "javascript.validate.enable": true,
   "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true,
   "javascript.preferences.quoteStyle": "single",
-  "javascript.updateImportsOnFileMove.enable": false,
+  "javascript.updateImportsOnFileMove.enable": false
 
 }

@@ -95,7 +95,6 @@ export VISUAL='vim'
 # ----------------------------------------------------------------------------
 
 export PAGER='less'
-export GIT_PAGER="$PAGER"
 
 # ----------------------------------------------------------------------------
 # others
@@ -105,9 +104,6 @@ export GIT_PAGER="$PAGER"
 
 # ack
 export ACKRC="${DOTFILES}/ack/dot.ackrc"
-
-# atom editor
-export ATOM_HOME="${XDG_DATA_HOME}/atom"
 
 # aws
 export AWS_CONFIG_FILE="${DOTFILES}/aws/config"

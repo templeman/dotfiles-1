@@ -9,7 +9,7 @@
 
 # ==============================================================================
 
-latest_xcode_major="11"
+latest_xcode_major="12"
 
 # ==============================================================================
 # Command functions
@@ -35,6 +35,7 @@ __dko_dotfiles__usage() {
     daily       -- secret, Packages / Developer Tools, fzf, nvm, pyenv
 
   Shell Tools
+    fnm         -- update fnm installation
     fzf         -- update fzf with flags to not update rc scripts
     node        -- install latest node via nvm
     nvm         -- update nvm installation
@@ -112,7 +113,8 @@ __dko_dotfiles__update_daily() {
     __dko_warn "fzf is not installed"
   fi
 
-  __dko_dotfiles__node__require_nvm && __dko_dotfiles__node__update_nvm
+  [ -d "$NVM_DIR" ] && __dko_dotfiles__node__update_nvm
+  [ -d "$FNM_DIR" ] && __dko_dotfiles__node__update_fnm
 
   __dko_dotfiles__go__require_go && __dko_dotfiles__go__update_go_packages
 
@@ -169,7 +171,7 @@ __dko_dotfiles__update_fzf() {
     (
       cd -- "${HOME}/.fzf" || { __dko_err "Could not cd to ~/.fzf" && exit 1; }
       __dko_status "Updating fzf"
-      git pull || { __dko_err "Could not update ~/.fzf" && exit 1; }
+      git pull --rebase || { __dko_err "Could not update ~/.fzf" && exit 1; }
       git log --no-merges --abbrev-commit --oneline ORIG_HEAD..
     ) || return 1
   else
@@ -180,7 +182,7 @@ __dko_dotfiles__update_fzf() {
   # Install/update shell extensions
   if [[ -n "$installer" ]]; then
     __dko_status "Updating fzf shell extensions"
-    "$installer" --xdg --key-bindings --completion --no-update-rc --64 ||
+    "$installer" --xdg --key-bindings --completion --no-update-rc ||
       return 1
   fi
 }
@@ -262,10 +264,15 @@ __dko_dotfiles__go__update_go_packages() {
 # pass any arg to skip autoinstall
 # pass any arg to silence
 __dko_dotfiles__node__require_nvm() {
-  if [[ -z "$NVM_DIR" ]]; then
+  [ -d "$FNM_DIR" ] && {
+    __dko_warn "Found fnm, aborting"
+    return 1
+  }
+
+  [ -z "$NVM_DIR" ] && {
     __dko_err "\$NVM_DIR is not defined, make sure rc files are linked"
     return 1
-  fi
+  }
 
   if (($# == 0)) && [[ ! -d "${NVM_DIR}/.git" ]]; then
     __dko_status "Installing nvm"
@@ -309,7 +316,7 @@ __dko_dotfiles__update_node() {
   fi
 
   __dko_status_ "Previous node version was $previous_node"
-  echo -n "Install and use new node ${wanted_with_minor} as default? [y/N] "
+  printf "Install and use new node %s as default? [y/N] " "$wanted_with_minor"
   read -r
   echo
   if [[ "$REPLY" == "y" ]] || [[ "$REPLY" == "Y" ]]; then
@@ -327,8 +334,34 @@ __dko_dotfiles__update_node() {
 }
 
 # ----------------------------------------------------------------------------
-# Node.js: Update NVM
+# Node.js
 # ----------------------------------------------------------------------------
+
+__dko_dotfiles__node__update_fnm() {
+  __dko_status "Updating fnm"
+
+  [ -d "$FNM_DIR" ] || {
+    __dko_err "FNM_DIR not set, install dotfiles first"
+    return 1
+  }
+
+  case "$OSTYPE" in
+    linux*)
+      __dko_status "Re-run installer from https://github.com/Schniz/fnm"
+      ;;
+    *arwin*)
+      __dko_dotfiles__darwin__require_brew || return 1
+
+      if __dko_has brew; then
+        if __dko_has fnm; then
+          brew upgrade fnm
+        else
+          brew install --verbose fnm
+        fi
+      fi
+      ;;
+  esac
+}
 
 __dko_dotfiles__node__update_nvm() {
   __dko_dotfiles__node__require_nvm || return 1
@@ -399,7 +432,11 @@ __dko_dotfiles__py__update_pipx() {
 
 __dko_dotfiles__py__update_neovim() {
   if __dko_has "brew"; then
-    brew install --force --verbose --HEAD neovim
+    if __dko_has "nvim"; then
+      brew reinstall --force neovim
+    else
+      brew install --HEAD neovim
+    fi
   elif __dko_has "pamac"; then
     pamac build neovim-git
   fi
@@ -487,7 +524,7 @@ __dko_dotfiles__php__update_wpcs() {
   else
     (
       cd -- "$wpcs_path" || exit 1
-      git pull &&
+      git pull --rebase &&
         git log --no-merges --abbrev-commit --oneline ORIG_HEAD..
     ) || return 1
   fi
@@ -504,7 +541,7 @@ __dko_dotfiles__php__update_wpcs() {
   local standards=()
 
   for entry in "${possible[@]}"; do
-    [[ -d "$entry" ]] && echo "Found $entry" && standards+=("$entry")
+    [[ -d "$entry" ]] && printf 'Found %s\n' "$entry" && standards+=("$entry")
   done
   standards_path=$(
     IFS=','
@@ -629,10 +666,8 @@ __dko_dotfiles__darwin__update_brew() {
     __dko_dotfiles__cd || exit 1
     __dko_dotfiles__pyenv_system
 
-    # Brew some makefiles like macvim use tput for output so need to reset
-    # from xterm-256color-italic I use in iterm
-
-    TERM="xterm-256color" brew update
+    __dko_status "brew update"
+    brew update || exit 1
 
     # check if needed
     local outdated
@@ -652,8 +687,8 @@ __dko_dotfiles__darwin__update_brew() {
     done
     __dko_dotfiles__darwin__update_brew_postupgrade "$outdated"
   ) && {
-    __dko_status "Clean up old versions and prune dead symlinks"
-    brew cleanup
+    __dko_status "brew cleanup - clean up old versions and prune dead symlinks"
+    brew cleanup --verbose
     __dko_ok "All clean"
   }
 }
@@ -681,17 +716,17 @@ __dko_dotfiles__darwin__update_brew_postupgrade() {
   # If imagemagick was outdated and php-imagick was not, force a reinstall
   # of php-imagick from source (using the new imagemagick)
   if grep -q "imagemagick" <<<"$outdated"; then
-    readonly phpimagick="$(brew ls | grep 'php.*imagick')"
+    readonly phpimagick="$(brew list --formula -1 | grep 'php.*imagick')"
     if [[ -n "$phpimagick" ]]; then
       __dko_status "Rebuilding ${phpimagick} for new imagemagick"
-      TERM="xterm-256color" brew reinstall --build-from-source "$phpimagick"
+      brew reinstall --build-from-source "$phpimagick"
     fi
   fi
 
   # Detect if brew's python3 (not pyenv) was outdated
   if grep -q "python3" <<<"$outdated"; then
     __dko_status "Python3 was outdated, upgrading python3"
-    TERM="xterm-256color" brew upgrade python3
+    brew upgrade python3
   fi
 
   __dko_ok "Post-upgrade complete"
@@ -711,6 +746,7 @@ __dko_dotfiles() {
   secret) __dko_dotfiles__update_secret ;;
   daily) __dko_dotfiles__update_daily ;;
   composer) __dko_dotfiles__php__update_composer ;;
+  fnm) __dko_dotfiles__node__update_fnm ;;
   fzf) __dko_dotfiles__update_fzf ;;
   gem) __dko_dotfiles__ruby__update_gems ;;
   go) __dko_dotfiles__go__update_go_packages ;;

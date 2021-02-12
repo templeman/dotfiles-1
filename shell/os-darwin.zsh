@@ -11,6 +11,8 @@ export DKO_SOURCE="${DKO_SOURCE} -> shell/os-darwin.zsh"
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 
+alias caskrm="brew uninstall --cask --force"
+
 # just assume brew is in normal location, don't even check for it
 export DKO_BREW_PREFIX="/usr/local"
 
@@ -20,7 +22,7 @@ PATH="${DKO_BREW_PREFIX}/opt/go/libexec/bin:${PATH}"
 PATH="${DKO_BREW_PREFIX}/opt/git/share/git-core/contrib/git-jump:${PATH}"
 
 # prefer homebrewed lua@5.1
-command -v luarocks >/dev/null &&
+[ -x ${DKO_BREW_PREFIX}/bin/luarocks ] &&
   [ -d "${DKO_BREW_PREFIX}/opt/lua@5.1" ] &&
   {
     export DKO_LUA_DIR="${DKO_BREW_PREFIX}/opt/lua@5.1"
@@ -28,6 +30,8 @@ command -v luarocks >/dev/null &&
     alias luarocks='luarocks --lua-dir="$DKO_LUA_DIR"'
   }
 
+# @TODO recheck this for Big Sur
+# https://github.com/pyenv/pyenv/issues/1746
 # Allow pyenv to use custom openssl from brew
 [ -d "${DKO_BREW_PREFIX}/opt/openssl/lib" ] &&
   export LDFLAGS="-L${DKO_BREW_PREFIX}/opt/openssl/lib"
@@ -47,11 +51,19 @@ PATH="${HOME}/.iterm2:${PATH}"
 # list installed brew and deps
 # https://zanshin.net/2014/02/03/how-to-list-brew-dependencies/
 bwhytree() {
-  brew list | while read c; do
+  brew list -1 --formula | while read c; do
     echo -n "\e[1;34m${c} -> \e[0m"
     brew deps "$c" | awk '{printf(" %s ", $0)}'
     echo ""
   done
+}
+
+# fix old casks that error during uninstall from undent
+# https://github.com/Homebrew/homebrew-cask/issues/49716
+bfixcasks() {
+  find "$(brew --prefix)/Caskroom/"*'/.metadata' -type f -name '*.rb' |\
+    xargs grep 'EOS.undent' --files-with-matches |\
+    xargs sed -i '' 's/EOS.undent/EOS/'
 }
 
 # Restart Docker.app and wait for daemon
@@ -81,6 +93,13 @@ ios() {
   open "$(xcode-select -p)/Applications/Simulator.app"
 }
 
+addjavas() {
+  __dko_has "jenv" || return 1
+  for path_to_jdk in $(ls -d /Library/Java/JavaVirtualMachines/*/Contents/Home); do
+    jenv add $path_to_jdk
+  done
+}
+
 # list members for a group
 # http://www.commandlinefu.com/commands/view/10771/osx-function-to-list-all-members-for-a-given-group
 members() {
@@ -92,4 +111,20 @@ members() {
 
 vol() {
   __dko_has "osascript" && osascript -e "set volume ${1}"
+}
+
+# ============================================================================
+# Require ddcctl https://github.com/kfix/ddcctl
+# ============================================================================
+
+ddcctl-hdmi1() {
+  __dko_has ddcctl && ddcctl -d 1 -i 17
+}
+
+ddcctl-hdmi2() {
+  __dko_has ddcctl && ddcctl -d 1 -i 18
+}
+
+ddcctl-dp() {
+  __dko_has ddcctl && ddcctl -d 1 -i 15
 }

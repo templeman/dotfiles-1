@@ -31,6 +31,7 @@ __dko_has 'pyenv' && {
   eval "$(pyenv init -)"
   # should have pyenv-virtualenv plugin if installed via pyenv-installer
   __dko_has 'pyenv-virtualenv-init' && eval "$(pyenv virtualenv-init -)"
+  export PIPX_DEFAULT_PYTHON="${PYENV_ROOT}/shims/python"
 }
 
 # ==============================================================================
@@ -49,7 +50,7 @@ virtualenv_info() {
   venv=''
   # Strip out the path and just leave the env name
   [ -n "$VIRTUAL_ENV" ] && venv="${VIRTUAL_ENV##*/}"
-  [ -n "$venv" ] && echo "$venv"
+  [ -n "$venv" ] && printf '%s\n' "$venv"
 }
 
 # ============================================================================
