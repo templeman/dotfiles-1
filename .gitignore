@@ -23,6 +23,7 @@ zsh/antibody
 # cache + logs
 .bash_history
 .lesshst
+.nvimlog
 .tox
 .zcache
 .zcompdump*
