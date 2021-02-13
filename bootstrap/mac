@@ -24,10 +24,11 @@ export PATH="${DOTFILES}/bin:${PATH}"
 # check prereqs
 # ============================================================================
 
-open -Ra 'Xcode' || {
-  __dko_err "Missing Xcode, install from App Store"
-  exit 1
-}
+# ST: Don't need Xcode
+# open -Ra 'Xcode' || {
+#   __dko_err "Missing Xcode, install from App Store"
+#   exit 1
+# }
 
 __dko_require 'xcrun' || {
   __dko_err "Missing Xcode Command Line Tools, install via Xcode"

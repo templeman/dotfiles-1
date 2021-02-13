@@ -626,6 +626,7 @@ __dko_dotfiles__linux__deb__update() {
 # ------------------------------------------------------------------------------
 
 __dko_dotfiles__darwin__update_mac() {
+  # ST: Avoid automatic macOS system updates since we might be on unsupported hardware
   # __dko_status "macOS system update"
   # sudo softwareupdate --install --all
   # 
