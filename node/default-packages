@@ -12,6 +12,7 @@ npmrc
 package-json-validator
 prettier
 prettier-eslint-cli
+random-word-cli
 remark-cli
 sass-lint
 sitemap-generator-cli
