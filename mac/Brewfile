@@ -53,6 +53,7 @@ brew "ssh-copy-id"
 brew "sqlite3" # for pyenv
 #brew "swiftlint" # requires full xcode!
 brew "switchaudio-osx"
+brew "tag"
 brew "task"
 brew "tasksh"
 brew "telnet"
