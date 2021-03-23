@@ -2,6 +2,7 @@ commitizen
 corona-cli
 generator-standard-readme
 http-server
+icon-gen
 js-beautify
 jscpd
 jsonlint
