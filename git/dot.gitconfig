@@ -153,3 +153,5 @@
 
 [hub]
 	protocol = https
+[init]
+	defaultBranch = main
