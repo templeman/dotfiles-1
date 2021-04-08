@@ -1,5 +1,6 @@
 ansible-lint
 bashate
+linkchecker
 pylint
 vim-vint
 vulture
