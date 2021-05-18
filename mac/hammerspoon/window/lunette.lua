@@ -12,6 +12,9 @@ spoon.Lunette:bindHotkeys({
   rightHalf = {
     {hyper, "L"},
   },
+  cycleWidth = {
+    {hyper, "W"},
+  },
   topHalf = {
     {hyper, "K"},
   },

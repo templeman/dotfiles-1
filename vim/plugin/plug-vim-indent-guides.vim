@@ -12,8 +12,9 @@ let g:indent_guides_color_change_percent = 6
 
 " The autocmd hooks are run after plugins loaded so okay to reference them in
 " this file even though it is sourced before the functions are defined.
-" augroup dkoindentguides
-"  autocmd!
-"  autocmd BufEnter  *.hbs,*.html,*.mustache,*.php   IndentGuidesEnable
-"  autocmd BufLeave  *.hbs,*.html,*.mustache,*.php   IndentGuidesDisable
-" augroup END
+autocmd dkoindentguides BufEnter
+      \ *.block,*.hbs,*.html,*.mustache,*.php
+      \ IndentGuidesEnable
+autocmd dkoindentguides BufLeave
+      \ *.block,*.hbs,*.html,*.mustache,*.php
+      \ IndentGuidesDisable

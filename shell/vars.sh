@@ -3,11 +3,37 @@
 # Some things from env are here since macOS/OS X doesn't start new env for each
 # term and we may need to reset the values
 
-export DKO_SOURCE="${DKO_SOURCE} -> shell/vars.sh"
+export DKO_SOURCE="${DKO_SOURCE} -> shell/vars.sh {"
 
 # dot.bash_profile did this early
+# @TODO maybe dot.bash_profile needs to skip init
 DOTFILES_OS="${DOTFILES_OS:-$(uname)}"
 export DOTFILES_OS
+
+case "$DOTFILES_OS" in
+  Darwin*) ;;
+  FreeBSD*) export DOTFILES_DISTRO="FreeBSD" ;;
+  OpenBSD*) export DOTFILES_DISTRO="OpenBSD" ;;
+
+  *)
+    # for pacdiff
+    export DIFFPROG="nvim -d"
+
+    # X11 - for starting via xinit or startx
+    export XAPPLRESDIR="${DOTFILES}/linux"
+
+    if [ -f /etc/arch-release ]; then
+      # manjaro too
+      export DOTFILES_DISTRO="archlinux"
+    elif [ -f /etc/debian_version ]; then
+      export DOTFILES_DISTRO="debian"
+    elif [ -f /etc/fedora-release ]; then
+      export DOTFILES_DISTRO="fedora"
+    elif [ -f /etc/synoinfo.conf ]; then
+      export DOTFILES_DISTRO="synology"
+    fi
+  ;;
+esac
 
 # ============================================================================
 # Locale
@@ -30,14 +56,9 @@ export ZDOTDIR="${DOTFILES}/zsh"
 # XDG
 # ============================================================================
 
-# pretty much the defaults, but explicitly provide for my own use
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
-
-# ----------------------------------------------------------------------------
-# XDG: user-dirs
-# ----------------------------------------------------------------------------
 
 # user-dirs.dirs doesn't exist on macOS/OS X so check first.
 # Exporting is fine since the file is generated via xdg-user-dirs-update
@@ -57,11 +78,8 @@ export XDG_DATA_HOME="${HOME}/.local/share"
     XDG_VIDEOS_DIR &&
   DKO_SOURCE="${DKO_SOURCE} -> ${XDG_CONFIG_HOME}/user-dirs.dirs"
 
-# ----------------------------------------------------------------------------
-# Defaults if not set in user-dirs
-# ----------------------------------------------------------------------------
-
-export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-${HOME}/Downloads}"
+[ -z "$XDG_DOWNLOAD_DIR" ] && [ -d "${HOME}/Downloads" ] &&
+  export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
 
 # ============================================================================
 # History -- except HISTFILE location is set by shell rc file
@@ -71,7 +89,7 @@ export HISTSIZE=50000
 export HISTFILESIZE=$HISTSIZE
 export SAVEHIST=$HISTSIZE
 export HISTCONTROL=ignoredups
-export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
+export HISTIGNORE="ll:ls:cd:cd -:pwd:exit:date"
 
 # ============================================================================
 # program settings
@@ -88,7 +106,11 @@ export CVSIGNORE="${DOTFILES}/git/.gitignore"
 # ----------------------------------------------------------------------------
 
 export EDITOR='vim'
-export VISUAL='vim'
+export VISUAL="$EDITOR"
+
+# this requires Defaults env_keep += "SYSTEMD_EDITOR" in your sudo settings to
+# take effect. See https://unix.stackexchange.com/a/408419
+export SYSTEMD_EDITOR="$EDITOR"
 
 # ----------------------------------------------------------------------------
 # pager
@@ -180,9 +202,6 @@ export SHELLCHECK_OPTS="--exclude=SC1090,SC2148"
 # DO NOT DO THIS, shells are fine, but tmux will not know where to look!
 #export TERMINFO="${XDG_DATA_HOME}/terminfo"
 
-# travis cli
-export TRAVIS_CONFIG_PATH="${XDG_CONFIG_HOME}/travis"
-
 # vagrant
 export VAGRANT_HOME="${XDG_DATA_HOME}/vagrant"
 export VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases"
@@ -190,6 +209,10 @@ export VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases"
 # wp cli
 export WP_CLI_CONFIG_PATH="${XDG_CONFIG_HOME}/wp-cli"
 
+export YAMLLINT_CONFIG_FILE="${DOTFILES}/yamllint/config"
+
 # yarn cache
 # https://github.com/yarnpkg/yarn/issues/3208
 export YARN_CACHE_FOLDER="${XDG_CACHE_HOME}/yarn"
+
+DKO_SOURCE="${DKO_SOURCE} }"

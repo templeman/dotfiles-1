@@ -77,6 +77,12 @@ nmap <silent> <Leader>bc <Plug>(coc-calc-result-replace)
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
 nnoremap <silent> gsc :<C-U>CocCommand git.showCommit<CR>
+nnoremap <silent> gx :<C-U>CocCommand git.browserOpen<CR>
+
+" coc-markdownlint
+autocmd dkococ FileType markdown
+      \ nmap <silent> <A-=>
+      \   :<C-u>CocCommand markdownlint.fixAll<CR>
 
 " coc-prettier
 autocmd dkococ FileType

@@ -9,13 +9,11 @@
 	um      = branch --verbose --no-merged
 
 	co      = checkout
-	cb      = checkout -b
-	ct      = checkout --track
 
 	ci      = commit
 	ca      = commit --amend
 	cane    = commit --amend --no-edit
-	cm      = commit -m
+	cm      = commit --edit -m
 
 	cfg     = config --global --edit
 	cls     = config --list --show-origin
@@ -36,7 +34,6 @@
 
 	l       = log --abbrev-commit --date=short --pretty=ld
 	ll      = log --abbrev-commit --oneline --decorate --all
-	lm      = ld --author="Sam Templeman"
 	lb      = log --abbrev-commit --oneline --decorate --all --graph
 	lg      = log --abbrev-commit           --decorate --all --graph
 	new     = log --no-merges --abbrev-commit --oneline         ORIG_HEAD..

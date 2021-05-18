@@ -89,18 +89,6 @@ Find and edit the nginx.conf file
 
 Find and edit the php.ini file
 
-## fbr
-
-FZF-interface for selecting a git branch
-
-## fbrl
-
-FZF-interface for selecting a git branch including remotes, sorted by latest
-
-## fkill
-
-FZF-interface for `kill -9` a process
-
 ## flatten
 
 Recursively flatten a directory
@@ -114,11 +102,23 @@ Get directory total filesize
 Look upwards from $PWD for filename $1, output to stdout if found. Does not
 follow symlinks.
 
-## fwt
+## fzf-audio
+
+macOS only, FZF + SwitchAudioSource
+
+## fzf-git-branch
+
+FZF-interface for selecting a git branch
+
+## fzf-git-latest-branches
+
+FZF-interface for selecting a git branch including remotes, sorted by latest
+
+## fzf-git-worktree
 
 Switch to a different worktree using FZF
 
-## fxc
+## fzf-xcode
 
 Switch to a different XCode version
 
@@ -141,6 +141,11 @@ Get user's ssh public keys from GitHub
 ## git-lp
 
 List pull requests since last tag
+
+## git-open
+
+Use GitHub or GitLab cli tools to open current repo in browser.
+Fall back to dko-open if the repo origin is `https`.
 
 ## git-today
 

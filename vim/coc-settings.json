@@ -104,6 +104,7 @@
   // coc-prettier
   // =========================================================================
 
+  "prettier.disableLanguages": ["markdown"],
   "prettier.singleQuote": true,
   "prettier.trailingComma": "es5",
   "prettier.bracketSpacing": true,
