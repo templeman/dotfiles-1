@@ -13,7 +13,7 @@
 	ci      = commit
 	ca      = commit --amend
 	cane    = commit --amend --no-edit
-	cm      = commit --edit -m
+	cm      = commit -m
 
 	cfg     = config --global --edit
 	cls     = config --list --show-origin
