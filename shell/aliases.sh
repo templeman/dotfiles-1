@@ -74,8 +74,11 @@ alias gemrm='gem uninstall --all'
 # ----------------------------------------------------------------------------
 
 alias g-='git checkout -'
+alias gb='git branch --verbose'
+alias gg='git grep --line-number --break --heading'
 alias gl='git l --max-count 20'
 alias gm='git checkout "$(git symbolic-ref refs/remotes/origin/HEAD | cut -f4 -d/)"'
+alias gp='git push'
 
 # ----------------------------------------------------------------------------
 # gradle
