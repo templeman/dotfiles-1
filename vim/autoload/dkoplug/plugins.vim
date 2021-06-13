@@ -213,9 +213,6 @@ function! dkoplug#plugins#LoadAll() abort
   " gcc to toggle comment
   Plug 'tyru/caw.vim', { 'on': [ '<Plug>(caw' ] }
 
-  " gs(a/r/d) to modify surrounding the pending operator
-  Plug 'rhysd/vim-operator-surround', { 'on': [ '<Plug>(operator-surround' ] }
-
   " <Leader>c to toggle PascalCase/snak_e the pending operator
   Plug 'tyru/operator-camelize.vim', { 'on': [ '<Plug>(operator-camelize' ] }
 
@@ -233,17 +230,6 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'rhysd/vim-textobj-anyblock'
   " - al / il  for the current line
   Plug 'kana/vim-textobj-line'
-
-  " HR with <Leader>f[CHAR]
-  Plug g:dko#vim_dir . '/mine/vim-hr'
-
-  " <Leader>C <Plug>(dkosmallcaps)
-  Plug g:dko#vim_dir . '/mine/vim-smallcaps', { 'on': [
-        \   '<Plug>(dkosmallcaps)',
-        \ ] }
-
-  " Toggle movement mode line-wise/display-wise
-  Plug g:dko#vim_dir . '/mine/vim-movemode'
 
   " Quickly align items on a given character
   Plug 'junegunn/vim-easy-align'
