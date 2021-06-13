@@ -636,6 +636,15 @@ function! dkoplug#plugins#LoadAll() abort
   " Provides neat completion menu for command line, e.g. for :, /, ? modes
   Plug 'gelguy/wilder.nvim', PlugIf(has('nvim'))
 
+  " Testing out VimWiki
+  let g:vimwiki_list = [{'path': '~/Dropbox (Personal)/Notes', 'syntax': 'markdown', 'ext': '.md'}]
+  Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
+
+  " Testing out calendar
+  let g:calendar_google_calendar = 1
+  source ~/.cache/calendar.vim/credentials.vim
+  Plug 'itchyny/calendar.vim'
+
   " --------------------------------------------------------------------------
   " Quickfix window
   " --------------------------------------------------------------------------
