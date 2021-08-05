@@ -1,5 +1,7 @@
 " plugin/vim-easy-align.vim
 
+let g:easy_align_ignore_groups = ['Comment']
+
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 
