@@ -41,11 +41,12 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'AndrewRadev/bufferize.vim', { 'on': [ 'Bufferize' ] }
 
   " Required by Inspecthi, don't lazy
-  Plug 'cocopon/colorswatch.vim'
+  Plug 'cocopon/colorswatch.vim', { 'branch': 'main' }
+
 
   silent! nunmap zs
   nnoremap <silent> zs :<C-U>Inspecthi<CR>
-  Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ] }
+  Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ], 'branch': 'main' }
 
 
   " ==========================================================================
