@@ -239,6 +239,9 @@ function! dkoplug#plugins#LoadAll() abort
   " Quickly align items on a given character
   Plug 'junegunn/vim-easy-align'
 
+  " Quickly jump to any location specified by two characters
+  " Plug 'justinmk/vim-sneak'
+
 
   " ==========================================================================
   " Completion
@@ -630,6 +633,9 @@ function! dkoplug#plugins#LoadAll() abort
   " Testing out VimWiki
   let g:vimwiki_list = [{'path': '~/Dropbox (Personal)/Notes', 'syntax': 'markdown', 'ext': '.md'}]
   Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
+
+  " Testing out Taskwiki
+  Plug 'tools-life/taskwiki'
 
   " Testing out calendar
   let g:calendar_google_calendar = 1
