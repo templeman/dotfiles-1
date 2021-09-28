@@ -80,11 +80,21 @@ nnoremap  <silent><special>  <Leader>evr
 nnoremap  <silent><special>  <Leader>evp
       \ :<C-U>execute 'edit ' . g:vdotdir . '/autoload/dkoplug/plugins.vim'<CR>
 
-" ----------------------------------------------------------------------------
-" Preview current file in Marked 2
-" ----------------------------------------------------------------------------
+ command! Marked silent !open -a "Marked 2.app" "%:p"
 
-command! Marked silent !open -a "Marked 2.app" "%:p"
+" ============================================================================
+" FZF
+" ============================================================================
+
+nnoremap  <silent><special>   <A-b>   :<C-U>FZFBuffers<CR>
+nnoremap  <silent><special>   <A-c>   :<C-U>FZFCommands<CR>
+nnoremap  <silent><special>   <A-f>   :<C-U>FZFFiles<CR>
+nnoremap  <silent><special>   <A-g>   :<C-U>FZFGrepper<CR>
+nnoremap  <silent><special>   <A-m>   :<C-U>FZFMRU<CR>
+nnoremap  <silent><special>   <A-p>   :<C-U>FZFProject<CR>
+nnoremap  <silent><special>   <A-r>   :<C-U>FZFRelevant<CR>
+nnoremap  <silent><special>   <A-t>   :<C-U>FZFTests<CR>
+nnoremap  <silent><special>   <A-v>   :<C-U>FZFVim<CR>
 
 " ============================================================================
 " Run :make
@@ -327,17 +337,6 @@ nnoremap <Leader>; $r;
 inoremap <c-l> <space>=><space>
 
 " ============================================================================
-
-execute dko#MapAll({
-      \   'key': '<F6>',
-      \   'command': 'call dko#lint#LintBuffer()'
-      \ })
-
-execute dko#MapAll({
-      \   'key': '<F11>',
-      \   'command': 'call dkoline#ToggleTabline()'
-      \ })
-
 " ============================================================================
 
 let &cpoptions = s:cpo_save

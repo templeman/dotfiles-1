@@ -550,7 +550,7 @@ __dko_dotfiles__darwin__require_latest_xcode() {
 
 # pass any arg to silence
 __dko_dotfiles__darwin__require_brew() {
-  __dko_has "brew" && return 0
+  __dko_has brew && return 0
   (( $# == 0 )) && __dko_warn "Homebrew is not installed"
   return 1
 }

@@ -21,7 +21,6 @@ if s:truecolor
     unlet s:cpo_save
 
   endif
-
 endif
 
 augroup dkocolorscheme
