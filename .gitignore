@@ -31,3 +31,4 @@ zsh/antibody
 .zsh_history
 .zshrc.zwc
 *.log
+*.tbcache
