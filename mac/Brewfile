@@ -42,7 +42,7 @@ brew "moreutils"
 brew "neovim"
 brew "nmap"
 brew "nnn"
-# brew "openssl" # for pyenv
+brew "openssl" # for pyenv
 # brew "pandoc"
 brew "php@7.4"
 brew "pianobar"
