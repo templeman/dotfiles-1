@@ -8,4 +8,6 @@ pycodestyle==2.7.0
 pydocstyle==6.1.1
 pyflakes==2.3.1
 pylast==3.1.0
+six
 speedtest-cli==2.0.2
+tasklib>=2.4.0
