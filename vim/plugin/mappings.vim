@@ -127,6 +127,7 @@ nnoremap <silent> ss <C-w>s
 
 " ----------------------------------------------------------------------------
 " Move between split windows by using the four directions H, L, K, J
+" ST: Use H, L, K, J instead of arrow keys
 " ----------------------------------------------------------------------------
 
 " nnoremap  <special>   <C-Up>      <C-w>k
