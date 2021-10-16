@@ -21,4 +21,5 @@ stylelint
 stylelint-config-standard
 trash-cli
 write-good
+yarn
 yo
