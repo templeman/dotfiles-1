@@ -6,23 +6,26 @@
 <!-- - bettertouchtool -->
 - beyond-compare
 <!-- - betwixt         -->
+- bitbar
 <!-- - bitwarden -->
-- breaktimer
 <!-- - cloudapp  -->
-- dash
+- default-folder-x (failing install)
 <!-- - discord          -->
 <!-- - disk-inventory-x -->
 - docker
 - docker-edge
-- dropbox
+- dropbox (no shasum)
 - electric-sheep
-<!-- - gimp -->
+- gimp
+- gpg-suite-no-mail
 - fantastical
 - firefox
+- firefox-developer-edition
 - folding-at-home
+- font-fira-mono-nerd-font
 - franz
 - gitter
-- google-chrome
+- google-chrome (shasum invalidates frequently)
 - imageoptim
 <!-- - inkscape -->
 <!--     - inkscape requires xquartz -->
@@ -36,18 +39,18 @@
 <!-- - kitematic -->
 - lastpass
 - libreoffice
-- mailmate
 - marked
 - mjml
+- ngrok
 - nordvpn
 - notable
 - notion
-- nvalt
+- postman
 <!-- - qbittorrent -->
+- ray
 <!-- - robo-3t     -->
 - sequel-pro
 - skype
-- sonos
 - spotify
 - synology-drive
 - synologyassistant
@@ -55,7 +58,7 @@
 <!-- - transmit -->
 - the-unarchiver
 - tunnelbear
-<!-- - tunnelblick -->
 - vagrant
 - virtualbox
 - virtualbox-extension-pack
+- vnc-viewer
