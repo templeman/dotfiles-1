@@ -219,6 +219,10 @@ function! dkoplug#plugins#LoadAll() abort
   " Quickly jump to any location specified by two characters
   " Plug 'justinmk/vim-sneak'
 
+  " Allows for working with word variants, including case coercion
+  " :help abolish
+  Plug 'tpope/vim-abolish'
+
 
   " ==========================================================================
   " Completion
@@ -586,9 +590,9 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'nathanaelkane/vim-indent-guides'
 
   " Testing out calendar
-  let g:calendar_google_calendar = 1
-  source ~/.cache/calendar.vim/credentials.vim
-  Plug 'itchyny/calendar.vim'
+  " let g:calendar_google_calendar = 1
+  " source ~/.cache/calendar.vim/credentials.vim
+  " Plug 'itchyny/calendar.vim'
   let g:git_messenger_max_popup_width = 70
   let g:git_messenger_max_popup_height = 24
   " Can add borders, see api-floatwin
