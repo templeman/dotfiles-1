@@ -21,10 +21,6 @@ function! dkoplug#plugins#LoadAll() abort
   " Fixes
   " ==========================================================================
 
-  " Fix gx (broken in Vim as of 2021-07-17)
-  " https://github.com/vim/vim/issues/4738
-  Plug 'felipec/vim-sanegx'
-
   " Fix CursorHold
   " https://github.com/neovim/neovim/issues/12587
   Plug 'antoinemadec/FixCursorHold.nvim', PlugIf(has('nvim'))
