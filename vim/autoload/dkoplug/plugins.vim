@@ -582,7 +582,8 @@ function! dkoplug#plugins#LoadAll() abort
 
 
   " Testing out VimWiki
-  let g:vimwiki_list = [{'path': '~/Dropbox (Personal)/Notes', 'syntax': 'markdown', 'ext': '.md'}]
+  let g:vimwiki_global_ext = 0
+  let g:vimwiki_list = [{'path': '~/Dropbox (Personal)/Notes', 'syntax': 'markdown', 'ext': '.md', 'diary_rel_path': 'journal/daily/', 'diary_start_week_day':  'sunday'}]
   Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
 
   " Testing out Taskwiki
