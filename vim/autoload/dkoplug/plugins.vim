@@ -276,6 +276,7 @@ function! dkoplug#plugins#LoadAll() abort
   " ==========================================================================
 
   Plug 'suy/vim-context-commentstring'
+  Plug 'amadeus/vim-convert-color-to'
 
   " ==========================================================================
   " Language: ansible config
