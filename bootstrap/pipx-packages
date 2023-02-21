@@ -1,5 +1,6 @@
 ansible-lint
 bashate
+img2pdf
 linkchecker
 pylint
 vim-vint
