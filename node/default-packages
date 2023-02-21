@@ -17,6 +17,8 @@ random-word-cli
 remark-cli
 sass-lint
 sitemap-generator-cli
+standard
+semistandard
 stylelint
 stylelint-config-standard
 trash-cli
