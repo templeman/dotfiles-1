@@ -83,3 +83,4 @@ type _git &>/dev/null \
 
 DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=sh
+. "${HOME}/.local/cargo/env"

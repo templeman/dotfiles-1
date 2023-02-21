@@ -25,3 +25,4 @@ export BDOTDIR
 
 DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=sh
+. "/Users/sam/.local/cargo/env"

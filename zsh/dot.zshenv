@@ -22,3 +22,4 @@ export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zshcache"
 
 DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=zsh
+. "${HOME}/.local/cargo/env"
