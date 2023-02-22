@@ -24,17 +24,6 @@ export PATH="${DOTFILES}/bin:${PATH}"
 # check prereqs
 # ============================================================================
 
-# ST: Don't need Xcode
-# open -Ra 'Xcode' || {
-#   __dko_err "Missing Xcode, install from App Store"
-#   exit 1
-# }
-
-__dko_require 'xcrun' || {
-  __dko_err "Missing Xcode Command Line Tools, install via Xcode"
-  exit 1
-}
-
 __dko_require 'brew' || {
   __dko_err "Missing brew, install as on https://brew.sh"
   exit 1
@@ -78,8 +67,76 @@ _bootstrap_plist() {
 _bootstrap_plist || exit 1
 
 # ============================================================================
+# vendor
+# ============================================================================
+
+_bootstrap_brew() {
+  __dko_status "Brewing"
+  [ -z "$HOMEBREW_PREFIX" ] && . "${DOTFILES}/shell/interactive-darwin.zsh"
+  # prefer homebrew/cask-fonts
+  brew untap caskroom/fonts 2>/dev/null
+  (
+    cd "${DOTFILES}/mac" || exit 1
+    GNUPGHOME="${HOME}/.config/gnupg" TERM=xterm256-color \brew bundle
+  )
+}
+_bootstrap_brew
+
+__dko_status "Installing fzf shell extensions"
+"${DOTFILES}/bin/dot" fzf
+
+# ============================================================================
+# use zsh
+# the /etc/shells method is for TTY users, Darwin can just read from dscl
+# https://rick.cogley.info/post/use-homebrew-zsh-instead-of-the-osx-default/
+# ============================================================================
+
+_bootstrap_shell() {
+  local usershell
+
+  local zshpath="${HOMEBREW_PREFIX}/bin/zsh"
+  [ -x "$zshpath" ] || return 1
+
+  grep "$zshpath" /etc/shells || {
+    __dko_status "Add brewed zsh to /etc/shells (sudo)"
+    sudo echo "$zshpath" >> /etc/shells
+  }
+  grep "$zshpath" /etc/shells || return 1
+
+  __dko_status "Set user shell to brewed zsh using chsh"
+  chsh -s "$zshpath" || return 1
+
+  __dko_status "Set user shell to brewed zsh using dscl (sudo)"
+  usershell="$(dscl . -read "/Users/${USER}" UserShell)"
+  if [[ "$usershell" != "UserShell: ${zshpath}" ]]; then
+    __dko_ok "Already using brewed zsh"
+  else
+    sudo dscl . -create "/Users/${USER}" UserShell "${zshpath}"
+  fi
+}
+_bootstrap_shell || {
+  __dko_warn "Could not update the user's shell to ${zshpath}"
+  __dko_warn_ "Check the brew installation and refer to"
+  __dko_warn_ "https://rick.cogley.info/post/use-homebrew-zsh-instead-of-the-osx-default/"
+}
+
+# ============================================================================
+
+__dko_status "Restart your terminal"
+
+# ============================================================================
 # sdks
 # ============================================================================
+
+open -Ra 'Xcode' || {
+  __dko_err "Missing Xcode, install from App Store"
+  exit 1
+}
+
+__dko_require 'xcrun' || {
+  __dko_err "Missing Xcode Command Line Tools, install via Xcode"
+  exit 1
+}
 
 _bootstrap_sdks() {
   local clitools="/Library/Developer/CommandLineTools"
@@ -116,60 +173,3 @@ _bootstrap_sdks() {
 __dko_status "Re-bootstrapping SDKs (required to install python on 10.14+)"
 _bootstrap_sdks || exit 1
 
-# ============================================================================
-# vendor
-# ============================================================================
-
-_bootstrap_brew() {
-  __dko_status "Brewing"
-  [ -z "$DKO_BREW_PREFIX" ] && . "${DOTFILES}/shell/interactive-darwin.zsh"
-  # prefer homebrew/cask-fonts
-  brew untap caskroom/fonts 2>/dev/null
-  (
-    cd "${DOTFILES}/mac" || exit 1
-    GNUPGHOME="${HOME}/.config/gnupg" TERM=xterm256-color \brew bundle
-  )
-}
-_bootstrap_brew
-
-__dko_status "Installing fzf shell extensions"
-"${DOTFILES}/bin/dot" fzf
-
-# ============================================================================
-# use zsh
-# the /etc/shells method is for TTY users, Darwin can just read from dscl
-# https://rick.cogley.info/post/use-homebrew-zsh-instead-of-the-osx-default/
-# ============================================================================
-
-_bootstrap_shell() {
-  local usershell
-
-  local zshpath="${DKO_BREW_PREFIX}/bin/zsh"
-  [ -x "$zshpath" ] || return 1
-
-  grep "$zshpath" /etc/shells || {
-    __dko_status "Add brewed zsh to /etc/shells (sudo)"
-    sudo echo "$zshpath" >> /etc/shells
-  }
-  grep "$zshpath" /etc/shells || return 1
-
-  __dko_status "Set user shell to brewed zsh using chsh"
-  chsh -s "$zshpath" || return 1
-
-  __dko_status "Set user shell to brewed zsh using dscl (sudo)"
-  usershell="$(dscl . -read "/Users/${USER}" UserShell)"
-  if [[ "$usershell" != "UserShell: ${zshpath}" ]]; then
-    __dko_ok "Already using brewed zsh"
-  else
-    sudo dscl . -create "/Users/${USER}" UserShell "${zshpath}"
-  fi
-}
-_bootstrap_shell || {
-  __dko_warn "Could not update the user's shell to ${zshpath}"
-  __dko_warn_ "Check the brew installation and refer to"
-  __dko_warn_ "https://rick.cogley.info/post/use-homebrew-zsh-instead-of-the-osx-default/"
-}
-
-# ============================================================================
-
-__dko_status "Restart your terminal"

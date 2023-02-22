@@ -9,7 +9,7 @@ My dotfiles. <https://github.com/davidosomething/dotfiles>
     - See [grawity's notes] and [environ notes]
 - ZSH (preferred) and BASH configs
 - Neovim (preferred) and VIM configs
-- RC files for Lua, markdownlint, node, PHP, python, R, ruby, and others
+- RC files for Lua, markdownlint, node, PHP, python, R, and others
 
 ![terminal screenshot][screenshot]
 > Screenshot of my ZSH prompt
@@ -23,7 +23,7 @@ See macOS specific notes in [mac/README.md](mac/README.md)
 Generally:
 
 ```sh
-git clone --recurse-submodules https://github.com/davidosomething/dotfiles ~/.dotfiles
+git clone https://github.com/davidosomething/dotfiles ~/.dotfiles
 ```
 
 Then, run the [bootstrap/symlink](bootstrap/symlink) script for linux or
@@ -39,14 +39,8 @@ The `sshkeygen` alias will help in generating a new SSH key.
 
 #### ruby
 
-For user-land ruby, install [chruby] and `ruby-install`. Then, use
-`ruby-install` to install a version of ruby. Preferably install the latest
-ruby. The dotfiles alias ruby-install to use `${XDG_DATA_HOME}/rubies` as the
-installation path.
-
-```sh
-ruby-install --latest ruby
-```
+For user-land ruby, install [ruby-build], [its dependencies], and [asdf] and
+[asdf-ruby]. Use `asdf` to install ruby.
 
 #### node
 
@@ -75,8 +69,6 @@ environment set up first.
   ack, (Neo)vim, etc.
 - [node/install](node/install) install default packages, requires you set up
   [fnm] and install node first
-- [ruby/install-default-gems](ruby/install-default-gems) requires you set up
-  [chruby] and install a ruby first.
 - [python/install](python/install) installs default pip packages. Requires
   [pyenv] already set up
 
@@ -100,9 +92,6 @@ environment set up first.
       `vim/after/syntax/gitcommit.vim`.
 - `python/`
     - Never `sudo pip`. Set up a [pyenv], and use a [pyenv-virtualenv].
-- `ruby/`
-    - Never `sudo gem`. Set up a [chruby] env first, and then you can install
-      gems into the userspace local to the active ruby env.
 - `vim/`
     - If `curl` and `git` are available,
       [vim-plug](https://github.com/junegunn/vim-plug) can automatically
@@ -156,20 +145,20 @@ For X apps (no terminal) the value may be:
 
 > _Logo from [jglovier/dotfiles-logo]_
 
+[asdf]: https://github.com/asdf-vm/asdf
+[asdf-ruby]: https://github.com/asdf-vm/asdf-ruby
 [Arch Linux wiki for XDG Base Directory Support]: https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
 [Debian DotFilesList]: https://wiki.debian.org/DotFilesList
-[Fira (Fura) Mono for Powerline]: https://github.com/powerline/fonts
 [XDG]: https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
-[chruby]: https://github.com/postmodern/chruby
 [environ notes]: https://github.com/grawity/dotfiles/blob/master/.environ.notes
-[google shell style]: https://google.github.io/styleguide/shell.xml
 [grawity's notes]: https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
+[its dependencies]: https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
 [jglovier/dotfiles-logo]: https://github.com/jglovier/dotfiles-logo
 [fnm]: https://github.com/Schniz/fnm
 [pyenv-installer]: https://github.com/yyuu/pyenv-installer
 [pyenv-virtualenv]: https://github.com/pyenv/pyenv-virtualenv
 [pyenv]: https://github.com/pyenv/pyenv
+[ruby-build]: https://github.com/rbenv/ruby-build
 [screenshot]: https://raw.githubusercontent.com/davidosomething/dotfiles/8fa3d6a738ed39ff2b8ba7a5d9126b59d895b538/meta/terminal-potatopro.png
 [/uses]: https://www.davidosomething.com/uses/
-
 

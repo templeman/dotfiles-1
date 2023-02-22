@@ -47,7 +47,7 @@ set completion-ignore-case on
 . "/usr/share/bash-completion/bash_completion" 2>/dev/null
 
 # homebrew's bash-completion package sources the rest of bash_completion.d
-. "${DKO_BREW_PREFIX}/etc/bash_completion" 2>/dev/null
+. "${HOMEBREW_PREFIX}/etc/bash_completion" 2>/dev/null
 
 . "${NVM_DIR}/bash_completion" 2>/dev/null
 
@@ -56,7 +56,7 @@ set completion-ignore-case on
 
 # Enable tab completion for `g` by marking it as an alias for `git`
 type _git &>/dev/null \
-  && [[ -f "${DKO_BREW_PREFIX}/etc/bash_completion.d/git-completion.bash" ]] \
+  && [[ -f "${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash" ]] \
   && complete -o default -o nospace -F _git g
 
 # WP-CLI Bash completions
@@ -83,4 +83,3 @@ type _git &>/dev/null \
 
 DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=sh
-. "${HOME}/.local/cargo/env"

@@ -9,7 +9,7 @@ export DKO_SOURCE="${DKO_SOURCE} -> zinit.zsh {"
 function {
   local man_dir="${ZPFX}/share/man/man1"
   # Make man dir in /polaris
-  mkdir -pv "$man_dir"
+  mkdir -p "$man_dir"
 
   # ----------------------------------------------------------------------------
   # Git
@@ -47,7 +47,8 @@ function {
   # ----------------------------------------------------------------------------
 
   zinit lucid for \
-    if'! __dko_has fzf' from'gh-r' as'program' 'junegunn/fzf-bin' \
+    if'! __dko_has fzf' from'gh-r' as'program' \
+    'junegunn/fzf-bin' \
     \
     'wfxr/forgit' \
     'torifat/npms' \
@@ -68,7 +69,6 @@ function {
 
   # Customized from instructions at https://github.com/sharkdp/bat#man
   local bat_manpager="export MANPAGER=\"sh -c 'col -bx | bat --language man --paging always --style=grid'\""
-  local delta_gitpager="export GIT_PAGER='delta --dark'"
 
   zinit lucid from'gh-r' as'program' for \
     mv'bat* -> bat' \
@@ -80,7 +80,6 @@ function {
     \
     mv'delta* -> delta' \
     pick'delta/delta' \
-    atload"$delta_gitpager" \
     'dandavison/delta' \
     \
     mv'fd* -> fd' pick'fd/fd' \
@@ -89,14 +88,13 @@ function {
     '@sharkdp/fd' \
     \
     mv'jq* -> jq'             'stedolan/jq' \
-    mv'nvim-ctrl* -> nvctl'   'chmln/nvim-ctrl'   \
     mv'shfmt* -> shfmt'       '@mvdan/sh'         \
     \
     mv'zoxide* -> zoxide' \
     pick'zoxide/zoxide' \
-    atclone'cp -vf zoxide/man/*.1 "${ZPFX}/share/man/man1"' \
+    atclone'[ -d zoxide/main ] && cp -vf zoxide/man/*.1 "${ZPFX}/share/man/man1"' \
     atpull'%atclone' \
-    atload'eval "$(zoxide init --no-aliases zsh)" && alias j=__zoxide_z' \
+    atload'eval "$(zoxide init --no-aliases zsh)" && alias j=__zoxide_z && alias ji=__zoxide_zi' \
     'ajeetdsouza/zoxide' \
     \
     mv'ripgrep* -> rg' pick'rg/rg' \
@@ -105,6 +103,7 @@ function {
     'BurntSushi/ripgrep' \
     ;
 
+  zinit snippet 'OMZP::asdf'
   zinit snippet 'OMZP::cp'
   zinit snippet 'OMZP::extract'
 
@@ -113,9 +112,8 @@ function {
   # ----------------------------------------------------------------------------
 
   zinit as'completion' is-snippet for \
-    'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
-    'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
-    ;
+    'OMZP::docker/_docker' \
+    'OMZP::docker-compose/_docker-compose'
 
   # In-line best history match suggestion
   # don't suggest lines longer than
@@ -136,11 +134,12 @@ function {
     ;
 
   # ----------------------------------------------------------------------------
-  # Syntax last, and compinit before it
+  # Syntax last
+  # autoload and run compinit
   # ----------------------------------------------------------------------------
 
   # don't add wait, messes with zsh-autosuggest
-  zinit lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" for \
+  zinit lucid atload"zicompinit; zicdreplay" for \
     'zdharma/fast-syntax-highlighting'
 }
 

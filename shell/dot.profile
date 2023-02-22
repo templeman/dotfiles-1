@@ -24,4 +24,3 @@ tty -s && . "${DOTFILES}/shell/interactive.sh"
 
 DKO_SOURCE="${DKO_SOURCE} }"
 # vim: ft=sh
-. "/Users/sam/.local/cargo/env"

@@ -1,6 +1,7 @@
 commitizen
 corona-cli
 generator-standard-readme
+eslint_d
 http-server
 icon-gen
 js-beautify
@@ -14,7 +15,6 @@ package-json-validator
 prettier
 prettier-eslint-cli
 random-word-cli
-remark-cli
 sass-lint
 sitemap-generator-cli
 standard
@@ -23,5 +23,3 @@ stylelint
 stylelint-config-standard
 trash-cli
 write-good
-yarn
-yo

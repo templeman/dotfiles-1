@@ -29,11 +29,16 @@ let s:vim_help = ['vim', 'help']
 function! s:ShowDocumentation()
   if (index(s:vim_help, &filetype) >= 0)
     execute 'h ' . expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . ' ' . expand('<cword>')
+    return
   endif
+
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+    return
+  endif
+
+  call feedkeys('K', 'in')
+  "execute '!' . &keywordprg . ' ' . expand('<cword>')
 endfunction
 
 " --------------------------------------------------------------------------
@@ -54,7 +59,11 @@ omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
 
 " Action
-nmap <silent> <Leader>ca <Plug>(coc-codeaction)
+nmap <silent> <Leader>cab <Plug>(coc-codeaction)
+xmap <leader>ca  <Plug>(coc-codeaction-selected)
+nmap <leader>ca  <Plug>(coc-codeaction-selected)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Diagnostics
 nmap <silent> <Leader>d <Plug>(coc-diagnostic-info)
@@ -65,7 +74,7 @@ nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> gh <Plug>(coc-declaration)
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> <Leader>t <Plug>(coc-type-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
 
 " Formatting
 nmap <silent> <Leader>= <Plug>(coc-format-selected)
@@ -76,6 +85,7 @@ nmap <silent> <Leader>bc <Plug>(coc-calc-result-replace)
 " coc-git
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
+nnoremap <silent> gb :<C-U>CocCommand git.showBlameDoc<CR>
 nnoremap <silent> gsc :<C-U>CocCommand git.showCommit<CR>
 nnoremap <silent> gx :<C-U>CocCommand git.browserOpen<CR>
 
@@ -89,7 +99,6 @@ autocmd dkococ FileType
       \ javascript,javascriptreact,typescript,typescriptreact,json,graphql
       \ nmap <silent> <A-=>
       \   :<C-u>CocCommand prettier.formatFile<CR>
-      "\   :CocCommand eslint.executeAutofix<CR>
 
 " coc-snippets
 imap <C-f> <Plug>(coc-snippets-expand-jump)

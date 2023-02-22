@@ -30,19 +30,6 @@ alias rm="nocorrect rm"
 alias mkdir="nocorrect mkdir"
 
 # ============================================================================
-# Modules: compinit and more completion
-# ============================================================================
-
-export DOTFILES_ZSH_COMPDIR="${LDOTDIR}/completions"
-mkdir -pv "$DOTFILES_ZSH_COMPDIR"
-
-build_fnm_completions() {
-  fnm completions --shell zsh >"${DOTFILES_ZSH_COMPDIR}/_fnm" 2>/dev/null &&
-    printf "Wrote fnm completions to %s\n" "${DOTFILES_ZSH_COMPDIR}/_fnm"
-}
-[ ! -f "${DOTFILES_ZSH_COMPDIR}/_fnm" ] && build_fnm_completions
-
-# ============================================================================
 # zinit
 # ============================================================================
 
@@ -50,9 +37,10 @@ build_fnm_completions() {
 __dko_has 'file' && __dko_has 'git' && {
   declare -A ZINIT
   ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
+  ZINIT[COMPINIT_OPTS]=-C;
 
   # part of zinit's install, found by compaudit
-  mkdir -pv "${ZINIT[HOME_DIR]}" && chmod g-rwX "${ZINIT[HOME_DIR]}"
+  mkdir -p "${ZINIT[HOME_DIR]}" && chmod g-rwX "${ZINIT[HOME_DIR]}"
   alias unzinit='rm -rf "${ZINIT[HOME_DIR]}"'
 
   function {
@@ -60,25 +48,24 @@ __dko_has 'file' && __dko_has 'git' && {
     local zinit_script="${zinit_dest}/zinit.zsh"
     . "$zinit_script" 2>/dev/null || {
       # install if needed
-      command git clone https://github.com/zdharma/zinit "${zinit_dest}" &&
+      command git clone https://github.com/zdharma-continuum/zinit "${zinit_dest}" &&
         . "$zinit_script"
     }
   }
 }
 
 if __dko_has 'zinit'; then
-  zinit add-fpath "$DOTFILES_ZSH_COMPDIR"
   . "${ZDOTDIR}/zinit.zsh" 2>/dev/null
   autoload -Uz _zinit && (( ${+_comps} )) && _comps[zinit]=_zinit
+  # the last zinit plugin will run zicompinit which inits compinit
 else
-  fpath+=($DOTFILES_ZSH_COMPDIR)
+  autoload -Uz compinit && compinit
 fi
 
 # ============================================================================
 # Finish up managed completions
 # ============================================================================
 
-autoload -Uz compinit && compinit
 compdef g=git
 
 # ============================================================================
@@ -107,6 +94,7 @@ setopt EXTENDED_GLOB                  # like ** for recursive dirs
 # History
 setopt APPEND_HISTORY                 # append instead of overwrite file
 setopt EXTENDED_HISTORY               # extended timestamps
+setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE              # omit from history if space prefixed
 setopt HIST_REDUCE_BLANKS
@@ -239,7 +227,7 @@ bindkey '^[[5~' up-history
 bindkey '^[[6~' down-history
 
 # ----------------------------------------------------------------------------
-# Keybindings: Movement, also triggers zsh-autosuggest partials
+# Keybindings: Movement
 # ----------------------------------------------------------------------------
 
 bindkey '^e' vi-forward-word-end
@@ -269,13 +257,14 @@ if __dko_has 'fzf'; then
     DKO_SOURCE="${DKO_SOURCE} -> fzf"
   fi
 
-  # <C-b> to open git branch menu and switch to one
+  # <A-b> to open git branch menu and switch to one
+  # changed from <C-b> since that's my tmux bind
   __dkofzfbranch() {
     fzf-git-branch
     zle accept-line
   }
-  zle     -N      __dkofzfbranch
-  bindkey '^B'    __dkofzfbranch
+  zle -N __dkofzfbranch
+  bindkey '^[b' __dkofzfbranch
 
   # <A-w> to open git worktree list and cd into one
   __dkofzfworktree() {
@@ -284,8 +273,16 @@ if __dko_has 'fzf'; then
     [ -d "$wt" ] && cd "${wt}"
     zle accept-line
   }
-  zle     -N      __dkofzfworktree
-  bindkey '^[w'   __dkofzfworktree
+  zle -N __dkofzfworktree
+  bindkey '^[w' __dkofzfworktree
+
+  # <A-w> to run fzf npm scripts
+  __dkonpms() {
+    npms
+    zle reset-prompt
+  }
+  zle -N __dkonpms
+  bindkey '^[n' __dkonpms
 fi
 
 # ============================================================================
@@ -386,7 +383,7 @@ if [[ "$DOTFILES_DISTRO" != "synology" ]]; then
 fi
 
 # ============================================================================
-# Local: can add more zinit plugins here
+# Local
 # ============================================================================
 
 . "${DOTFILES}/shell/after.sh"
@@ -395,3 +392,4 @@ fi
 # ============================================================================
 
 DKO_SOURCE="${DKO_SOURCE} }"
+#vim: ft=zsh

@@ -1,11 +1,8 @@
 " plugin/colorscheme.vim
 
-let s:truecolor = has('termguicolors')
-      \ && $COLORTERM ==# 'truecolor'
-      \ && $TERM_PROGRAM !=# 'Apple_Terminal'
-if s:truecolor | let &termguicolors = 1 | endif
+if g:truecolor
+  let &termguicolors = 1
 
-if s:truecolor
   if dkoplug#Exists('lifepillar/vim-solarized8')
     function! s:Solarized() abort
       silent! colorscheme solarized8_high

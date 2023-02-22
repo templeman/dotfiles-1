@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+__server="${XDG_STATE_HOME}/nvim/nvim.sock"
+
+ctrl_c() {
+  echo "Detected CTRL-C, removing nvim.sock"
+  rm "$__server"
+
+  echo "Possible orphan language server processes:"
+  # shellcheck disable=2009
+  ps ux | grep -v grep | grep language-server
+}
+
+main() {
+  ! command -v nvim >/dev/null && {
+    #echo "default editor"
+    "$EDITOR" "$@"
+    return
+  }
+
+  # remote-expr outputs to /dev/stderr for some reason
+  existing=$(nvim \
+    --server "$__server" \
+    --remote-expr "execute('echo v:servername')" \
+    2>&1)
+
+  local first="$1"
+  [ "$existing" != "$__server" ] && [ -z "$first" ] && {
+    #echo "new server ${__server} with empty file"
+    nvim --listen "$__server" +enew
+    return
+  }
+
+  typeset -a files=()
+  for file in "$@"; do
+    # don't prepend PWD for absolute paths
+    case "$file" in
+    /*) ;;
+    *) file="${PWD}/${file}" ;;
+    esac
+    files+=("$file")
+  done
+
+  [ "$existing" != "$__server" ] && {
+    #echo "new server ${__server} with ${files[*]}"
+    nvim --listen "$__server" "${files[@]}"
+    return
+  }
+
+  # ==========================================================================
+  # use existing server
+  # ==========================================================================
+
+  nvim \
+    --server "$__server" \
+    --remote-expr "execute('DKOExternal')"
+
+  if [ -z "$first" ]; then
+    #echo "no file given, surface existing server"
+    nvim --server "$__server" --remote-send '<C-\><C-N><Cmd>e<CR>'
+    return
+  fi
+
+  #echo "use server ${__server} with ${file[*]}"
+  nvim --server "$__server" --remote-silent "${files[@]}"
+}
+
+trap ctrl_c INT
+main "$@"

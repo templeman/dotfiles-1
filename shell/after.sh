@@ -2,31 +2,22 @@
 
 export DKO_SOURCE="${DKO_SOURCE} -> shell/after.sh {"
 
-# ============================================================================
+# use xdg trash replacement
+__dko_prefer 'trash' && alias rm=trash
+
 # Use neovim
 # Now that path is available, use neovim instead of vim if it is installed
-# ============================================================================
-
 __dko_prefer 'nvim' && {
   export EDITOR='nvim'
   export VISUAL='nvim'
+  export VDOTDIR="${XDG_CONFIG_HOME}/nvim"
 }
 
-# ============================================================================
 # create-react-app
-# ============================================================================
-
 export REACT_EDITOR="$VISUAL"
 
 # ============================================================================
-# npm stuff
-# ============================================================================
-
-__dko_prefer 'trash' && alias rm=trash
-
-# ============================================================================
 # FZF settings
-# after zinit installation
 # ============================================================================
 
 # prefer ripgrep, but I always type ag
@@ -52,7 +43,7 @@ else
   grepargs=''
 fi
 
-fzfopts="--height=20 --inline-info --min-height=4"
+fzfopts="--height=20 --inline-info --min-height=4 --no-mouse"
 
 # ** is globbing completion in ZSH, use tickticktab instead
 export FZF_COMPLETION_TRIGGER="\`\`"
@@ -60,6 +51,7 @@ export FZF_COMPLETION_TRIGGER="\`\`"
 export FZF_DEFAULT_COMMAND="${grepper} ${grepargs}"
 
 export FZF_CTRL_R_OPTS="
+  --no-mouse
   --preview 'echo {}' --preview-window down:3:hidden:wrap
   --bind '?:toggle-preview'
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'

@@ -39,8 +39,8 @@ esac
 # Locale
 # ============================================================================
 
-export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
+export LC_ALL="$LANG"
 
 # ============================================================================
 # Dotfile paths
@@ -59,6 +59,7 @@ export ZDOTDIR="${DOTFILES}/zsh"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
 
 # user-dirs.dirs doesn't exist on macOS/OS X so check first.
 # Exporting is fine since the file is generated via xdg-user-dirs-update
@@ -127,6 +128,9 @@ export PAGER='less'
 # ack
 export ACKRC="${DOTFILES}/ack/dot.ackrc"
 
+# asdf
+export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"
+
 # aws
 export AWS_CONFIG_FILE="${DOTFILES}/aws/config"
 # credentials are per system
@@ -181,8 +185,6 @@ export MYSQL_HISTFILE="${XDG_CACHE_HOME}/mysql_histfile"
 
 # neovim
 export NVIM_PYTHON_LOG_FILE="${DOTFILES}/logs/nvim_python.log"
-export NVIM_LISTEN_ADDRESS=localhost:90210
-#"${HOME}/.local/nvimsocket"
 
 # php moved to shell/php loaded in shell/before
 

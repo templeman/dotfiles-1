@@ -20,8 +20,6 @@ alias ....='cd -- ../..'
 alias cd-='cd -- -'
 alias cd..='cd -- ..'
 alias cdd='cd -- "${DOTFILES}"'
-alias cdv='cd -- "${VDOTDIR}"'
-alias dirs='dirs -v' # default to vert, use -l for list
 alias down='cd -- "${XDG_DOWNLOAD_DIR}"'
 alias tree='tree -CF'
 alias t="tree -a --noreport --dirsfirst -I '.git|node_modules|bower_components|.DS_Store'"
@@ -40,24 +38,29 @@ alias c='bat --paging never'
 alias crm='bat --plain README.md'
 alias cpj='bat --plain package.json'
 alias pyg='pygmentize -O style=rrt -f console256 -g'
+alias cns='jq .scripts package.json'
 
 # ----------------------------------------------------------------------------
 # docker
 # ----------------------------------------------------------------------------
 
-alias docc='docker-compose'
-alias sdocc='sudo docker-compose'
+alias dcd='docker-compose down'
+alias dcud='docker-compose up -d'
+alias dcpull='docker-compose pull'
+alias dsprune='docker system prune'
 
 # ----------------------------------------------------------------------------
 # editors
 # ----------------------------------------------------------------------------
 
-alias ehosts='se /etc/hosts'
-alias etmux='e "${DOTFILES}/tmux/tmux.conf"'
-alias essh='e "${HOME}/.ssh/config"'
+alias edc='e docker-compose.yml'
 alias ega='e "${DOTFILES}/git/aliases.gitconfig"'
+alias ehosts='se /etc/hosts'
+alias essh='e "${HOME}/.ssh/config"'
+alias etmux='e "${DOTFILES}/tmux/tmux.conf"'
+alias evi='e "${VDOTDIR}/init.lua"'
+alias evl='e "${VDOTDIR}/lua/dko/plugins"'
 alias evr='e "${VDOTDIR}/vimrc"'
-alias evp='e "${VDOTDIR}/autoload/dkoplug/plugins.vim"'
 alias eze='e "${ZDOTDIR}/dot.zshenv"'
 alias ezi='e "${ZDOTDIR}/zinit.zsh"'
 alias ezl='e "${LDOTDIR}/zshrc"'
@@ -75,7 +78,6 @@ alias gemrm='gem uninstall --all'
 
 alias g-='git checkout -'
 alias gb='git branch --verbose'
-alias gg='git grep --line-number --break --heading'
 alias gl='git l --max-count 20'
 alias gm='git checkout "$(git symbolic-ref refs/remotes/origin/HEAD | cut -f4 -d/)"'
 alias gp='git push'
@@ -151,7 +153,6 @@ alias getsubs='pipx run subliminal download -p opensubtitles -p shooter -p subsc
 
 alias bun='bundle'
 alias be='bun exec'
-alias ruby-install='ruby-install --rubies-dir "$DKO_RUBIES"'
 
 # ----------------------------------------------------------------------------
 # shfmt

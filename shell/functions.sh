@@ -21,26 +21,6 @@ cdr() {
 }
 
 # ============================================================================
-# edit
-# This is usually overridden in ./after.sh
-# ============================================================================
-
-e() {
-  if __dko_has nvim && __dko_has nvctl && pgrep nvim >/dev/null; then
-    for file in "$@"; do
-      # don't prepend PWD for absolute paths
-      case "$file" in
-        /*) ;;
-        *) file="${PWD}/${file}" ;;
-      esac
-      nvctl "e ${file}" && wait
-    done
-  else
-    "$EDITOR" "$@"
-  fi
-}
-
-# ============================================================================
 # edit upwards
 # ============================================================================
 
@@ -86,6 +66,13 @@ gitexport() {
 # Update composer packages without cache
 cunt() {
   COMPOSER_CACHE_DIR=/dev/null composer update
+}
+
+killport() {
+  # -t terse, just get pid
+  # -i by internet addr
+  pid=$(lsof -t -i tcp:"$1")
+  [ -n "$pid" ] && kill -9 "$pid"
 }
 
 # ============================================================================

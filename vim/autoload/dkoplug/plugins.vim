@@ -21,10 +21,6 @@ function! dkoplug#plugins#LoadAll() abort
   " Fixes
   " ==========================================================================
 
-  " Fix CursorHold
-  " https://github.com/neovim/neovim/issues/12587
-  Plug 'antoinemadec/FixCursorHold.nvim', PlugIf(has('nvim'))
-
   " Disable cursorline sometimes, for performance
   Plug 'delphinus/vim-auto-cursorline', PlugIf(exists('*timer_start'))
 
@@ -40,13 +36,11 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'AndrewRadev/bufferize.vim', { 'on': [ 'Bufferize' ] }
 
   " Required by Inspecthi, don't lazy
-  Plug 'cocopon/colorswatch.vim', { 'branch': 'main' }
-
+  Plug 'cocopon/colorswatch.vim'
 
   silent! nunmap zs
   nnoremap <silent> zs :<C-U>Inspecthi<CR>
-  Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ], 'branch': 'main' }
-
+  Plug 'cocopon/inspecthi.vim', { 'on': [ 'Inspecthi' ] }
 
   " ==========================================================================
   " Colorscheme
@@ -91,13 +85,20 @@ function! dkoplug#plugins#LoadAll() abort
 
   let g:neoformat_enabled_json = [ 'dkoprettier', 'jq' ]
   let g:neoformat_enabled_java = [ 'uncrustify' ]
-  let g:neoformat_enabled_javascript = [ 'standard' ]
+  let g:neoformat_enabled_javascript = [ 'eslint_d', 'standard' ]
   let g:neoformat_enabled_less = [ 'dkoprettier' ]
-  let g:neoformat_enabled_lua = [ 'luafmt', 'luaformatter' ]
+  let g:neoformat_enabled_lua = [ 'luafmt', 'luaformatter', 'stylua' ]
   let g:neoformat_enabled_markdown = []
   let g:neoformat_enabled_python = [ 'autopep8', 'isort' ]
   let g:neoformat_enabled_scss = [ 'dkoprettier' ]
   Plug 'sbdchd/neoformat'
+  augroup dkoneoformat
+    autocmd! FileType
+        \ javascript,javascriptreact,typescript,typescriptreact
+        \ nmap <silent> <A-e> :<C-u>Neoformat eslint_d<CR>
+    autocmd BufWritePre *.ts* Neoformat eslint_d
+  augroup END
+
 
   " Add file manip commands like Remove, Move, Rename, SudoWrite
   " Do not lazy load, tracks buffers
@@ -252,6 +253,7 @@ function! dkoplug#plugins#LoadAll() abort
         \  'coc-docthis',
         \  'coc-eslint',
         \  'coc-git',
+        \  'coc-go',
         \  'coc-html',
         \  'coc-json',
         \  'coc-markdownlint',
@@ -263,6 +265,7 @@ function! dkoplug#plugins#LoadAll() abort
         \  'coc-tsserver',
         \  'coc-vimlsp',
         \  'coc-yaml',
+        \  '@yaegassy/coc-tailwindcss3',
         \]
   " Not working
   "      \  'coc-python',
@@ -348,6 +351,8 @@ function! dkoplug#plugins#LoadAll() abort
   " Order of these two matters
   "Plug 'elzr/vim-json'
   Plug 'neoclide/jsonc.vim'
+
+  Plug 'gutenye/json5.vim'
 
   " provides coffee ft
   "Plug 'kchmck/vim-coffee-script', { 'for': [ 'coffee' ] }
@@ -460,12 +465,6 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Syntax
 
-  " Neovim comes with
-  "   https://jasonwoof.com/gitweb/?p=vim-syntax.git;a=blob;f=php.vim;hb=HEAD
-  " 2072 has a fork of an older version but has support for php 5.6 and other
-  " changes. It does not support embedded HTML with Neovim
-  "Plug '2072/vim-syntax-for-PHP'
-
   " Updated for php 7.3 Mar 2019 (newer than neovim 5.0 runtime)
   let g:php_html_in_heredoc = 0
   let g:php_html_in_nowdoc = 0
@@ -493,6 +492,12 @@ function! dkoplug#plugins#LoadAll() abort
   Plug 'vim-python/python-syntax'
 
   " ==========================================================================
+  " Language: QML
+  " ==========================================================================
+
+  Plug 'peterhoeg/vim-qml'
+
+  " ==========================================================================
   " Language: Ruby, rails, puppet
   " ==========================================================================
 
@@ -512,10 +517,6 @@ function! dkoplug#plugins#LoadAll() abort
   " ----------------------------------------
   " Syntax
   " ----------------------------------------
-
-  " Upstream Neovim uses https://github.com/genoma/vim-less
-  "   - more groups
-  "   - no conflict with vim-css-color
 
   "Plug 'groenewege/vim-less'
   " - the syntax file here is actually older than genoma
@@ -546,15 +547,6 @@ function! dkoplug#plugins#LoadAll() abort
 
   " Alternatives:
   " - coc-highlight -- requires language server to support colors, can be slow
-  let l:use_fancy_colors = has('nvim')
-        \ && exists('&termguicolors')
-        \ && &termguicolors
-
-  " Pure lua implementation, covers most cases and is fastest in neovim
-  Plug 'norcalli/nvim-colorizer.lua', PlugIf(l:use_fancy_colors)
-  augroup dkonvimcolorizer
-    autocmd! User nvim-colorizer.lua lua require 'colorizer'.setup({}, { css = true })
-  augroup END
 
   " ==========================================================================
   " Language: TOML
@@ -577,36 +569,14 @@ function! dkoplug#plugins#LoadAll() abort
   " UI -- load last!
   " ==========================================================================
 
-
-  " Testing out VimWiki
-  let g:vimwiki_global_ext = 0
-  let g:vimwiki_list = [{'path': '~/Dropbox (Personal)/Notes', 'syntax': 'markdown', 'ext': '.md', 'diary_rel_path': 'journal/daily/', 'diary_start_week_day':  'sunday'}]
-  Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
-
-  " Testing out Taskwiki
-  Plug 'tools-life/taskwiki'
   Plug 'nathanaelkane/vim-indent-guides'
-
-  " Testing out calendar
-  " let g:calendar_google_calendar = 1
-  " source ~/.cache/calendar.vim/credentials.vim
-  " Plug 'itchyny/calendar.vim'
-  let g:git_messenger_max_popup_width = 70
-  let g:git_messenger_max_popup_height = 24
-  " Can add borders, see api-floatwin
-  "if has('nvim-0.5')
-    "let g:git_messenger_floating_win_opts = { 'border': 'shadow' }
-    "let g:git_messenger_popup_content_margins = v:false
-  "endif
-  Plug 'rhysd/git-messenger.vim', PlugIf(exists('*nvim_win_set_config'))
 
   " --------------------------------------------------------------------------
   " Quickfix window
   " --------------------------------------------------------------------------
 
+  let g:qf_resize_min_height = 4
   Plug 'blueyed/vim-qf_resize'
-
-  Plug 'romainl/vim-qf'
 
   " --------------------------------------------------------------------------
   " Window events
