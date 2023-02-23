@@ -30,12 +30,13 @@ return {
   -- =========================================================================
 
   {
-    "davidosomething/vim-colors-meh",
+    -- "davidosomething/vim-colors-meh",
+    "lifepillar/vim-solarized8",
     dev = true,
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd([[ colorscheme meh ]])
+      vim.cmd([[ colorscheme solarized8 ]])
     end,
   },
 
