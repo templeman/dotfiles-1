@@ -26,9 +26,9 @@ inoreabbrev threshholds thresholds
 
 inoreabbrev removeable  removable
 
-inoreabbrev d'' David O'Trakoun
-inoreabbrev o'' O'Trakoun
-inoreabbrev m@@ me@davidosomething.com
+inoreabbrev s'' Sam Templeman
+inoreabbrev t'' Templeman
+inoreabbrev m@@ sam.a.templeman@gmail.com
 
 inoreabbrev kbdopt <kbd>⌥</kbd>
 inoreabbrev kbdctrl <kbd>⌃</kbd>
@@ -72,6 +72,50 @@ inoremap  <silent><special><expr>  <Tab>     <SID>DKO_Tab()
 
 " Tab inserts a tab, shift-tab should remove it
 inoremap <S-Tab> <C-d>
+
+
+" ============================================================================
+" Window manipulation
+" ============================================================================
+
+" ----------------------------------------------------------------------------
+" Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s. Let's
+" remap this to vv and ss.
+" ----------------------------------------------------------------------------
+
+nnoremap <silent> vv <C-w>v
+nnoremap <silent> ss <C-w>s
+
+" ----------------------------------------------------------------------------
+" Move between split windows by using the four directions H, L, K, J
+" ST: Use H, L, K, J instead of arrow keys
+" ----------------------------------------------------------------------------
+
+" nnoremap  <special>   <C-Up>      <C-w>k
+" nnoremap  <special>   <C-Down>    <C-w>j
+" nnoremap  <special>   <C-Left>    <C-w>h
+" nnoremap  <special>   <C-Right>   <C-w>l
+nnoremap <special> <C-k>      <C-w>k
+nnoremap <special> <C-j>      <C-w>j
+nnoremap <special> <C-h>      <C-w>h
+nnoremap <special> <C-l>      <C-w>l
+
+" ----------------------------------------------------------------------------
+" Swap comma and semicolon
+" ----------------------------------------------------------------------------
+
+nnoremap <Leader>, $r,
+nnoremap <Leader>; $r;
+
+" ----------------------------------------------------------------------------
+" Gary Bernhardt's hashrocket
+" ----------------------------------------------------------------------------
+inoremap <c-l> <space>=><space>
+
+
+" ============================================================================
+" ============================================================================
+
 
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
