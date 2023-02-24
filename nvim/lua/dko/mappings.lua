@@ -31,6 +31,25 @@ map("n", "<S-Down>", "<C-W>-", resizeOpts)
 map("n", "<S-Left>", "<C-w><", resizeOpts)
 map("n", "<S-Right>", "<C-w>>", resizeOpts)
 
+-- ----------------------------------------------------------------------------
+-- ST: Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s.
+-- Let's remap this to vv and ss.
+-- ----------------------------------------------------------------------------
+
+local winSplit = { desc = "Split window" }
+map("n", "vv", "<C-w>v", winSplit)
+map("n", "ss", "<C-w>s", winSplit)
+
+-- ----------------------------------------------------------------------------
+-- ST: Move between split windows by using the four directions H, L, K, J
+-- ----------------------------------------------------------------------------
+
+local winMove = { desc = "Move between window splits" }
+map("n", "<C-k>", "<C-w>k", winMove)
+map("n", "<C-j>", "<C-w>j", winMove)
+map("n", "<C-h>", "<C-w>h", winMove)
+map("n", "<C-l>", "<C-w>l", winMove)
+
 -- ===========================================================================
 -- Switch mode
 -- ===========================================================================
@@ -240,7 +259,7 @@ local function assert_highlighting_enabled()
   return true
 end
 
-vim.keymap.set("n", "ss", function()
+vim.keymap.set("n", "sp", function()
   if not assert_highlighting_enabled() then
     return
   end
