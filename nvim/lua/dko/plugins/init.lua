@@ -640,5 +640,25 @@ return {
   -- No treesitter grammar yet
   -- =========================================================================
 
-  { "cappyzawa/starlark.vim" },
+  -- { "cappyzawa/starlark.vim" },
+
+  -- =========================================================================
+  -- Notes with FZF
+  -- =========================================================================
+
+-- nnoremap <silent> <leader>nv :NV<CR>
+  -- vim.g.nv_search_paths = "~/Dropbox (Personal)/Notes"
+  { 'Alok/notational-fzf-vim',
+    -- opts = { nv_search_paths = "~/Dropbox (Personal)/Notes" },
+    init = function()
+        vim.g.nv_search_paths = {'~/Dropbox (Personal)/Notes'}
+      -- require("notational-fzf-vim").setup({
+      --   nv_search_paths = "~/Dropbox (Personal)/Notes"
+      -- })
+      -- vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
+      vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
+        desc = "Trigger NV",
+      })
+    end,
+  }
 }
