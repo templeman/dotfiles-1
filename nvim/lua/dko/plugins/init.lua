@@ -352,10 +352,10 @@ return {
     config = function()
       local function apply_highlights()
         vim.cmd(
-          [[highlight IndentBlanklineIndent2 guibg=#242424 gui=nocombine]]
+          [[highlight IndentBlanklineIndent2 guibg=#003542 gui=nocombine]]
         )
         vim.cmd(
-          [[highlight IndentBlanklineContextChar guifg=#664422 gui=nocombine]]
+          [[highlight IndentBlanklineContextChar guifg=#005469 gui=nocombine]]
         )
       end
       apply_highlights()
