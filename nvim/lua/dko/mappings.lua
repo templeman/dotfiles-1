@@ -510,7 +510,6 @@ end
 
 M.bind_bufremove = function()
   map("n", "<Leader>x", function()
-    ---@diagnostic disable-next-line: missing-parameter
     require("mini.bufremove").delete()
   end, { desc = "Remove buffer without closing window" })
 end
