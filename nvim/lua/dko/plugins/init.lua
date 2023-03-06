@@ -160,17 +160,17 @@ return {
       require("heirline").setup({
         statusline = {
           fallthrough = false,
-          require("dko.heirline.statusline-help"),
-          require("dko.heirline.statusline-special"),
-          require("dko.heirline.statusline-default"),
+          -- require("dko.heirline.statusline-help"),
+          -- require("dko.heirline.statusline-special"),
+          -- require("dko.heirline.statusline-default"),
         },
         tabline = {
-          require("dko.heirline.searchterm"),
-          { provider = "%=", hl = "StatusLine" },
-          require("dko.heirline.cwd"),
-          require("dko.heirline.git"),
-          require("dko.heirline.lazy"),
-          require("dko.heirline.remote"),
+          -- require("dko.heirline.searchterm"),
+          -- { provider = "%=", hl = "StatusLine" },
+          -- require("dko.heirline.cwd"),
+          -- require("dko.heirline.git"),
+          -- require("dko.heirline.lazy"),
+          -- require("dko.heirline.remote"),
         },
       })
       local ALWAYS = 2
