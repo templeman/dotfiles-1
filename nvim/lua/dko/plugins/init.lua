@@ -28,7 +28,8 @@ return {
 
   {
     "echasnovski/mini.align",
-    version = false
+    version = false,
+    require('mini.align').setup()
   },
 
   -- =========================================================================
