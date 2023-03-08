@@ -54,7 +54,7 @@ function! dkoplug#plugins#LoadAll() abort
   " endif
   " Plug 'rakr/vim-two-firewatch'
   " Plug 'kamwitsta/flatwhite-vim'
-  Plug 'lifepillar/vim-solarized8'
+  Plug 'templeman/vim-solarized8'
 
 
   " ==========================================================================

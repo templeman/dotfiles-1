@@ -29,7 +29,9 @@ return {
   {
     "echasnovski/mini.align",
     version = false,
-    require('mini.align').setup()
+    config = function()
+      require("mini.align").setup()
+    end
   },
 
   -- =========================================================================
@@ -38,7 +40,7 @@ return {
 
   {
     -- "davidosomething/vim-colors-meh",
-    "lifepillar/vim-solarized8",
+    "templeman/vim-solarized8",
     dev = true,
     lazy = false,
     priority = 1000,
@@ -165,12 +167,12 @@ return {
           require("dko.heirline.statusline-default"),
         },
         tabline = {
-          -- require("dko.heirline.searchterm"),
-          -- { provider = "%=", hl = "StatusLine" },
-          -- require("dko.heirline.cwd"),
-          -- require("dko.heirline.git"),
-          -- require("dko.heirline.lazy"),
-          -- require("dko.heirline.remote"),
+          require("dko.heirline.searchterm"),
+          { provider = "%=", hl = "StatusLine" },
+          require("dko.heirline.cwd"),
+          require("dko.heirline.git"),
+          require("dko.heirline.lazy"),
+          require("dko.heirline.remote"),
         },
       })
       local ALWAYS = 2

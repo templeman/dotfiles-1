@@ -3,7 +3,7 @@
 if g:truecolor
   let &termguicolors = 1
 
-  if dkoplug#Exists('lifepillar/vim-solarized8')
+  if dkoplug#Exists('templeman/vim-solarized8')
     function! s:Solarized() abort
       silent! colorscheme solarized8_high
     endfunction
