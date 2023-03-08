@@ -188,7 +188,7 @@ return {
   {
     "blueyed/vim-qf_resize",
     init = function()
-      vim.g.qf_resize_min_height = 4
+      vim.g.qf_resize_min_height = 3
     end,
   },
 
