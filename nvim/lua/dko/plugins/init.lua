@@ -247,7 +247,7 @@ return {
   -- remember/restore last cursor position in files
   {
     "ethanholz/nvim-lastplace",
-    config = true
+    config = true,
   },
 
   -- =========================================================================
