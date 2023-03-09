@@ -152,11 +152,6 @@ return {
   -- ui: buffer and window manipulation
   -- =========================================================================
 
-  {
-    "davidosomething/bufhavior.nvim",
-    dev = true,
-  },
-
   -- pretty format quickfix and loclist
   {
     "https://gitlab.com/yorickpeterse/nvim-pqf.git",
