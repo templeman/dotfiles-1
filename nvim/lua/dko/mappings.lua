@@ -33,6 +33,10 @@ map("n", "<S-Down>", "<C-W>-", resizeOpts)
 map("n", "<S-Left>", "<C-w><", resizeOpts)
 map("n", "<S-Right>", "<C-w>>", resizeOpts)
 
+map("n", "<Leader>x", function()
+  require("dko.utils.buffer").close()
+end, { desc = "Remove buffer (try without closing window)" })
+
 -- ----------------------------------------------------------------------------
 -- ST: Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s.
 -- Let's remap this to vv and ss.
@@ -516,16 +520,6 @@ M.bind_inspecthi = function()
     desc = "Show highlight groups under cursor",
     silent = true,
   })
-end
-
--- ===========================================================================
--- Plugin: mini.bufremove
--- ===========================================================================
-
-M.bind_bufremove = function()
-  map("n", "<Leader>x", function()
-    require("mini.bufremove").delete()
-  end, { desc = "Remove buffer without closing window" })
 end
 
 -- ===========================================================================
