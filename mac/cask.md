@@ -7,7 +7,7 @@
 - beyond-compare
 <!-- - betwixt         -->
 - bitbar
-<!-- - bitwarden -->
+- bitwarden
 <!-- - cloudapp  -->
 - default-folder-x (failing install)
 <!-- - discord          -->
@@ -28,16 +28,15 @@
 - google-chrome (shasum invalidates frequently)
 - imageoptim
 <!-- - inkscape -->
-<!--     - inkscape requires xquartz -->
+<!-- - inkscape requires xquartz -->
 - iina
-<!-- - itsycal                         -->
-<!--     - date format EEEEEMM.dd h:mm -->
+- itsycal
+  <!-- - date format EEEEEMM.dd h:mm -->
 - java
 - kaleidoscope
 - karabiner-elements
 - keybase
 <!-- - kitematic -->
-- lastpass
 - libreoffice
 - marked
 - mjml
