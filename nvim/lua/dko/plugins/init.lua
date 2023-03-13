@@ -138,7 +138,6 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-parameter
       require("mini.bufremove").setup()
-      require("dko.mappings").bind_bufremove()
     end,
   },
 
