@@ -72,10 +72,10 @@ The bootstrap script symlinks the plist. You'll have to manually use
 
 ## GPG
 
-[GPGTools](https://gpgtools.org/) is not needed, and comes with stuff we probably don't need.
+[GPGTools](https://gpgtools.org/) is not required, use Homebrew instead.
 
-Instead, use Homebrew.
-`b install gnupg pinentry-mac`
+Install GPG and pinentry with brew
+`bi gnupg pinentry-mac`
 
 Run `echo $GNUPGHOME`
 It should output something like `/Users/sam/.config/gnupg`
@@ -104,6 +104,11 @@ Restart gpg-agent
 `gpgconf --kill gpg-agent`
 
 Now you have what you need to generate a new GPG key
+
+Check for existing keys first
+`gpg --list-secret-keys --keyid-format=long`
+
+If none are found, generate one
 `gpg --full-generate-key`
 
 Recommended options:
