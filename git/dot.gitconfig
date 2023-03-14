@@ -136,12 +136,3 @@
 	path = "~/.dotfiles/local/gitconfig"
 
 # vim: ft=gitconfig
-
-[gpg]
-	program = gpg2
-
-[hub]
-	protocol = https
-
-[init]
-	defaultBranch = main
