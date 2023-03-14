@@ -69,6 +69,92 @@ so you may want to edit (e.g. hardcode) the dotfiles path if you changed it.
 The bootstrap script symlinks the plist. You'll have to manually use
 `launchctl` command to load it and reboot to start it if you opt in.
 
+
+## GPG
+
+[GPGTools](https://gpgtools.org/) is not needed, and comes with stuff we probably don't need.
+
+Instead, use Homebrew.
+`b install gnupg pinentry-mac`
+
+Run `echo $GNUPGHOME`
+It should output something like `/Users/sam/.config/gnupg`
+If not, make sure you've run `bootstrap/xdg` and `bootstrap/mac` for dotfiles
+scaffolding.
+
+Check this directory for a `gpg-agent.conf` file. If there is none, create it.
+
+Ensure proper permissions on the gnupg directory by following the steps in
+[this gist
+comment](https://gist.github.com/oseme-techguy/bae2e309c084d93b75a9b25f49718f85?permalink_comment_id=4198726#gistcomment-4198726)
+
+In `gpg-agent.conf`, add the path to the pinentry program (you can find the correct path
+with `which pinentry-mac`)
+
+```
+# Connects gpg-agent to the OSX keychain via the brew-installed
+# pinentry program from GPGtools. This is the OSX 'magic sauce',
+# allowing the gpg key's passphrase to be stored in the login
+# keychain, enabling automatic key signing.
+
+pinentry-program /opt/homebrew/bin/pinentry-mac
+```
+
+Restart gpg-agent
+`gpgconf --kill gpg-agent`
+
+Now you have what you need to generate a new GPG key
+`gpg --full-generate-key`
+
+Recommended options:
+
+- RSA and RSA
+- 4096
+- Expires: never
+
+Generate a strong password with Bitwarden, and store it there
+
+Sign a test message so pinentry-mac can store your password in the keychain
+`echo "test" | gpg --clearsign`
+
+This should open a dialog prompting your password. Remember to check “Save in Keychain”.
+
+
+### Adding GPG Key to GitHub
+
+First, copy your private key to add to GitHub
+`gpg --export --armor your@email.here | pbcopy`
+
+And paste it in [GitHub's Settings > SSH and GPG Keys > New GPG
+key](https://github.com/settings/gpg/new)
+
+Second, configure your git environment to use signed commits. I’ve done it globally. First obtain your public GPG keys:
+
+```
+$ gpg --list-secret-keys
+(...)
+sec   rsa2048 2019-01-15 [SC]
+      YOUR_GPG_KEY_APPEARS_HERE
+uid           [ultimate] Your Name <your@email.here>
+ssb   rsa2048 2019-01-15 [E]
+```
+
+Then configure git
+
+```
+git config --global commit.gpgsign true
+git config --global user.signingkey YOUR_GPG_KEY
+```
+(might not need `--global` since we're using a local config at
+`/.dotfiles/local/gitconfig`)
+
+Finally, commit something with the-S argument to make sure it’s signed:
+`git commit -S -m "Testing GPG signature"`
+
+Taken from this gist comment: <https://gist.github.com/danieleggert/b029d44d4a54b328c0bac65d46ba4c65?permalink_comment_id=3464269#gistcomment-3464269>
+And this dev.to article: <https://dev.to/wes/how2-using-gpg-on-macos-without-gpgtools-428f>
+
+
 ## Cask notes
 
 - dropbox
@@ -139,6 +225,12 @@ operation. Use the `bi` alias for a clean room install if possible.
      virtualenv.
   1. Set up the global pyenv as the latest stable (3.x). Check ansible
      compatibility first if it's needed (e.g. ansible is not 3.8.x ready).
+- Install PHP packages with composer
+  1. Use brew-managed PHP with `brew-php-switcher`
+  `bi php@8.1`
+  Unlink current php: `brew unlink php`
+  `brew-php-switcher 8.1`
+  1. Run [php/install-composer-packages](../php/install-composer-packages)
 
 
 [fnm]: https://github.com/Schniz/fnm
