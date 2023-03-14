@@ -79,7 +79,7 @@ Instead, use Homebrew.
 
 Run `echo $GNUPGHOME`
 It should output something like `/Users/sam/.config/gnupg`
-If not, make sure you've run `bootstrap/xdg` and `bootstrap/mac` for dotfiles
+If not, make sure you've run [bootstrap/xdg](../bootstrap/xdg) and [bootstrap/mac](../bootstrap/mac) for dotfiles
 scaffolding.
 
 Check this directory for a `gpg-agent.conf` file. If there is none, create it.
@@ -151,7 +151,7 @@ git config --global user.signingkey YOUR_GPG_KEY
 Finally, commit something with the-S argument to make sure it’s signed:
 `git commit -S -m "Testing GPG signature"`
 
-Taken from this gist comment: <https://gist.github.com/danieleggert/b029d44d4a54b328c0bac65d46ba4c65?permalink_comment_id=3464269#gistcomment-3464269>
+Taken from this gist comment: <https://gist.github.com/danieleggert/b029d44d4a54b328c0bac65d46ba4c65?permalink_comment_id=3464269#gistcomment-3464269>  
 And this dev.to article: <https://dev.to/wes/how2-using-gpg-on-macos-without-gpgtools-428f>
 
 
