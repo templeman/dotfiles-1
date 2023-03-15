@@ -45,7 +45,6 @@ return {
           "ledger",
           "m68k",
           "menhir",
-          "norg",
           "org",
           "pascal",
           "pioasm",

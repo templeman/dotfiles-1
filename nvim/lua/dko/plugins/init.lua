@@ -433,5 +433,39 @@ return {
         desc = "Trigger NV",
       })
     end,
+  },
+
+  -- =========================================================================
+  -- Neorg
+  -- =========================================================================
+
+  { "nvim-neorg/neorg",
+    config = function()
+      require("neorg").setup({
+        load = {
+          ["core.defaults"] = {}, -- Loads default behaviour
+          ["core.norg.concealer"] = {}, -- Adds pretty icons to your documents
+          ["core.presenter"] = {
+            config = {
+              zen_mode = "zen-mode"
+            },
+          },
+          ["core.norg.dirman"] = { -- Manages Neorg workspaces
+            config = {
+              workspaces = {
+                home = "~/Documents/notes/home",
+                work = "~/Documents/notes/work",
+                -- home = "~/Documents/school-notes/notes",
+                -- personal = "~/Documents/school-notes/personal",
+                -- college = "~/Documents/school-notes/college",
+              },
+              index = "index.norg",
+            },
+          },
+        },
+        build = ":Neorg sync-parsers",
+        dependencies = { { "nvim-lua/plenary.nvim" } },
+      })
+    end
   }
 }
