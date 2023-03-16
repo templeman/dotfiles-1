@@ -736,6 +736,10 @@ end
 -- ===========================================================================
 
 M.bind_urlview = function()
+  require("urlview").register_mappings({
+    prev = "[u",
+    next = "]u",
+  })
   map("n", "<A-u>", "<Cmd>UrlView<CR>", { desc = "Open URLs" })
 end
 
