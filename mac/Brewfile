@@ -63,3 +63,6 @@ cask "mailmate"
 cask "obsidian"
 cask "raindropio"
 cask "slack"
+mas "PopClip", id: 445189367
+mas "LittleIpsum", id: 405772121
+mas "PDFScanner", id: 410968114
