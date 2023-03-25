@@ -141,7 +141,6 @@ return {
         matchup = { enable = true },
       })
 
-
       -- =====================================================================
       -- Aliases
       -- =====================================================================
@@ -164,4 +163,15 @@ return {
       })
     end,
   },
+
+  {
+    "IndianBoy42/tree-sitter-just",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("tree-sitter-just").setup({})
+    end,
+  },
+
 }
