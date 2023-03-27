@@ -45,8 +45,13 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      -- always do this for the initial custom hls
       vim.cmd([[ colorscheme solarized8 ]])
     end,
+  },
+
+  {
+    "rakr/vim-two-firewatch",
   },
 
   {
@@ -263,10 +268,17 @@ return {
     event = "VeryLazy",
     config = function()
       local function apply_highlights()
-        vim.cmd([[
+        if vim.g.colors_name == 'solarized8' then
+          vim.cmd([[
           highlight IndentBlanklineIndent2 guibg=#003542 gui=nocombine
           highlight IndentBlanklineContextChar guifg=#005469 gui=nocombine
-        ]])
+          ]])
+        else
+          vim.cmd([[
+            highlight IndentBlanklineIndent2 guibg=#fafafa gui=nocombine
+            highlight IndentBlanklineContextChar guifg=#eeeeee gui=nocombine
+          ]])
+        end
       end
       apply_highlights()
 
@@ -356,14 +368,17 @@ return {
     "numToStr/Comment.nvim",
     event = { "BufReadPost", "BufNewFile" },
     config = function()
-      require("Comment").setup(vim.tbl_extend("force",
-        require('dko.mappings').get_commentnvim_mappings(),
-        {
-          pre_hook = require(
-            "ts_context_commentstring.integrations.comment_nvim"
-          ).create_pre_hook(),
-        }
-      ))
+      require("Comment").setup(
+        vim.tbl_extend(
+          "force",
+          require("dko.mappings").get_commentnvim_mappings(),
+          {
+            pre_hook = require(
+              "ts_context_commentstring.integrations.comment_nvim"
+            ).create_pre_hook(),
+          }
+        )
+      )
     end,
   },
 
