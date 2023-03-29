@@ -283,7 +283,7 @@ end, { desc = "Open diagnostic float at cursor" })
 -- Treesitter utils
 -- ===========================================================================
 
-map("n", "ss", function()
+map("n", "sp", function()
   vim.pretty_print(vim.treesitter.get_captures_at_cursor())
 end, { desc = "Print treesitter captures under cursor" })
 
