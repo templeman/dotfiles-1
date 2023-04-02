@@ -219,6 +219,6 @@ export YARN_CACHE_FOLDER="${XDG_CACHE_HOME}/yarn"
 
 # Make gcc-12 available for Neorg
 # https://github.com/nvim-neorg/neorg
-export CC="gcc-12"
+# export CC="gcc-12"
 
 DKO_SOURCE="${DKO_SOURCE} }"
