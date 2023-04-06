@@ -217,7 +217,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     version = "*",
-    keys = "<A-i>",
+    keys = require("dko.mappings").toggleterm.open,
     config = function()
       require("toggleterm").setup({
         direction = "horizontal",
