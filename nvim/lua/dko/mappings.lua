@@ -37,6 +37,10 @@ map("n", "<Leader>x", function()
   require("dko.utils.buffer").close()
 end, { desc = "Remove buffer (try without closing window)" })
 
+map("n", "<Leader>l", function()
+  require('dko.utils.loclist').toggle()
+end, { desc = "Toggle location list" })
+
 -- ----------------------------------------------------------------------------
 -- ST: Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s.
 -- Let's remap this to vv and ss.
