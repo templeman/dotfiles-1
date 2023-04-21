@@ -28,7 +28,6 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "andymass/vim-matchup",
-      "JoosepAlviste/nvim-ts-context-commentstring",
     },
     build = ":TSUpdate",
     config = function()
@@ -131,14 +130,6 @@ return {
 
         indent = { enable = true },
 
-        -- ===================================================================
-        -- 3rd party modules
-        -- ===================================================================
-
-        -- 'JoosepAlviste/nvim-ts-context-commentstring',
-        -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#commentnvim
-        context_commentstring = { enable = true, enable_autocmd = false },
-
         -- 'andymass/vim-matchup',
         matchup = { enable = true },
       })
@@ -158,8 +149,12 @@ return {
 
   {
     "JoosepAlviste/nvim-ts-context-commentstring",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
     event = { "BufReadPost", "BufNewFile" },
     config = function()
+      -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#commentnvim
       require("nvim-treesitter.configs").setup({
         context_commentstring = {
           enable = true, -- Comment.nvim wants this
@@ -174,6 +169,7 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("tree-sitter-just").setup({})
     end,
