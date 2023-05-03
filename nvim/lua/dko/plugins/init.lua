@@ -335,7 +335,6 @@ return {
         copy = { ["+"] = copy, ["*"] = copy },
         paste = { ["+"] = paste, ["*"] = paste },
       }
-      vim.notify("Using osc52 clipboard")
     end,
   },
 
