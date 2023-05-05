@@ -216,7 +216,6 @@ return {
 
   {
     "akinsho/toggleterm.nvim",
-    version = "*",
     keys = vim.tbl_values(require("dko.mappings").toggleterm),
     cmd = "ToggleTerm",
     config = function()
