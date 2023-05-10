@@ -1,10 +1,10 @@
 local M = {}
 
 M.indent_blankline = function()
-  if vim.g.colors_name == "meh" then
+  if vim.g.colors_name == "solarized8" then
     vim.cmd([[
-              highlight IndentBlanklineIndent2 guibg=#242424 gui=nocombine
-              highlight IndentBlanklineContextChar guifg=#664422 gui=nocombine
+              highlight IndentBlanklineIndent2 guibg=#003542 gui=nocombine
+              highlight IndentBlanklineContextChar guifg=#005469 gui=nocombine
             ]])
   else
     vim.cmd([[
