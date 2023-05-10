@@ -6,6 +6,7 @@ icon-gen
 js-beautify
 jscpd
 markdownlint-cli
+mjml
 npm-check
 npmrc
 random-word-cli
