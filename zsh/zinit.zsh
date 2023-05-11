@@ -88,7 +88,6 @@ function {
     '@sharkdp/fd' \
     \
     mv'jq* -> jq'             'stedolan/jq' \
-    mv'shfmt* -> shfmt'       '@mvdan/sh'         \
     \
     mv'zoxide* -> zoxide' \
     pick'zoxide/zoxide' \
