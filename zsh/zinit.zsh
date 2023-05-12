@@ -89,7 +89,6 @@ function {
     \
     mv'jq* -> jq'             'stedolan/jq' \
     \
-    mv'zoxide* -> zoxide' \
     pick'zoxide/zoxide' \
     atload'eval "$(zoxide init --cmd j zsh)"' \
     'ajeetdsouza/zoxide' \
