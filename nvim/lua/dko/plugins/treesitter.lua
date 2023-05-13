@@ -25,7 +25,9 @@ return {
   -- https://github.com/nvim-treesitter/nvim-treesitter/
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+    build = function ()
+      vim.g.needs_ts_update = 1
+    end,
     cmd = { "TSUpdate" },
     event = { "BufReadPost", "BufNewFile" }, -- this cuts 20ms
     config = function()
@@ -142,6 +144,10 @@ return {
         -- 'andymass/vim-matchup',
         matchup = { enable = true },
       })
+
+      if vim.g.needs_ts_update == 1 then
+        vim.cmd('TSUpdate')
+      end
 
       -- =====================================================================
       -- Aliases
