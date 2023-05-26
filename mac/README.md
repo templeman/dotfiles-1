@@ -236,6 +236,10 @@ operation. Use the `bi` alias for a clean room install if possible.
   Unlink current php: `brew unlink php`
   `brew-php-switcher 8.1`
   1. Run [php/install-composer-packages](../php/install-composer-packages)
+- Install
+  [wp-cli](https://make.wordpress.org/cli/handbook/guides/installing/#recommended-installation)
+  using the recommended method. Then move the resulting .phar build to
+  `/Users/[user]/.config/composer/vendor/bin/wp`
 
 
 [fnm]: https://github.com/Schniz/fnm
