@@ -209,7 +209,7 @@ end, { desc = "Remove trailing whitespace from entire file" })
 for _, v in pairs({ "=", "-", "." }) do
   map({ "n", "i" }, "<Leader>f" .. v, function()
     require("dko.utils.hr").fill(v)
-  end, { desc = "Append horizontal rule of " .. v .. " up to &textwidth" })
+  end, { desc = ("Append horizontal rule of %s up to &textwidth"):format(v) })
 end
 
 map("x", "<Leader>C", function()
@@ -785,15 +785,10 @@ M.bind_toggleterm = function()
     direction = "horizontal",
     display_name = "hterm",
     on_open = function()
-      vim.keymap.set(
-        "t",
-        M.toggleterm.horizontal,
-        function()
-          vim.cmd.close()
-          vim.api.nvim_set_current_win(original)
-        end,
-        { buffer = true, noremap = true, silent = true }
-      )
+      vim.keymap.set("t", M.toggleterm.horizontal, function()
+        vim.cmd.close()
+        vim.api.nvim_set_current_win(original)
+      end, { buffer = true, noremap = true, silent = true })
     end,
   })
   map("n", M.toggleterm.horizontal, function()
@@ -806,15 +801,10 @@ M.bind_toggleterm = function()
     direction = "float",
     display_name = "fterm",
     on_open = function()
-      vim.keymap.set(
-        "t",
-        M.toggleterm.float,
-        function()
-          vim.cmd.close()
-          vim.api.nvim_set_current_win(original)
-        end,
-        { buffer = true, noremap = true, silent = true }
-      )
+      vim.keymap.set("t", M.toggleterm.float, function()
+        vim.cmd.close()
+        vim.api.nvim_set_current_win(original)
+      end, { buffer = true, noremap = true, silent = true })
     end,
     on_close = function()
       vim.schedule_wrap(vim.api.nvim_set_current_win)(original)
