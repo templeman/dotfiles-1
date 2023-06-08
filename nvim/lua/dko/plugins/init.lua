@@ -41,17 +41,19 @@ return {
   {
     -- "davidosomething/vim-colors-meh",
     "templeman/vim-solarized8",
+    dependencies = {
+      "rakr/vim-two-firewatch",
+    },
     dev = true,
     lazy = false,
     priority = 1000,
     config = function()
-      -- always do this for the initial custom hls
-      vim.cmd([[ colorscheme solarized8 ]])
+      if os.getenv("TERM_PROGRAM") == "WezTerm" then
+        require("dko.colors").wezterm_sync()
+      else
+        vim.cmd([[ colorscheme solarized8 ]])
+      end
     end,
-  },
-
-  {
-    "rakr/vim-two-firewatch",
   },
 
   {
