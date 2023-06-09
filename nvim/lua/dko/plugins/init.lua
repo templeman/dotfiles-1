@@ -48,10 +48,9 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
+      vim.cmd([[ colorscheme solarized8 ]])
       if os.getenv("TERM_PROGRAM") == "WezTerm" then
         require("dko.colors").wezterm_sync()
-      else
-        vim.cmd([[ colorscheme solarized8 ]])
       end
     end,
   },
@@ -361,6 +360,7 @@ return {
     enabled = function()
       return not os.getenv("SSH_CLIENT")
     end,
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("yanky").setup({
         highlight = { timer = 300 },
@@ -413,6 +413,7 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
+    event = { "BufReadPost", "BufNewFile" },
     keys = require("dko.mappings").trees,
     config = function()
       require("treesj").setup({
