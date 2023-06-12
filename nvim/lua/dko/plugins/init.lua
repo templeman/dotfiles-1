@@ -282,8 +282,10 @@ return {
             { bg = "", fg = "" },
             {
               bg = function()
-                return require("dko.colors").is_dark() and "#242426"
-                  or "#f4f2ef"
+                -- return require("dko.colors").is_dark() and "#242426"
+                return require("dko.colors").is_dark() and "#003542"
+                  -- or "#005469"
+                  or "#003542"
               end,
             },
           },
