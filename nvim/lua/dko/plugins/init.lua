@@ -48,7 +48,7 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd([[ colorscheme solarized8 ]])
+      vim.cmd.colorscheme("solarized8")
       if os.getenv("TERM_PROGRAM") == "WezTerm" then
         require("dko.colors").wezterm_sync()
       end
