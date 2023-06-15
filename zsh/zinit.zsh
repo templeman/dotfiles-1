@@ -26,9 +26,6 @@ function {
     atpull'%atclone' \
     '@cli/cli' \
     \
-    from'gh-r' \
-    'zaquestion/lab' \
-    \
     'davidosomething/git-ink' \
     'davidosomething/git-my' \
     'davidosomething/git-relevant' \
@@ -48,14 +45,9 @@ function {
 
   zinit lucid for \
     if'! __dko_has fzf' from'gh-r' as'program' \
-    'junegunn/fzf-bin' \
-    \
     'wfxr/forgit' \
     'torifat/npms' \
-    \
-    from'gh-r' as'program' \
-    'jesseduffield/lazydocker' \
-    ;
+    'junegunn/fzf-bin';
 
   # ----------------------------------------------------------------------------
   # Utilities
@@ -87,12 +79,11 @@ function {
     atpull'%atclone' \
     '@sharkdp/fd' \
     \
+    mv'gruyere* -> gruyere' \
+    'savannahostrowski/gruyere' \
+    \
     mv'jq* -> jq' \
     'jqlang/jq' \
-    \
-    pick'zoxide/zoxide' \
-    atload'eval "$(zoxide init --cmd j zsh)"' \
-    'ajeetdsouza/zoxide' \
     \
     mv'ripgrep* -> rg' pick'rg/rg' \
     atclone'cp -vf rg/doc/rg.1 "${ZPFX}/share/man/man1"' \
@@ -102,6 +93,11 @@ function {
     mv'rtx* -> rtx' \
     atload'eval "$(rtx activate zsh)"' \
     'jdxcode/rtx' \
+    \
+    pick'zoxide/zoxide' \
+    atload'eval "$(zoxide init --cmd j zsh)"' \
+    'ajeetdsouza/zoxide' \
+    \
     ;
 
   [[ -d "$ASDF_DATA_DIR" ]] && zinit snippet 'OMZP::asdf'
