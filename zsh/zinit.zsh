@@ -65,7 +65,7 @@ function {
   zinit lucid from'gh-r' as'program' for \
     mv'bat* -> bat' \
     pick'bat/bat' \
-    atclone'cp -vf bat/bat.1 "${ZPFX}/share/man/man1"; cp -vf bat/autocomplete/bat.zsh "bat/autocomplete/_bat"' \
+    atclone"cp -vf bat/bat.1 \"${man_dir}\"; cp -vf bat/autocomplete/bat.zsh \"bat/autocomplete/_bat\"" \
     atpull'%atclone' \
     atload"$bat_manpager" \
     '@sharkdp/bat' \
@@ -75,7 +75,7 @@ function {
     'dandavison/delta' \
     \
     mv'fd* -> fd' pick'fd/fd' \
-    atclone'cp -vf fd/fd.1 "${ZPFX}/share/man/man1"' \
+    atclone"cp -vf fd/fd.1 \"${man_dir}\"" \
     atpull'%atclone' \
     '@sharkdp/fd' \
     \
@@ -86,7 +86,7 @@ function {
     'jqlang/jq' \
     \
     mv'ripgrep* -> rg' pick'rg/rg' \
-    atclone'cp -vf rg/doc/rg.1 "${ZPFX}/share/man/man1"' \
+    atclone"cp -vf rg/doc/rg.1 \"${man_dir}\"" \
     atpull'%atclone' \
     'BurntSushi/ripgrep' \
     \
@@ -106,6 +106,7 @@ function {
     zinit ice lucid from'gh-r' as'program' bpick"$rtx_bpick" \
       pick'rtx/bin/rtx' \
       atclone"cp -vf rtx/man/man1/rtx.1 $ZINIT[MAN_DIR]/man1" \
+      atpull'%atclone' \
       atload'eval "$(rtx activate zsh)"'
     zinit light 'jdxcode/rtx'
   }
