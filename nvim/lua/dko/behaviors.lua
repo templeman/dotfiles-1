@@ -162,13 +162,13 @@ autocmd({ "BufWritePre", "FileWritePre" }, {
   group = savingGroup,
 })
 
-autocmd({ "BufWritePre", "FileWritePre" }, {
-  desc = "Format on save",
-  callback = function()
-    require("dko.lsp").format({ async = false })
-  end,
-  group = savingGroup,
-})
+-- autocmd({ "BufWritePre", "FileWritePre" }, {
+--   desc = "Format on save",
+--   callback = function()
+--     require("dko.lsp").format({ async = false })
+--   end,
+--   group = savingGroup,
+-- })
 
 -- Having issues with this, :Lazy sync sets loclist?
 autocmd("DiagnosticChanged", {
