@@ -45,9 +45,10 @@ function {
 
   zinit lucid for \
     if'! __dko_has fzf' from'gh-r' as'program' \
+    'junegunn/fzf-bin' \
+    \
     'wfxr/forgit' \
-    'torifat/npms' \
-    'junegunn/fzf-bin';
+    'torifat/npms';
 
   # ----------------------------------------------------------------------------
   # Utilities
