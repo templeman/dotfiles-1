@@ -259,7 +259,7 @@ autocmd("LspAttach", {
       not vim.b.enable_format_on_save
       and client.supports_method("textDocument/formatting")
     then
-      vim.b.enable_format_on_save = true
+      vim.b.enable_format_on_save = false
     end
   end,
   group = augroup("dkolsp"),
