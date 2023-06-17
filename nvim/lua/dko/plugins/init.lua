@@ -262,6 +262,8 @@ return {
   -- Reading
   -- =========================================================================
 
+  { "lewis6991/fileline.nvim" },
+
   -- https://github.com/axieax/urlview.nvim
   {
     "axieax/urlview.nvim",
