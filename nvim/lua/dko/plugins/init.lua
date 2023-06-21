@@ -273,39 +273,28 @@ return {
   },
 
   -- indent guides
-  -- https://github.com/shellRaining/hlchunk.nvim
+  -- hlchunk.nvim and indent-blankline.nvim both have issues
+  -- so now using: https://github.com/nvimdev/indentmini.nvim
   {
-    "shellRaining/hlchunk.nvim",
-    event = "UIEnter",
+    "nvimdev/indentmini.nvim",
+    event = "BufEnter",
     config = function()
-      require("hlchunk").setup({
-        blank = {
-          chars = { " " },
-          enable = true,
-          exclude_filetype = require("dko.utils.buffer").SPECIAL_FILETYPES,
-          notify = false,
-          style = {
-            { bg = "", fg = "" },
-            {
-              bg = function()
-                -- return require("dko.colors").is_dark() and "#242426"
-                return require("dko.colors").is_dark() and "#003542"
-                  -- or "#005469"
-                  or "#003542"
-              end,
-            },
-          },
-        },
-        chunk = {
-          enable = true,
-          exclude_filetypes = {
-            sh = true,
-          },
-          notify = false,
-        },
-        indent = { enable = false },
-        line_num = { enable = false },
+      require("indentmini").setup({
+        char = "█",
       })
+      local function color()
+        vim.cmd.highlight(
+          ("default IndentLine guifg=%s"):format(
+            -- require("dko.colors").is_dark() and "#242426" or "#f4f2ef"
+            require("dko.colors").is_dark() and "#003542" or "#003542"
+          )
+        )
+      end
+      vim.api.nvim_create_autocmd("colorscheme", {
+        callback = color,
+        desc = "change indent guide colors with colorscheme",
+      })
+      color()
     end,
   },
 
