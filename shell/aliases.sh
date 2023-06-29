@@ -208,6 +208,7 @@ alias vb='VBoxManage'
 alias vbm='vb'
 alias wget='wget --no-check-certificate --hsts-file="${XDG_DATA_HOME}/wget/.wget-hsts"'
 alias xit='exit' # dammit
+alias trash='/opt/homebrew/Cellar/trash/0.9.2/bin/trash -F' # use Finder when running trash commands (enables the Put Back feature). See https://github.com/andreafrancia/trash-cli/issues/284#issuecomment-1407091949
 
 # ============================================================================
 
