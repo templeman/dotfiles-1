@@ -314,6 +314,7 @@ return {
     dependencies = { "MunifTanjim/nui.nvim" },
     config = function()
       require("package-info").setup()
+      require("dko.mappings").bind_packageinfo()
     end,
   },
 

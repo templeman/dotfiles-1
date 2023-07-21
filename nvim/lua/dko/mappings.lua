@@ -828,6 +828,18 @@ M.bind_treesj = function()
 end
 
 -- ===========================================================================
+-- Plugin: package-info.nvim
+-- https://github.com/vuki656/package-info.nvim#%EF%B8%8F-all-keybindings
+-- ===========================================================================
+
+M.bind_packageinfo = function()
+  map({ "n" }, "<Leader>nu", require("package-info").update, { silent = true, noremap = true, desc = "Update dependency on the line" })
+  map({ "n" }, "<Leader>nd", require("package-info").delete, { silent = true, noremap = true, desc = "Delete dependency on the line" })
+  map({ "n" }, "<Leader>ni", require("package-info").install, { silent = true, noremap = true, desc = "Install a new dependency" })
+  map({ "n" }, "<Leader>np", require("package-info").change_version, { silent = true, noremap = true, desc = "Install a different dependency version" })
+end
+
+-- ===========================================================================
 -- Plugin: urlview.nvim
 -- ===========================================================================
 
