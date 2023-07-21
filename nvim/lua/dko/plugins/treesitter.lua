@@ -1,7 +1,7 @@
 local HIGHLIGHTING_DISABLED = {
   -- treesitter language, not ft
   -- see https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
-  "javascript", -- and jsx
+  -- "javascript", -- and jsx
   "tsx",
 }
 
@@ -11,6 +11,11 @@ local HIGHLIGHTING_ENABLED = {
   "markdown",
   "starlark",
   "tiltfile",
+  "scss",
+  "css",
+  "php",
+  "javascript",
+  "lua",
 }
 
 return {
