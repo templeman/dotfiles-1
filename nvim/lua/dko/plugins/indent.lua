@@ -1,5 +1,5 @@
 --- @type 'hlchunk'|'indentmini'
-local enabled = "hlchunk"
+local enabled = "indentmini"
 
 local hlchunk_blank = false
 local hlchunk_chunk = true
@@ -24,7 +24,8 @@ return {
       local function color()
         vim.cmd.highlight(
           ("default IndentLine guifg=%s"):format(
-            require("dko.colors").is_dark() and "#242426" or "#f4f2ef"
+            -- require("dko.colors").is_dark() and "#242426" or "#f4f2ef"
+            require("dko.colors").is_dark() and "#003F4F" or "#003F4F" -- #003542
           )
         )
       end
@@ -66,8 +67,10 @@ return {
             { bg = "", fg = "" },
             {
               bg = function()
-                return require("dko.colors").is_dark() and "#242426"
-                  or "#f4f2ef"
+                -- return require("dko.colors").is_dark() and "#242426"
+                --   or "#f4f2ef"
+                return require("dko.colors").is_dark() and "#003F4F"
+                  or "#003F4F"
               end,
             },
           },
