@@ -7,15 +7,16 @@ local HIGHLIGHTING_DISABLED = {
 
 -- table of filetypes
 local HIGHLIGHTING_ENABLED = {
+  "css",
   "dotenv",
+  "javascript",
+  "json",
+  "lua",
   "markdown",
+  "php",
+  "scss",
   "starlark",
   "tiltfile",
-  "scss",
-  "css",
-  "php",
-  "javascript",
-  "lua",
 }
 
 return {
