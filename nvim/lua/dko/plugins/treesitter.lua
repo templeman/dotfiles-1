@@ -35,6 +35,7 @@ return {
     end,
     -- event = { "BufReadPost", "BufNewFile" }, -- this cuts 20ms
     config = function()
+      ---@diagnostic disable-next-line: missing-fields
       require("nvim-treesitter.configs").setup({
         -- https://github.com/nvim-treesitter/nvim-treesitter/issues/3579#issuecomment-1278662119
         auto_install = true,
@@ -121,6 +122,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#commentnvim
+      ---@diagnostic disable-next-line: missing-fields
       require("nvim-treesitter.configs").setup({
         context_commentstring = {
           enable = true, -- Comment.nvim wants this

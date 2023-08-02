@@ -136,7 +136,10 @@ map("n", "<F1>", function()
 end, { desc = "Show vim help for <cexpr>" })
 
 map("n", "<Leader>yn", function()
-  local res = vim.fn.expand("%:t")
+  local res = vim.fn.expand("%:t", false, false)
+  if type(res) ~= "string" then
+    return
+  end
   if res == "" then
     vim.notify(
       "Buffer has no filename",
@@ -150,7 +153,10 @@ map("n", "<Leader>yn", function()
 end, { desc = "Yank the filename of current buffer" })
 
 map("n", "<Leader>yp", function()
-  local res = vim.fn.expand("%:p")
+  local res = vim.fn.expand("%:p", false, false)
+  if type(res) ~= "string" then
+    return
+  end
   res = res == "" and vim.uv.cwd() or res
   if res:len() then
     vim.fn.setreg("+", res)
@@ -216,6 +222,9 @@ map("x", "<Leader>C", function()
   -- @TODO replace with https://github.com/neovim/neovim/pull/13896
   vim.api.nvim_feedkeys("y", "nx", false)
   local selection = vim.fn.getreg('"')
+  if type(selection) ~= "string" then
+    return
+  end
   local converted = require("dko.utils.string").smallcaps(selection)
   vim.fn.setreg('"', converted)
   vim.api.nvim_feedkeys('gv""P', "nx", false)
@@ -872,6 +881,16 @@ M.bind_packageinfo = function()
   map({ "n" }, "<Leader>nd", require("package-info").delete, { silent = true, noremap = true, desc = "Delete dependency on the line" })
   map({ "n" }, "<Leader>ni", require("package-info").install, { silent = true, noremap = true, desc = "Install a new dependency" })
   map({ "n" }, "<Leader>np", require("package-info").change_version, { silent = true, noremap = true, desc = "Install a different dependency version" })
+end
+
+-- ===========================================================================
+-- Plugin: tw-values.nvim
+-- ===========================================================================
+
+M.bind_twvalues = function()
+  map("n", "<leader>tw", "<Cmd>TWValues<CR>", {
+    desc = "Show tailwind CSS values",
+  })
 end
 
 -- ===========================================================================
