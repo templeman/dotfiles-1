@@ -296,11 +296,11 @@ end, { desc = "Open diagnostic float at cursor" })
 -- Treesitter utils
 -- ===========================================================================
 
-map("n", "sp", function()
+map("n", "<Leader>sp", function()
   vim.print(vim.treesitter.get_captures_at_cursor())
 end, { desc = "Print treesitter captures under cursor" })
 
-map("n", "sy", function()
+map("n", "<Leader>sy", function()
   local captures = vim.treesitter.get_captures_at_cursor()
   local parsedCaptures = {}
   for _, capture in ipairs(captures) do
