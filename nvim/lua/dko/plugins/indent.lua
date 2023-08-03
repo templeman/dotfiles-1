@@ -20,6 +20,10 @@ return {
     config = function()
       require("indentmini").setup({
         char = "█",
+        -- Indentmini gets janky when diffing php files
+        exclude = {
+          "php",
+        }
       })
       local function color()
         vim.cmd.highlight(
