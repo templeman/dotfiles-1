@@ -9,6 +9,7 @@ local HIGHLIGHTING_DISABLED = {
 local HIGHLIGHTING_ENABLED = {
   "css",
   "dotenv",
+  "html",
   "javascript",
   "json",
   "lua",
