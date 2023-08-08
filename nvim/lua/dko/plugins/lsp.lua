@@ -284,7 +284,7 @@ return {
                 not vim.loop.fs_stat(path .. "/.luarc.json")
                 and not vim.loop.fs_stat(path .. "/.luarc.jsonc")
               then
-                client.config.settings =
+                local settings =
                   vim.tbl_deep_extend("force", client.config.settings.Lua, {
                     runtime = {
                       -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
@@ -299,7 +299,7 @@ return {
                   })
                 client.notify(
                   "workspace/didChangeConfiguration",
-                  { settings = client.config.settings }
+                  { settings = settings }
                 )
               end
               return true
