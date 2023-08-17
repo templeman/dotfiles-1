@@ -16,6 +16,7 @@ local HIGHLIGHTING_ENABLED = {
   "markdown",
   "php",
   "scss",
+  "sh",
   "starlark",
   "tiltfile",
 }
