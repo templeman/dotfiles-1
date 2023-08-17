@@ -355,9 +355,6 @@ return {
 
   {
     "gbprod/yanky.nvim",
-    enabled = function()
-      return not os.getenv("SSH_CLIENT")
-    end,
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("yanky").setup({
