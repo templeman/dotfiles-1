@@ -476,6 +476,15 @@ return {
     },
   },
 
+  --- Interactive scratchpad for REPL-based live evaluation of code (like Numi)
+  {
+    'metakirby5/codi.vim',
+    init = function()
+      --- let g:codi#log= '/tmp/codi.log'
+      vim.g["codi#log"] = "/Users/sam/codi-6.log"
+    end,
+  },
+
   -- =========================================================================
   -- Notes with FZF
   -- =========================================================================
