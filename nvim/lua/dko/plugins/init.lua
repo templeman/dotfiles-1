@@ -299,8 +299,9 @@ return {
 
   -- package diff
   {
-    "vuki656/package-info.nvim",
+    "davidosomething/package-info.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
+    dev = true,
     event = { "BufReadPost package.json" },
     config = function()
       require("package-info").setup()
