@@ -123,7 +123,7 @@ function {
           " \
       atpull'%atclone' \
       atload'eval "$(rtx activate zsh)"'
-    zinit light 'jdxcode/rtx'
+    zinit light 'jdx/rtx'
   fi
 
   # ----------------------------------------------------------------------------
