@@ -487,6 +487,15 @@ return {
     end,
   },
 
+  --- Integrates https://github.com/PHP-CS-Fixer/PHP-CS-Fixer in nvim
+  {
+    "stephpy/vim-php-cs-fixer",
+    init = function()
+      vim.g.php_cs_fixer_php_path = "/opt/homebrew/bin/php"  --- Path to PHP
+      vim.g.php_cs_fixer_dry_run = 0  --- Call command with dry-run option
+    end,
+  },
+
   -- =========================================================================
   -- Notes with FZF
   -- =========================================================================
