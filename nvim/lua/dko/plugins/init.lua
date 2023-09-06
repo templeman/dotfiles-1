@@ -47,7 +47,7 @@ return {
     priority = 1000,
     config = function()
       vim.cmd.colorscheme("solarized8")
-      if os.getenv("TERM_PROGRAM") == "WezTerm" then
+      if vim.env.TERM_PROGRAM == "WezTerm" then
         require("dko.colors").wezterm_sync()
       end
     end,
@@ -333,8 +333,8 @@ return {
     "ojroques/nvim-osc52",
     enabled = function()
       -- yes .dockerenv is in root /
-      return os.getenv("SSH_CLIENT")
-        or os.getenv("NVIM_INSTALL_ALL")
+      return vim.env.SSH_CLIENT
+        or vim.env.NVIM_INSTALL_ALL
         or vim.uv.fs_stat("/.dockerenv")
     end,
     config = function()
