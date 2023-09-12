@@ -530,6 +530,9 @@ M.bind_gitsigns = function(bufnr)
   bufmap("n", "gB", function()
     require("gitsigns").blame_line({ full = true })
   end, { desc = "Popul full blame for line" })
+  bufmap("n", "hp", function()
+    require("gitsigns").preview_hunk()
+  end, { desc = "Preview hunk" })
 
   -- Text object
   bufmap({ "o", "x" }, "ih", "<Cmd>Gitsigns select_hunk<CR>", {
