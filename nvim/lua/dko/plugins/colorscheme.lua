@@ -1,6 +1,7 @@
 return {
   {
-    "davidosomething/vim-colors-meh",
+    --"davidosomething/vim-colors-meh",
+    "lifepillar/vim-solarized8",
     dependencies = {
       --"rakr/vim-two-firewatch",
       {
@@ -9,7 +10,8 @@ return {
         dependencies = { "rktjmp/lush.nvim" },
       },
     },
-    dev = true,
+    branch = "neovim",
+    --dev = true,
     lazy = false,
     priority = 1000,
     init = function()
@@ -17,7 +19,7 @@ return {
       -- require("dko.settings").set("colors.light", "zenbones")
     end,
     config = function()
-      vim.cmd.colorscheme("meh")
+      vim.cmd.colorscheme("solarized8")
       if vim.env.TERM_PROGRAM == "WezTerm" then
         require("dko.colors").wezterm_sync()
       end

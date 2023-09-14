@@ -4,7 +4,7 @@ local object = require("dko.utils.object")
 
 local settings = {
   colors = {
-    dark = "meh",
+    dark = "solarized8",
     light = "zenbones",
   },
   grepper = {
