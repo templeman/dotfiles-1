@@ -36,6 +36,10 @@ command(
   { desc = "Set dark colorscheme" }
 )
 
+command("Marked", function()
+  vim.cmd("silent !open -a 'Marked 2.app' '%:p'")
+end, { desc = "Open current file in Marked 2" })
+
 -- ===========================================================================
 -- File ops
 -- ===========================================================================
