@@ -660,6 +660,11 @@ M.bind_nvim_various_textobjs = function()
     "<cmd>lua require('various-textobjs').subword(true)<CR>",
     { desc = "textobj: camel-_Snake" }
   )
+  map(
+    { "o", "x" },
+    "i_",
+    "<cmd>lua require('various-textobjs').lineCharacterwise('inner')<CR>"
+  )
 
   --[[ map(
     { "o", "x" },
@@ -907,10 +912,29 @@ end
 -- ===========================================================================
 
 M.bind_packageinfo = function()
-  map({ "n" }, "<Leader>nu", require("package-info").update, { silent = true, noremap = true, desc = "Update dependency on the line" })
-  map({ "n" }, "<Leader>nd", require("package-info").delete, { silent = true, noremap = true, desc = "Delete dependency on the line" })
-  map({ "n" }, "<Leader>ni", require("package-info").install, { silent = true, noremap = true, desc = "Install a new dependency" })
-  map({ "n" }, "<Leader>np", require("package-info").change_version, { silent = true, noremap = true, desc = "Install a different dependency version" })
+  map(
+    { "n" },
+    "<Leader>nu",
+    require("package-info").update,
+    { silent = true, noremap = true, desc = "Update dependency on the line" }
+  )
+  map(
+    { "n" },
+    "<Leader>nd",
+    require("package-info").delete,
+    { silent = true, noremap = true, desc = "Delete dependency on the line" }
+  )
+  map(
+    { "n" },
+    "<Leader>ni",
+    require("package-info").install,
+    { silent = true, noremap = true, desc = "Install a new dependency" }
+  )
+  map({ "n" }, "<Leader>np", require("package-info").change_version, {
+    silent = true,
+    noremap = true,
+    desc = "Install a different dependency version",
+  })
 end
 
 -- ===========================================================================

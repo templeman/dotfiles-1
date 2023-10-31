@@ -31,7 +31,7 @@ return {
     version = false,
     config = function()
       require("mini.align").setup()
-    end
+    end,
   },
 
   -- =========================================================================
@@ -219,7 +219,7 @@ return {
   },
 
   -- diff partial selections
-  { "rickhowe/spotdiff.vim" },
+  -- { "rickhowe/spotdiff.vim" },
 
   -- =========================================================================
   -- Reading
@@ -262,6 +262,7 @@ return {
       require("package-info").setup({
         hide_up_to_date = true,
       })
+      require("dko.mappings").bind_packageinfo()
     end,
   },
 
@@ -270,7 +271,7 @@ return {
   -- =========================================================================
 
   -- Works better than https://github.com/IndianBoy42/tree-sitter-just
-  { "NoahTheDuke/vim-just" },
+  -- { "NoahTheDuke/vim-just" },
 
   {
     "NvChad/nvim-colorizer.lua",
@@ -454,32 +455,32 @@ return {
     end,
   },
 
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    ---@type Flash.Config
-    opts = {},
-    -- stylua: ignore
-    keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump(
-        {
-          search = {
-            mode = function(str)
-              return "\\<" .. str
-            end,
-          },
-        }
-      ) end, desc = "Flash" },
-      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-    },
-  },
+  -- {
+  --   "folke/flash.nvim",
+  --   event = "VeryLazy",
+  --   ---@type Flash.Config
+  --   opts = {},
+  --   -- stylua: ignore
+  --   keys = {
+  --     { "s", mode = { "n", "x", "o" }, function() require("flash").jump(
+  --       {
+  --         search = {
+  --           mode = function(str)
+  --             return "\\<" .. str
+  --           end,
+  --         },
+  --       }
+  --     ) end, desc = "Flash" },
+  --     { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+  --     { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+  --     { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+  --     { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  --   },
+  -- },
 
   --- Interactive scratchpad for REPL-based live evaluation of code (like Numi)
   {
-    'metakirby5/codi.vim',
+    "metakirby5/codi.vim",
     init = function()
       --- let g:codi#log= '/tmp/codi.log'
       vim.g["codi#log"] = "/Users/sam/codi-6.log"
@@ -490,26 +491,27 @@ return {
   {
     "stephpy/vim-php-cs-fixer",
     init = function()
-      vim.g.php_cs_fixer_php_path = "/opt/homebrew/bin/php"  --- Path to PHP
-      vim.g.php_cs_fixer_dry_run = 0  --- Call command with dry-run option
+      vim.g.php_cs_fixer_php_path = "/opt/homebrew/bin/php" --- Path to PHP
+      vim.g.php_cs_fixer_dry_run = 0 --- Call command with dry-run option
     end,
   },
 
   --- GitHub Copilot
-  {
-    "github/copilot.vim",
-  },
+  -- {
+  --   "github/copilot.vim",
+  -- },
 
   -- =========================================================================
   -- Notes with FZF
   -- =========================================================================
 
--- nnoremap <silent> <leader>nv :NV<CR>
+  -- nnoremap <silent> <leader>nv :NV<CR>
   -- vim.g.nv_search_paths = "~/Dropbox (Personal)/Notes"
-  { 'Alok/notational-fzf-vim',
+  {
+    "Alok/notational-fzf-vim",
     -- opts = { nv_search_paths = "~/Dropbox (Personal)/Notes" },
     init = function()
-        vim.g.nv_search_paths = {'~/Dropbox (Personal)/Notes'}
+      vim.g.nv_search_paths = { "~/Dropbox (Personal)/Notes" }
       -- require("notational-fzf-vim").setup({
       --   nv_search_paths = "~/Dropbox (Personal)/Notes"
       -- })
@@ -524,33 +526,34 @@ return {
   -- Neorg
   -- =========================================================================
 
-  { "nvim-neorg/neorg",
-    config = function()
-      require("neorg").setup({
-        load = {
-          ["core.defaults"] = {}, -- Loads default behaviour
-          ["core.concealer"] = {}, -- Adds pretty icons to your documents
-          ["core.presenter"] = {
-            config = {
-              zen_mode = "zen-mode"
-            },
-          },
-          ["core.dirman"] = { -- Manages Neorg workspaces
-            config = {
-              workspaces = {
-                home = "~/Documents/notes/home",
-                work = "~/Documents/notes/work",
-                -- home = "~/Documents/school-notes/notes",
-                -- personal = "~/Documents/school-notes/personal",
-                -- college = "~/Documents/school-notes/college",
-              },
-              index = "index.norg",
-            },
-          },
-        },
-        build = ":Neorg sync-parsers",
-        dependencies = { { "nvim-lua/plenary.nvim" } },
-      })
-    end
-  }
+  -- {
+  --   "nvim-neorg/neorg",
+  --   config = function()
+  --     require("neorg").setup({
+  --       load = {
+  --         ["core.defaults"] = {}, -- Loads default behaviour
+  --         ["core.concealer"] = {}, -- Adds pretty icons to your documents
+  --         ["core.presenter"] = {
+  --           config = {
+  --             zen_mode = "zen-mode",
+  --           },
+  --         },
+  --         ["core.dirman"] = { -- Manages Neorg workspaces
+  --           config = {
+  --             workspaces = {
+  --               home = "~/Documents/notes/home",
+  --               work = "~/Documents/notes/work",
+  --               -- home = "~/Documents/school-notes/notes",
+  --               -- personal = "~/Documents/school-notes/personal",
+  --               -- college = "~/Documents/school-notes/college",
+  --             },
+  --             index = "index.norg",
+  --           },
+  --         },
+  --       },
+  --       build = ":Neorg sync-parsers",
+  --       dependencies = { { "nvim-lua/plenary.nvim" } },
+  --     })
+  --   end,
+  -- },
 }
