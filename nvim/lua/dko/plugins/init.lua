@@ -497,9 +497,9 @@ return {
   },
 
   --- GitHub Copilot
-  -- {
-  --   "github/copilot.vim",
-  -- },
+  {
+    "github/copilot.vim",
+  },
 
   -- =========================================================================
   -- Notes with FZF
