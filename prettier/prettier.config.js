@@ -7,8 +7,9 @@
 const p = {};
 
 p.arrowParens = 'always';
-p.bracketSpacing = true,
+p.bracketSpacing = true;
 p.jsxBracketSameLine = false;
+p.bracketSameLine = false;
 p.singleQuote = true;
 p.trailingComma = 'es5';
 
