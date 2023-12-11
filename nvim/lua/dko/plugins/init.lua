@@ -527,6 +527,50 @@ return {
   },
 
   -- =========================================================================
+  -- Obsidian
+  -- =========================================================================
+
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",
+    event = {
+      "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
+      "BufNewFile " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("obsidian").setup({
+        -- disable_frontmatter = true,
+        workspaces = {
+          { name = "Notes", path = "~/Dropbox (Personal)/Notes" },
+        },
+        completion = { nvim_cmp = true },
+        -- Optional, key mappings.
+        mappings = {
+          -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+          ["gf"] = {
+            action = function()
+              return require("obsidian").util.gf_passthrough()
+            end,
+            opts = { noremap = false, expr = true, buffer = true },
+          },
+          -- Toggle check-boxes.
+          ["<leader>ch"] = {
+            action = function()
+              return require("obsidian").util.toggle_checkbox()
+            end,
+            opts = { buffer = true },
+          },
+        },
+      })
+    end,
+  },
+
+  -- =========================================================================
   -- Neorg
   -- =========================================================================
 
