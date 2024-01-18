@@ -2,6 +2,7 @@ return {
   {
     --"davidosomething/vim-colors-meh",
     "lifepillar/vim-solarized8",
+    cond = #vim.api.nvim_list_uis() > 0,
     dependencies = {
       --"rakr/vim-two-firewatch",
       {
