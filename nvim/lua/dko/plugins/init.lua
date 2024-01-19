@@ -627,18 +627,18 @@ return {
   -- Zen Mode
   -- =========================================================================
 
-  -- {
-  --   "folke/zen-mode.nvim",
-  --       -- stylua: ignore
-  --   keys = {
-  --     { '<Leader>zz', '<Cmd>ZenMode<CR>', desc = 'ZenMode: toggle', },
-  --   },
-  --   opts = {
-  --     -- your configuration comes here
-  --     -- or leave it empty to use the default settings
-  --     -- refer to the configuration section below
-  --   },
-  -- },
+  {
+    "folke/zen-mode.nvim",
+        -- stylua: ignore
+    keys = {
+      { '<Leader>zz', '<Cmd>ZenMode<CR>', desc = 'ZenMode: toggle', },
+    },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
 
   -- =========================================================================
   -- Noice
