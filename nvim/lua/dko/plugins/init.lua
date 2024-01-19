@@ -526,20 +526,20 @@ return {
 
   -- nnoremap <silent> <leader>nv :NV<CR>
   -- vim.g.nv_search_paths = "~/Dropbox (Personal)/Notes"
-  {
-    "Alok/notational-fzf-vim",
-    -- opts = { nv_search_paths = "~/Dropbox (Personal)/Notes" },
-    init = function()
-      vim.g.nv_search_paths = { "~/Dropbox (Personal)/Notes" }
-      -- require("notational-fzf-vim").setup({
-      --   nv_search_paths = "~/Dropbox (Personal)/Notes"
-      -- })
-      -- vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
-      vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
-        desc = "Trigger NV",
-      })
-    end,
-  },
+  -- {
+  --   "Alok/notational-fzf-vim",
+  --   -- opts = { nv_search_paths = "~/Dropbox (Personal)/Notes" },
+  --   init = function()
+  --     vim.g.nv_search_paths = { "~/Dropbox (Personal)/Notes" }
+  --     -- require("notational-fzf-vim").setup({
+  --     --   nv_search_paths = "~/Dropbox (Personal)/Notes"
+  --     -- })
+  --     -- vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
+  --     vim.keymap.set("n", "<Leader>nv", "<Cmd>NV<CR>", {
+  --       desc = "Trigger NV",
+  --     })
+  --   end,
+  -- },
 
   -- =========================================================================
   -- Obsidian
@@ -548,9 +548,21 @@ return {
   {
     "epwalsh/obsidian.nvim",
     version = "*",
+    lazy = true,
     event = {
       "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
       "BufNewFile " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
+    },
+    -- stylua: ignore
+    keys = {
+      -- { '<localleader>ob', '<Cmd>ObsidianBacklinks<CR>', desc = 'obsidian: buffer backlinks', },
+      -- { '<localleader>od', '<Cmd>ObsidianToday<CR>', desc = 'obsidian: open daily note', },
+      -- { '<localleader>on', ':ObsidianNew ', desc = 'obsidian: new note' },
+      -- { '<localleader>oy', '<Cmd>ObsidianYesterday<CR>', desc = 'obsidian: previous daily note', },
+      -- { '<localleader>oo', ':ObsidianOpen ', desc = 'obsidian: open in app' },
+      { '<Leader>nv', '<Cmd>ObsidianSearch<CR>', desc = 'obsidian: search', },
+      { '<Leader>os', '<Cmd>ObsidianQuickSwitch<CR>', desc = 'obsidian: quick switch', },
+      -- { '<localleader>ot', '<Cmd>ObsidianTemplate<CR>', desc = 'obsidian: insert template', },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -562,6 +574,32 @@ return {
         -- disable_frontmatter = true,
         workspaces = {
           { name = "Notes", path = "~/Dropbox (Personal)/Notes" },
+        },
+        disable_frontmatter = true,
+        -- Optional, for templates (see below).
+        templates = {
+          subdir = "Templates",
+          -- date_format = "%Y-%m-%d",
+          -- time_format = "%H:%M",
+          -- A map for custom variables, the key should be the variable and the value a function
+          substitutions = {
+            yesterday = function()
+              return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
+            end,
+            tomorrow = function()
+              return os.date("%Y-%m-%d", os.time() + 60 * 60 * 24)
+            end,
+          },
+        },
+        daily_notes = {
+          -- Optional, if you keep daily notes in a separate directory.
+          folder = "journal/daily",
+          -- Optional, if you want to change the date format for the ID of daily notes.
+          -- date_format = "%Y-%m-%d",
+          -- Optional, if you want to change the date format of the default alias of daily notes.
+          -- alias_format = "%B %-d, %Y",
+          -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+          template = "Temporal/journal-nvim.md",
         },
         completion = { nvim_cmp = true },
         -- Optional, key mappings.
