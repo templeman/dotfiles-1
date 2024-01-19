@@ -16,3 +16,4 @@ standard
 semistandard
 stylelint
 stylelint-config-standard
+stylelint-config-standard-scss
