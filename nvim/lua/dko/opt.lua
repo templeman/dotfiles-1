@@ -77,6 +77,9 @@ vim.o.showmode = false -- don't show -- INSERT -- in cmdline
 -- https://github.com/neovim/neovim/pull/5226
 vim.o.inccommand = ""
 
+-- Concealer for Neorg and Obsidian
+vim.o.conceallevel = 2
+
 -- ===========================================================================
 -- Wild and file globbing stuff in command mode
 -- ===========================================================================
