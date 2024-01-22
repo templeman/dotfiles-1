@@ -685,6 +685,21 @@ return {
           --   opts = { skip = true },
           -- },
         },
+        throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
+        -- lsp = {
+        --   -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        --   hover = {
+        --     enabled = true,
+        --   },
+        --   signature = {
+        --     enabled = true,
+        --   },
+        --   override = {
+        --     ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+        --     ["vim.lsp.util.stylize_markdown"] = true,
+        --     ["cmp.entry.get_documentation"] = true,
+        --   },
+        -- },
       })
     end,
     dependencies = {
