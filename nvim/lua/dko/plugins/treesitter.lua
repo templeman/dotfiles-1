@@ -48,7 +48,7 @@ return {
           -- },
         },
 
-        indent = { enable = true },
+        -- indent = { enable = true },
       })
 
       -- Aliases
