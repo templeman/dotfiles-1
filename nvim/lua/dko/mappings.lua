@@ -603,6 +603,9 @@ M.setup_cmp = function()
     ["<C-k>"] = cmp.mapping.scroll_docs(-4),
     ["<C-j>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
+    ["<CR>"] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Insert,
+    }),
   }, snippy_mappings))
 end
 
