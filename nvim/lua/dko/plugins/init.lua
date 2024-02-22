@@ -534,6 +534,11 @@ return {
   --- GitHub Copilot
   {
     "github/copilot.vim",
+    init = function()
+      vim.g.copilot_filetypes = {
+        markdown = false,
+      }
+    end,
   },
 
   -- =========================================================================
@@ -587,7 +592,6 @@ return {
     },
     config = function()
       require("obsidian").setup({
-        -- disable_frontmatter = true,
         workspaces = {
           { name = "Notes", path = "~/Dropbox (Personal)/Notes" },
         },
@@ -635,6 +639,10 @@ return {
             opts = { buffer = true },
           },
         },
+        -- Where to put new notes. Valid options are
+        --  * "current_dir" - put new notes in same directory as the current buffer.
+        --  * "notes_subdir" - put new notes in the default notes subdirectory.
+        new_notes_location = "notes_subdir",
         -- Optional, customize how names/IDs for new notes are created.
         note_id_func = function(title)
           -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
