@@ -42,7 +42,7 @@ tools.register({
 
 --"cssls", -- conflicts with tailwindcss
 tools.register({
-  name = "tailwindcss",
+  name = "cssls",
   mason_type = "lsp",
   require = "npm",
   runner = "mason-lspconfig",
