@@ -1,3 +1,6 @@
+local uis = vim.api.nvim_list_uis()
+local has_ui = #uis > 0
+
 --- @type 'hlchunk'|'indentmini'
 local enabled = "indentmini"
 
@@ -15,9 +18,9 @@ return {
   -- =========================================================================
   {
     "nvimdev/indentmini.nvim",
+    cond = has_ui,
     enabled = enabled == "indentmini",
     event = "BufEnter",
-    cond = #vim.api.nvim_list_uis() > 0,
     config = function()
       require("indentmini").setup({
         char = "█",
@@ -48,7 +51,7 @@ return {
 
   {
     "shellRaining/hlchunk.nvim",
-    cond = #vim.api.nvim_list_uis() > 0,
+    cond = has_ui,
     enabled = enabled == "hlchunk",
     event = "UIEnter",
     config = function()
