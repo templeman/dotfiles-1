@@ -27,15 +27,14 @@ return {
         -- Indentmini gets janky when diffing php files
         exclude = {
           "php",
-        }
+        },
       })
       local function color()
-        vim.cmd.highlight(
-          ("default IndentLine guifg=%s"):format(
-            -- require("dko.colors").is_dark() and "#242426" or "#f4f2ef"
-            require("dko.colors").is_dark() and "#003F4F" or "#003F4F" -- #003542
-          )
-        )
+        vim.cmd.highlight(("default IndentLine guifg=%s"):format(
+          -- require("dko.colors").is_dark() and "#242426" or "#f4f2ef"
+          require("dko.colors").is_dark() and "#003F4F"
+            or "#003F4F" -- #003542
+        ))
       end
       vim.api.nvim_create_autocmd("colorscheme", {
         callback = color,

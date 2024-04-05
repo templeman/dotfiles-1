@@ -283,15 +283,15 @@ return {
   -- Syntax
   -- =========================================================================
 
-  {
-    "lukas-reineke/headlines.nvim",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    opts = {
-      markdown = {
-        bullets = {},
-      },
-    }, -- or `opts = {}`
-  },
+  -- {
+  --   "lukas-reineke/headlines.nvim",
+  --   dependencies = "nvim-treesitter/nvim-treesitter",
+  --   opts = {
+  --     markdown = {
+  --       bullets = {},
+  --     },
+  --   }, -- or `opts = {}`
+  -- },
 
   -- Works better than https://github.com/IndianBoy42/tree-sitter-just
   {
@@ -591,13 +591,13 @@ return {
     -- stylua: ignore
     keys = {
       -- { '<localleader>ob', '<Cmd>ObsidianBacklinks<CR>', desc = 'obsidian: buffer backlinks', },
-      -- { '<localleader>od', '<Cmd>ObsidianToday<CR>', desc = 'obsidian: open daily note', },
+      { '<Leader>od', '<Cmd>ObsidianToday<CR>', desc = 'obsidian: open daily note', },
       -- { '<localleader>on', ':ObsidianNew ', desc = 'obsidian: new note' },
       -- { '<localleader>oy', '<Cmd>ObsidianYesterday<CR>', desc = 'obsidian: previous daily note', },
-      -- { '<localleader>oo', ':ObsidianOpen ', desc = 'obsidian: open in app' },
+      { '<Leader>oo', ':ObsidianOpen ', desc = 'obsidian: open in app' },
       { '<Leader>nv', '<Cmd>ObsidianSearch<CR>', desc = 'obsidian: search', },
       { '<Leader>os', '<Cmd>ObsidianQuickSwitch<CR>', desc = 'obsidian: quick switch', },
-      -- { '<localleader>ot', '<Cmd>ObsidianTemplate<CR>', desc = 'obsidian: insert template', },
+      { '<Leader>ot', '<Cmd>ObsidianTemplate<CR>', desc = 'obsidian: insert template', },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -610,6 +610,8 @@ return {
           { name = "Notes", path = "~/Dropbox (Personal)/Notes" },
         },
         disable_frontmatter = true,
+        -- Optional, set to true to force ':ObsidianOpen' to bring the app to the foreground.
+        open_app_foreground = true,
         -- Optional, for templates (see below).
         templates = {
           subdir = "Templates",
@@ -620,8 +622,38 @@ return {
             yesterday = function()
               return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
             end,
+            today = function()
+              return os.date("%Y-%m-%d")
+            end,
             tomorrow = function()
               return os.date("%Y-%m-%d", os.time() + 60 * 60 * 24)
+            end,
+            day = function()
+              return os.date("%-d")
+            end,
+            month = function()
+              return os.date("%B")
+            end,
+            week = function()
+              return os.date("%-W")
+            end,
+            weekday = function()
+              return os.date("*t").wday
+            end,
+            weekdayname = function()
+              local daysoftheweek = {
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+              }
+              return daysoftheweek[os.date("*t").wday]
+            end,
+            year = function()
+              return os.date("%Y")
             end,
           },
         },
