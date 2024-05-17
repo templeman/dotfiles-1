@@ -430,8 +430,6 @@ M.bind_lsp = function(bufnr)
       ap.code_actions()
       return
     end
-    -- don't like the UI for lspsaga
-    -- vim.cmd.Lspsaga("code_action")
     vim.lsp.buf.code_action()
   end, lsp_opts({ desc = "LSP Code Action" }))
 
@@ -1071,6 +1069,15 @@ M.bind_yanky = function()
     { desc = "yanky next entry backward" }
   )
 end
+
+-- ===========================================================================
+-- Plugin: zoomwintab.vim
+-- ===========================================================================
+
+M.zoomwintab = {
+  "<C-w>o",
+  "<C-w><C-o>",
+}
 
 -- ===========================================================================
 

@@ -60,15 +60,14 @@ return {
     config = function()
       require("dressing").setup({
         select = {
-          get_config = function(opts)
-            if opts.kind == "codeaction" then
-              return {
-                telescope = require("telescope.themes").get_cursor({
-                  prompt_prefix = "🔍 ",
-                }),
-              }
-            end
-          end,
+          -- the telescope backend is broken in nvim 0.10 for code_action
+          -- something about the new ctx arg format
+          -- builtin is actually a custom floating win, not the default nvim
+          -- commandline picker
+          backend = { "builtin" },
+          builtin = {
+            min_height = 2,
+          },
         },
       })
     end,
@@ -145,10 +144,7 @@ return {
   {
     "troydm/zoomwintab.vim",
     cond = has_ui,
-    keys = {
-      "<C-w>o",
-      "<C-w><C-o>",
-    },
+    keys = require("dko.mappings").zoomwintab,
     cmd = {
       "ZoomWinTabIn",
       "ZoomWinTabOut",
@@ -168,8 +164,10 @@ return {
     },
   },
 
+  -- https://github.com/yorickpeterse/nvim-window
   {
     "yorickpeterse/nvim-window",
+    cond = has_ui,
     config = function()
       require("nvim-window").setup({})
       require("dko.mappings").bind_nvim_window()
@@ -179,6 +177,7 @@ return {
   -- remember/restore last cursor position in files
   {
     "ethanholz/nvim-lastplace",
+    cond = has_ui,
     config = true,
   },
 
@@ -236,13 +235,16 @@ return {
   -- =========================================================================
 
   -- jump to :line:column in filename:3:20
+  --
+  -- has indexing errors
   -- https://github.com/lewis6991/fileline.nvim/
-  -- indexing errors
   --{ "lewis6991/fileline.nvim" },
-
-  -- jump to :line:column in filename:3:20, better support
+  --
   -- https://github.com/wsdjeg/vim-fetch
-  { "wsdjeg/vim-fetch" },
+  {
+    "wsdjeg/vim-fetch",
+    cond = has_ui,
+  },
 
   -- ]u [u mappings to jump to urls
   -- <A-u> to open link picker
@@ -288,15 +290,16 @@ return {
   -- Syntax
   -- =========================================================================
 
-  -- {
-  --   "lukas-reineke/headlines.nvim",
-  --   dependencies = "nvim-treesitter/nvim-treesitter",
-  --   opts = {
-  --     markdown = {
-  --       bullets = {},
-  --     },
-  --   }, -- or `opts = {}`
-  -- },
+  {
+    "lukas-reineke/headlines.nvim",
+    cond = has_ui,
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    opts = {
+      markdown = {
+        bullets = {},
+      },
+    }, -- or `opts = {}`
+  },
 
   -- Works better than https://github.com/IndianBoy42/tree-sitter-just
   {
