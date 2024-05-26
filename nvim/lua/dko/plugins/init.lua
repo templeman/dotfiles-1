@@ -2,6 +2,19 @@ local icons = require("dko.icons")
 local uis = vim.api.nvim_list_uis()
 local has_ui = #uis > 0
 
+local function timestampfromtitle()
+  local date_str = vim.fn.expand("%:t:r")
+
+  -- Parse the date string into year, month, and day
+  local year, month, day = date_str:match("(%d+)-(%d+)-(%d+)")
+  local date_table = { year = year, month = month, day = day }
+
+  -- Convert the date table to a timestamp
+  local timestamp = os.time(date_table)
+
+  return timestamp
+end
+
 return {
   {
     "echasnovski/mini.bracketed",
@@ -626,6 +639,48 @@ return {
           -- time_format = "%H:%M",
           -- A map for custom variables, the key should be the variable and the value a function
           substitutions = {
+            tomorrowfromtitle = function()
+              return os.date("%Y-%m-%d", timestampfromtitle() + 60 * 60 * 24)
+            end,
+            yesterdayfromtitle = function()
+              return os.date("%Y-%m-%d", timestampfromtitle() - 60 * 60 * 24)
+            end,
+            weekfromtitle = function()
+              -- Get the week number using os.date
+              local week_number = tonumber(os.date("%U", timestampfromtitle()))
+
+              -- Add 1 to make the week numbers start from 1
+              week_number = week_number + 1
+
+              -- If the week number is 53, adjust it to 1
+              if week_number == 53 then
+                week_number = 1
+              end
+
+              return week_number
+            end,
+            dayofweekfromtitle = function()
+              -- Get the day of the week (Sunday is 1, Monday is 2, ..., Saturday is 7)
+              local day_of_week = tonumber(os.date("%w", timestampfromtitle()))
+
+              -- Define an array of day names
+              local days = {
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+              }
+
+              -- Get the full name of the day of the week
+              return days[day_of_week + 1]
+            end,
+            datefromtitle = function()
+              -- Convert the timestamp to a date string with the desired format
+              return os.date("%B %-d, %Y", timestampfromtitle())
+            end,
             yesterday = function()
               return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
             end,
@@ -672,7 +727,7 @@ return {
           -- Optional, if you want to change the date format of the default alias of daily notes.
           -- alias_format = "%B %-d, %Y",
           -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-          template = "Temporal/journal-nvim.md",
+          template = "nvim/journal.md",
         },
         completion = { nvim_cmp = true },
         -- Optional, key mappings.
