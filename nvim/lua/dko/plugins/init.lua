@@ -646,11 +646,30 @@ return {
               return os.date("%Y-%m-%d", timestampfromtitle() - 60 * 60 * 24)
             end,
             weekfromtitle = function()
-              -- Get the week number using os.date
-              local week_number = tonumber(os.date("%U", timestampfromtitle()))
+              local date_str = vim.fn.expand("%:t:r")
+              -- Parse the date string into year, month, and day
+              local year, month, day = date_str:match("(%d+)-(%d+)-(%d+)")
 
-              -- Add 1 to make the week numbers start from 1
-              week_number = week_number + 1
+              -- Convert to numbers
+              year, month, day = tonumber(year), tonumber(month), tonumber(day)
+
+              local date_table = { year = year, month = month, day = day }
+              local timestamp = os.time(date_table)
+
+              -- Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
+              local day_of_week = os.date(
+                "*t",
+                os.time({ year = year, month = month, day = day })
+              ).wday
+
+              -- Calculate the week number
+              local jan_1_weekday =
+                os.date("*t", os.time({ year = year, month = 1, day = 1 })).wday
+
+              -- local week_number = math.ceil((day + jan_1_weekday - 1) / 7)
+              local week_number = math.ceil(
+                (tonumber(os.date("%j", timestamp)) + jan_1_weekday - 1) / 7
+              )
 
               -- If the week number is 53, adjust it to 1
               if week_number == 53 then
