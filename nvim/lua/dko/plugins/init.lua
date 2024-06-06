@@ -216,7 +216,7 @@ return {
   },
 
   -- diff partial selections
-  -- { "rickhowe/spotdiff.vim" },
+  { "rickhowe/spotdiff.vim" },
 
   -- =========================================================================
   -- Reading
