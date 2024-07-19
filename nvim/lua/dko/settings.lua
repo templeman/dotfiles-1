@@ -10,6 +10,9 @@ local settings = {
     --   dark = "solarized8",
     --   light = "zenbones",
   },
+  diagnostics = {
+    goto_float = true,
+  },
   heirline = {
     show_buftype = false,
   },
