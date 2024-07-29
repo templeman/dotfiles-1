@@ -86,7 +86,7 @@ function {
     '@sharkdp/fd' \
     \
     atload'source <(fzf --zsh)' \
-    'junegunn/fzf';
+    'junegunn/fzf' \
     \
     mv'jq* -> jq' \
     'jqlang/jq' \
@@ -97,7 +97,6 @@ function {
     'BurntSushi/ripgrep' \
     \
     pick'zoxide/zoxide' \
-    atload'eval "$(zoxide init --cmd j zsh)"' \
     'ajeetdsouza/zoxide' \
     ;
 
