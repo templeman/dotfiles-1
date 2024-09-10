@@ -301,7 +301,7 @@ __dko_dotfiles__php__update_wpcs() {
 
   if [[ ! -d "$wpcs_path" ]]; then
     mkdir -p "${sources_path}"
-    git clone -b master "$wpcs_repo" "$wpcs_path"
+    git clone -b main "$wpcs_repo" "$wpcs_path"
   else
     (
       cd -- "$wpcs_path" || exit 1
