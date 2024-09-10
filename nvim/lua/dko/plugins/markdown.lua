@@ -54,15 +54,16 @@ return {
   --   end,
   -- },
 
-  {
-    "lukas-reineke/headlines.nvim",
-    cond = has_ui,
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    ft = "markdown",
-    opts = {
-      markdown = {
-        bullets = {},
-      },
-    }, -- or `opts = {}`
-  },
+  -- Maybe conflicting with epwalsh/obsidian.nvim
+  -- {
+  --   "lukas-reineke/headlines.nvim",
+  --   cond = has_ui,
+  --   dependencies = "nvim-treesitter/nvim-treesitter",
+  --   ft = "markdown",
+  --   opts = {
+  --     markdown = {
+  --       bullets = {},
+  --     },
+  --   }, -- or `opts = {}`
+  -- },
 }
