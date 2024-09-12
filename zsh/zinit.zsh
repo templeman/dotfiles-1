@@ -101,6 +101,14 @@ function {
     'ajeetdsouza/zoxide' \
     ;
 
+  # gi is my git-ink alias, and i don't need a .gitignore generator
+  export forgit_ignore='fgi'
+  export FORGIT_GI_REPO_LOCAL="${XDG_DATA_HOME}/forgit/gi/repos/dvcs/gitignore"
+  # fzf-git -- `` compl for git commands
+  zinit lucid for \
+    'wfxr/forgit' \
+    ;
+
   zinit snippet 'OMZP::cp'
   zinit snippet 'OMZP::extract'
 
