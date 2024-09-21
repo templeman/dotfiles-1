@@ -43,8 +43,6 @@ return {
           { name = "buffer" },
         }),
 
-        mapping = require("dko.mappings").setup_cmp(),
-
         window = {
           completion = {
             border = require("dko.settings").get("border"),
