@@ -10,6 +10,10 @@ local settings = {
     --   dark = "solarized8",
     --   light = "zenbones",
   },
+  coc = {
+    enabled = true,
+    fts = require("dko.utils.jsts").fts,
+  },
   diagnostics = {
     goto_float = true,
   },
