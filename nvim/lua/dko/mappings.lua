@@ -197,6 +197,12 @@ map(
 -- Buffer: Edit contents
 -- ===========================================================================
 
+map("n", "<A-=>", function()
+  require("dko.utils.format").run_pipeline({ async = false })
+end, {
+  desc = "Fix and format buffer with dko.utils.format.run_pipeline",
+})
+
 local visualTabOpts = {
   desc = "<Tab> indents selected lines in Visual",
   remap = true,
@@ -463,17 +469,6 @@ M.bind_lsp = function(bufnr)
       ---@diagnostic disable-next-line: missing-parameter
       or vim.lsp.buf.references()
   end, lsp_opts({ desc = "LSP references" }))
-
-  map(
-    "n",
-    "<A-=>",
-    function()
-      require("dko.utils.format").run_pipeline({ async = false })
-    end,
-    lsp_opts({
-      desc = "Fix and format buffer with dko.utils.format.run_pipeline",
-    })
-  )
 end
 
 -- autocmd callback
