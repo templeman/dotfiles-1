@@ -536,6 +536,12 @@ M.bind_coc = function(opts)
     buffer = opts.buf,
   })
 
+  map("n", "<C-]>", "<Plug>(coc-definition)", {
+    desc = "Go To Definition (tagfunc binding override)",
+    silent = true,
+    buffer = opts.buf,
+  })
+
   -- ===========================================================================
   -- diagnostic jump
   -- ===========================================================================
