@@ -135,11 +135,11 @@ return {
       if dkosettings.get("coc.enabled") then
         cmp.setup.filetype(dkosettings.get("coc.fts"), {
           completion = {
+            -- Use <C-Space> to trigger nvim-cmp.
+            -- E.g. for tailwindcss completion from nvim-cmp but regular
+            -- completion from coc.nvim
             autocomplete = false,
           },
-          enabled = false,
-          mapping = {},
-          sources = {},
         })
       end
     end,
