@@ -1,4 +1,5 @@
 local dkosettings = require("dko.settings")
+local dkomappings = require("dko.mappings")
 local uis = vim.api.nvim_list_uis()
 local has_ui = #uis > 0
 
@@ -24,7 +25,8 @@ return {
         buffer = { suffix = "", options = {} }, -- using cybu
         comment = { suffix = "c", options = {} },
         conflict = { suffix = "x", options = {} },
-        -- don't want diagnostic float focus, have in mappings.lua
+        -- don't want diagnostic float focus, have in mappings.lua with coc
+        -- support too
         diagnostic = { suffix = "", options = {} },
         file = { suffix = "f", options = {} },
         indent = { suffix = "", options = {} }, -- confusing
@@ -69,6 +71,8 @@ return {
     event = "VeryLazy",
   },
 
+  -- Show diagnostic as virtual text at EOL
+  -- https://github.com/rachartier/tiny-inline-diagnostic.nvim
   -- {
   --   "rachartier/tiny-inline-diagnostic.nvim",
   --   -- event = "VeryLazy",
@@ -121,7 +125,7 @@ return {
       "nvim-tree/nvim-web-devicons",
       "nvim-lua/plenary.nvim",
     },
-    keys = vim.tbl_values(require("dko.mappings").cybu),
+    keys = vim.tbl_values(dkomappings.cybu),
     config = function()
       require("cybu").setup({
         display_time = 500,
@@ -144,7 +148,7 @@ return {
           "help",
         },
       })
-      require("dko.mappings").bind_cybu()
+      dkomappings.bind_cybu()
     end,
   },
 
@@ -154,7 +158,7 @@ return {
   {
     "troydm/zoomwintab.vim",
     cond = has_ui,
-    keys = require("dko.mappings").zoomwintab,
+    keys = dkomappings.zoomwintab,
     cmd = {
       "ZoomWinTabIn",
       "ZoomWinTabOut",
@@ -174,13 +178,14 @@ return {
     },
   },
 
+  -- <C-w> hjkl or <leader>w for picker
   -- https://github.com/yorickpeterse/nvim-window
   {
     "yorickpeterse/nvim-window",
     cond = has_ui,
     config = function()
       require("nvim-window").setup({})
-      require("dko.mappings").bind_nvim_window()
+      dkomappings.bind_nvim_window()
     end,
   },
 
@@ -197,7 +202,7 @@ return {
 
   {
     "akinsho/toggleterm.nvim",
-    keys = require("dko.mappings").toggleterm_all_keys,
+    keys = dkomappings.toggleterm_all_keys,
     cmd = "ToggleTerm",
     cond = has_ui,
     config = function()
@@ -209,7 +214,7 @@ return {
         -- the buffer terminal with the floating terminal
         open_mapping = nil,
       })
-      require("dko.mappings").bind_toggleterm()
+      dkomappings.bind_toggleterm()
     end,
   },
 
@@ -233,7 +238,7 @@ return {
     cond = has_ui,
     config = function()
       require("gitsigns").setup({
-        on_attach = require("dko.mappings").bind_gitsigns,
+        on_attach = dkomappings.bind_gitsigns,
         preview_config = {
           border = dkosettings.get("border"),
         },
@@ -265,11 +270,11 @@ return {
   -- https://github.com/axieax/urlview.nvim
   {
     "axieax/urlview.nvim",
-    keys = vim.tbl_values(require("dko.mappings").urlview),
+    keys = vim.tbl_values(dkomappings.urlview),
     cmd = "UrlView",
     cond = has_ui,
     config = function()
-      require("dko.mappings").bind_urlview()
+      dkomappings.bind_urlview()
     end,
   },
 
@@ -437,12 +442,10 @@ return {
         )
         return
       end
-      require("Comment").setup(
-        require("dko.mappings").with_commentnvim_mappings({
-          -- add treesitter support, want tsx/jsx in particular
-          pre_hook = tscc_integration.create_pre_hook(),
-        })
-      )
+      require("Comment").setup(dkomappings.with_commentnvim_mappings({
+        -- add treesitter support, want tsx/jsx in particular
+        pre_hook = tscc_integration.create_pre_hook(),
+      }))
     end,
   },
 
@@ -453,13 +456,13 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     event = { "BufReadPost", "BufNewFile" },
-    keys = require("dko.mappings").trees,
+    keys = dkomappings.trees,
     config = function()
       require("treesj").setup({
         use_default_keymaps = false,
         max_join_length = 255,
       })
-      require("dko.mappings").bind_treesj()
+      dkomappings.bind_treesj()
     end,
   },
 
@@ -480,7 +483,7 @@ return {
       "mattn/vim-textobj-url",
     },
     config = function()
-      require("dko.mappings").bind_textobj()
+      dkomappings.bind_textobj()
     end,
   },
 
@@ -489,7 +492,7 @@ return {
     cond = has_ui,
     config = function()
       require("various-textobjs").setup({ useDefaultKeymaps = false })
-      require("dko.mappings").bind_nvim_various_textobjs()
+      dkomappings.bind_nvim_various_textobjs()
     end,
   },
 
