@@ -48,7 +48,10 @@ return {
   { "honza/vim-snippets" },
 
   {
-    "hrsh7th/nvim-cmp",
+    -- "hrsh7th/nvim-cmp",
+    -- https://github.com/iguanacucumber/magazine.nvim
+    "iguanacucumber/magazine.nvim",
+    name = "nvim-cmp", -- Otherwise highlighting gets messed up
     cond = #vim.api.nvim_list_uis() > 0,
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = cmp_dependencies,
