@@ -367,22 +367,21 @@ __dko_dotfiles__darwin__update_mac() {
 }
 
 # pass any arg to silence
-# __dko_dotfiles__darwin__require_latest_xcode() {
-#   local v
-#   # 14.0.0
-#   v="$(xcodebuild -version | awk 'NR==1{print $2}')"
-#   # 14 (trim until .)
-#   v="${v%%.*}"
-#   if ((v <= latest_xcode_major)); then
-#     __dko_ok "Found Xcode >= v${v}"
-#     return 0
-#   fi
-#   __dko_err "Found Xcode ${v}, please install ${latest_xcode_major}.x.x"
-#   return 1
-# }
+__dko_dotfiles__darwin__require_latest_xcode() {
+  local v
+  # 14.0.0
+  v="$(xcodebuild -version 2>/dev/null | awk 'NR==1{print $2}')"
+  # 14 (trim until .)
+  v="${v%%.*}"
+  if ((v <= latest_xcode_major)); then
+    __dko_ok "Found Xcode >= v${v}"
+    return 0
+  fi
+  __dko_err "Found Xcode ${v}, please install ${latest_xcode_major}.x.x"
+  return 1
+}
 
 __dko_dotfiles__darwin__update_brew() {
-  # __dko_dotfiles__darwin__require_latest_xcode || return 1
   __dko_has brew || return 1
 
   __dko_status "Updating homebrew"
@@ -399,7 +398,7 @@ __dko_dotfiles__darwin__update_brew() {
     local outdated
     # outdated="$(brew outdated --quiet)"
     # ST: Get outdated items and strip out any that we don't want upgraded
-    outdated="$( brew outdated --quiet | sed s/'vagrant'// | sed s/'virtualbox-extension-pack'// | sed s/'virtualbox'// | tr '\n' ' ' )"
+    outdated="$(brew outdated --quiet | sed s/'vagrant'// | sed s/'virtualbox-extension-pack'// | sed s/'virtualbox'// | tr '\n' ' ')"
     [[ -z "$outdated" ]] && {
       __dko_ok "Packages up-to-date"
       exit
@@ -409,9 +408,9 @@ __dko_dotfiles__darwin__update_brew() {
     __dko_status "brew upgrade"
     # ST: Loop outdated items for upgrade, rather than upgrading all
     for word in $outdated; do
-    # We'll manually cleanup later
-    # HOMEBREW_NO_INSTALL_CLEANUP=1 brew upgrade || exit 1
-      HOMEBREW_NO_INSTALL_CLEANUP=1 brew upgrade "$word";
+      # We'll manually cleanup later
+      # HOMEBREW_NO_INSTALL_CLEANUP=1 brew upgrade || exit 1
+      HOMEBREW_NO_INSTALL_CLEANUP=1 brew upgrade "$word"
     done
     __dko_ok "Upgrade complete"
 
