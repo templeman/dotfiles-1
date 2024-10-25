@@ -294,12 +294,10 @@ return {
     end,
   },
 
-  -- package diff
   -- https://github.com/vuki656/package-info.nvim
   {
     "vuki656/package-info.nvim",
     cond = has_ui,
-    dev = true,
     dependencies = { "MunifTanjim/nui.nvim" },
     event = { "BufReadPost package.json" },
     config = function()
