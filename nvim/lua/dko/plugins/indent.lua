@@ -14,6 +14,10 @@ return {
     --- merged
     opts = {
       indent = { enabled = provider == "snacks" },
+      chunk = {
+        enabled = provider == "snacks",
+        only_current = true,
+      },
     },
   },
 
@@ -89,6 +93,8 @@ return {
 
       local chunk = require("hlchunk.mods.chunk")
       chunk({
+        delay = 150,
+        duration = 150,
         exclude_filetypes = {
           sh = true,
         },
