@@ -246,6 +246,13 @@ return {
   -- Reading
   -- =========================================================================
 
+  {
+    "aaronik/treewalker.nvim",
+    config = function()
+      dkomappings.bind_treewalker()
+    end,
+  },
+
   -- jump to :line:column in filename:3:20
   --
   -- has indexing errors
