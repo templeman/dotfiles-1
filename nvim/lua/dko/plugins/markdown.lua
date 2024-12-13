@@ -56,6 +56,7 @@ return {
   -- },
 
   -- Maybe conflicting with epwalsh/obsidian.nvim
+  -- https://github.com/lukas-reineke/headlines.nvim
   -- {
   --   "lukas-reineke/headlines.nvim",
   --   cond = has_ui,
@@ -65,6 +66,6 @@ return {
   --     markdown = {
   --       bullets = {},
   --     },
-  --   }, -- or `opts = {}`
+  --   },
   -- },
 }
