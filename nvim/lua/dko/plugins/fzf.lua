@@ -1,22 +1,14 @@
--- =========================================================================
--- ui: fzf
--- =========================================================================
+-- local dkomappings = require("dko.mappings")
 
 return {
-  -- Use the repo instead of the version in brew since it includes the help
-  -- docs for fzf#run()
   {
-    "junegunn/fzf",
-    dependencies = {
-      "junegunn/fzf.vim",
-    },
-  },
-  {
-    "junegunn/fzf.vim",
-    init = function()
-      vim.g.fzf_command_prefix = "FZF"
-      vim.g.fzf_layout = { down = "~40%" }
-      vim.g.fzf_buffers_jump = 1
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = "echasnovski/mini.icons",
+    config = function()
+      -- calling `setup` is optional for customization
+      require("fzf-lua").setup({})
+      -- dkomappings.bind_fzf()
     end,
   },
 }

@@ -1207,6 +1207,13 @@ end
 -- Plugin: toggleterm.nvim
 -- ===========================================================================
 
+M.toggleterm = {
+  --- Hide active toggleterm window
+  hide = "<A-i>",
+  --- Enter to normal mode in terminal window
+  mode = "<A-x>",
+}
+
 local common_winbar = {
   enabled = true,
   ---@diagnostic disable-next-line: unused-local
