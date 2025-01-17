@@ -1080,6 +1080,7 @@ M.bind_fzf = function()
 
   emap("n", M.picker.mru, function()
     fzf.oldfiles({
+      git_icons = false,
       include_current_session = true,
       stat_file = true, -- verify files exist on disk
     })
@@ -1088,6 +1089,7 @@ M.bind_fzf = function()
   emap("n", M.picker.project, function()
     fzf.files({
       cwd = require("dko.utils.project").root(),
+      git_icons = false,
     })
   end, {
     desc = "fzf: project root",
