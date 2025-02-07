@@ -606,28 +606,28 @@ M.bind_completion = function(opts)
     remap = true,
     silent = true,
   })
-  map("n", "<C-j>", function()
-    if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-      return vim.fn["coc#float#scroll"](1)
-    end
-  end, {
-    expr = true,
-    buffer = opts.buf,
-    nowait = true,
-    remap = true,
-    silent = true,
-  })
-  map("n", "<C-k>", function()
-    if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-      return vim.fn["coc#float#scroll"](0)
-    end
-  end, {
-    expr = true,
-    buffer = opts.buf,
-    nowait = true,
-    remap = true,
-    silent = true,
-  })
+  -- map("n", "<C-j>", function()
+  --   if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
+  --     return vim.fn["coc#float#scroll"](1)
+  --   end
+  -- end, {
+  --   expr = true,
+  --   buffer = opts.buf,
+  --   nowait = true,
+  --   remap = true,
+  --   silent = true,
+  -- })
+  -- map("n", "<C-k>", function()
+  --   if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
+  --     return vim.fn["coc#float#scroll"](0)
+  --   end
+  -- end, {
+  --   expr = true,
+  --   buffer = opts.buf,
+  --   nowait = true,
+  --   remap = true,
+  --   silent = true,
+  -- })
 end
 
 -- Bindings for coc.nvim. Conflicts with bind_lsp.
