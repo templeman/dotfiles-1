@@ -36,18 +36,6 @@ M.setup = function(config)
     -- had some issues with some letters like E so back to fira code
 
     {
-      family = "Maple Mono",
-      harfbuzz_features = {
-        "calt=0", -- no ligatures => ===
-        "cv01", -- fully attached @ # $ etc.
-        --"cv02", -- curly i
-        "cv03", -- upper arm on a
-        "cv04", -- @ rounded
-        "ss05", -- {{}} tight
-      },
-    },
-
-    {
       family = "Fira Code",
       harfbuzz_features = {
         "calt=0", -- no ligatures => ===
@@ -56,6 +44,30 @@ M.setup = function(config)
         "ss05", -- @ rounded
         "ss06", -- \\ \n dimmed char escapes
         "zero", -- dotted 0
+      },
+    },
+
+    {
+      family = "MesloLGM Nerd Font",
+      harfbuzz_features = {
+        "calt=0", -- no ligatures => ===
+        "clig=0", -- no contextual ligatures ft
+        "ss03", -- & clarified
+        "ss05", -- @ rounded
+        "ss06", -- \\ \n dimmed char escapes
+        -- "zero", -- dotted 0
+      },
+    },
+
+    {
+      family = "Maple Mono",
+      harfbuzz_features = {
+        "calt=0", -- no ligatures => ===
+        "cv01", -- fully attached @ # $ etc.
+        --"cv02", -- curly i
+        "cv03", -- upper arm on a
+        "cv04", -- @ rounded
+        "ss05", -- {{}} tight
       },
     },
 
