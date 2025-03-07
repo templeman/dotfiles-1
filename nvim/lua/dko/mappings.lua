@@ -1,6 +1,8 @@
 local dkobuffer = require("dko.utils.buffer")
 local dkosettings = require("dko.settings")
 
+local Methods = vim.lsp.protocol.Methods
+
 ---Map and return with unbind function
 ---@return function # unbind
 local function map(modes, lhs, rhs, opts)
@@ -27,8 +29,6 @@ local function emap(modes, keys, handler, opts)
     return handler
   end, opts)
 end
-
-local M = {}
 
 map("n", "<Esc><Esc>", function()
   vim.cmd.doautoall("User EscEscStart")
@@ -111,12 +111,9 @@ map("v", "<Up>", "gk", visualArrowOpts)
 -- cd shortcuts
 -- ===========================================================================
 
-map(
-  "n",
-  "<Leader>cd",
-  "<Cmd>cd! %:h<CR>",
-  { desc = "cd to current buffer path" }
-)
+map("n", "<Leader>cd", "<Cmd>cd! %:h<CR>", {
+  desc = "cd to current buffer path",
+})
 
 map("n", "<Leader>..", "<Cmd>cd! ..<CR>", { desc = "cd up a level" })
 
@@ -221,12 +218,9 @@ map("", "H", "^", { desc = "Change H to alias ^" })
 map("", "L", "g_", { desc = "Change L to alias g_" })
 
 -- https://stackoverflow.com/questions/4256697/vim-search-and-highlight-but-do-not-jump#comment91750564_4257175
-map(
-  "n",
-  "*",
-  "m`<Cmd>keepjumps normal! *``<CR>",
-  { desc = "Don't jump on first * -- simpler vim-asterisk" }
-)
+map("n", "*", "m`<Cmd>keepjumps normal! *``<CR>", {
+  desc = "Don't jump on first * -- simpler vim-asterisk",
+})
 
 -- ===========================================================================
 -- Buffer: Edit contents
@@ -251,13 +245,12 @@ local reselectOpts = { desc = "Reselect visual block after indent" }
 map("x", "<", "<gv", reselectOpts)
 map("x", ">", ">gv", reselectOpts)
 
-map("n", "<Leader>,", "$r,", { desc = "Replace last character with a comma" })
-map(
-  "n",
-  "<Leader>;",
-  "$r;",
-  { desc = "Replace last character with a semi-colon" }
-)
+map("n", "<Leader>,", "$r,", {
+  desc = "Replace last character with a comma",
+})
+map("n", "<Leader>;", "$r;", {
+  desc = "Replace last character with a semi-colon",
+})
 
 map("n", "<Leader>ws", function()
   vim.fn["dko#whitespace#clean"]()
@@ -397,11 +390,44 @@ map("n", "<Leader>sy", function()
   )
 end, { desc = "Copy treesitter captures under cursor" })
 
--- ===========================================================================
+-- =============================================================================
+-- External mappings
+-- =============================================================================
+
+local M = {}
+
+-- =============================================================================
+-- FT
+-- =============================================================================
+
+M.ft = {}
+
+M.ft.lua = function()
+  map("n", "gf", function()
+    local line = vim.api.nvim_get_current_line()
+    if line:match("require%(") then
+      local bufnr = vim.api.nvim_get_current_buf()
+      local has_definition_handler = #vim.lsp.get_clients({
+        bufnr = bufnr,
+        method = Methods.textDocument_definition,
+      }) > 0
+      if has_definition_handler then
+        return "gd"
+      end
+    end
+  end, {
+    buffer = true,
+    desc = "[ft.lua] Use gd if lsp bound and line line contains 'require('",
+    expr = true,
+    remap = true, -- follow into gd mapping
+  })
+end
+
+-- =============================================================================
 -- Buffer: LSP integration
 -- Mix of https://github.com/neovim/nvim-lspconfig#suggested-configuration
 -- and :h lsp
--- ===========================================================================
+-- =============================================================================
 
 ---@param method string
 ---@return boolean -- true if telescope was succesfully called
@@ -672,18 +698,16 @@ M.bind_coc = function(opts)
   -- ===========================================================================
   -- diagnostic jump -- using vim.diagnostic instead since we pipe coc into ALE
   -- ===========================================================================
-  -- map(
-  --   "n",
-  --   "[d",
-  --   "<Plug>(coc-diagnostic-prev)",
-  --   { desc = "Go to prev diagnostic", buffer = opts.buf, silent = true }
-  -- )
-  -- map(
-  --   "n",
-  --   "]d",
-  --   "<Plug>(coc-diagnostic-next)",
-  --   { desc = "Go to next diagnostic", buffer = opts.buf, silent = true }
-  -- )
+  -- map("n", "[d", "<Plug>(coc-diagnostic-prev)", {
+  --   desc = "Go to prev diagnostic",
+  --   buffer = opts.buf,
+  --   silent = true,
+  -- })
+  -- map("n", "]d", "<Plug>(coc-diagnostic-next)", {
+  --   desc = "Go to next diagnostic",
+  --   buffer = opts.buf,
+  --   silent = true,
+  -- })
 end
 
 -- =============================================================================
@@ -841,6 +865,17 @@ M.bind_inspecthi = function()
   })
 end
 
+-- =============================================================================
+-- Plugin: tadmccorkle/markdown.nvim
+-- =============================================================================
+
+M.bind_markdown = function(bufnr)
+  map("n", "<c-x>", "<Cmd>MDTaskToggle<CR>", {
+    buffer = bufnr,
+    desc = "Toggle checkbox",
+  })
+end
+
 -- ===========================================================================
 -- Plugin: nvim-cmp + cmp-snippy
 -- ===========================================================================
@@ -899,7 +934,7 @@ end
 -- ===========================================================================
 
 M.bind_nvim_various_textobjs = function()
-  -- Note: use <cmd> mapping format for dot-repeatability
+  -- Note: use <Cmd> mapping format for dot-repeatability
   -- https://github.com/chrisgrieser/nvim-various-textobjs/commit/363dbb7#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R5
 
   map({ "o", "x" }, "ai", function()
@@ -946,7 +981,7 @@ M.bind_nvim_various_textobjs = function()
   map(
     { "o", "x" },
     "ik",
-    "<cmd>lua require('various-textobjs').key(true)<CR>",
+    "<Cmd>lua require('various-textobjs').key(true)<CR>",
     { desc = "textobj: object key" }
   )
 
@@ -954,21 +989,21 @@ M.bind_nvim_various_textobjs = function()
   map(
     { "o", "x" },
     "iP",
-    "<cmd>lua require('various-textobjs').lastChange()<CR>",
+    "<Cmd>lua require('various-textobjs').lastChange()<CR>",
     { desc = "textobj: last paste" }
   )
 
   map(
     { "o", "x" },
     "iv",
-    "<cmd>lua require('various-textobjs').value(true)<CR>",
+    "<Cmd>lua require('various-textobjs').value(true)<CR>",
     { desc = "textobj: object value" }
   )
 
   map(
     { "o", "x" },
     "is",
-    "<cmd>lua require('various-textobjs').subword(true)<CR>",
+    "<Cmd>lua require('various-textobjs').subword(true)<CR>",
     { desc = "textobj: camel-_Snake" }
   )
   map(
@@ -980,7 +1015,7 @@ M.bind_nvim_various_textobjs = function()
   map(
     { "o", "x" },
     "iu",
-    "<cmd>lua require('various-textobjs').url()<CR>",
+    "<Cmd>lua require('various-textobjs').url()<CR>",
     { desc = "textobj: url" }
   )
 
@@ -1350,7 +1385,7 @@ end
 -- Plugin: tw-values.nvim
 -- ===========================================================================
 
-M.twvalues = "<leader>tw"
+M.twvalues = "<Leader>tw"
 M.bind_twvalues = function()
   map("n", M.twvalues, "<Cmd>TWValues<CR>", {
     desc = "Show tailwind CSS values",
@@ -1382,37 +1417,24 @@ end
 -- ===========================================================================
 
 M.bind_yanky = function()
-  map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { desc = "yanky put after" })
-  map(
-    { "n", "x" },
-    "P",
-    "<Plug>(YankyPutBefore)",
-    { desc = "yanky put before" }
-  )
-  map(
-    { "n", "x" },
-    "gp",
-    "<Plug>(YankyGPutAfter)",
-    { desc = "yanky gput after" }
-  )
-  map(
-    { "n", "x" },
-    "gP",
-    "<Plug>(YankyGPutBefore)",
-    { desc = "yanky gput before" }
-  )
-  map(
-    "n",
-    "<c-n>",
-    "<Plug>(YankyPreviousEntry)",
-    { desc = "yanky previous entry" }
-  )
-  map(
-    "n",
-    "<c-p>",
-    "<Plug>(YankyNextEntry)",
-    { desc = "yanky next entry backward" }
-  )
+  map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", {
+    desc = "yanky put after",
+  })
+  map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", {
+    desc = "yanky put before",
+  })
+  map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", {
+    desc = "yanky gput after",
+  })
+  map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", {
+    desc = "yanky gput before",
+  })
+  map("n", "<c-n>", "<Plug>(YankyPreviousEntry)", {
+    desc = "yanky previous entry",
+  })
+  map("n", "<c-p>", "<Plug>(YankyNextEntry)", {
+    desc = "yanky next entry backward",
+  })
 end
 
 -- ===========================================================================
