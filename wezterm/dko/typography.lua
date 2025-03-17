@@ -35,6 +35,9 @@ M.setup = function(config)
     --  - https://github.com/IBM/plex
     -- had some issues with some letters like E so back to fira code
 
+    -- https://github.com/subframe7536/maple-font
+    "Maple Mono Normal NL",
+
     {
       family = "Fira Code",
       harfbuzz_features = {
@@ -56,18 +59,6 @@ M.setup = function(config)
         "ss05", -- @ rounded
         "ss06", -- \\ \n dimmed char escapes
         -- "zero", -- dotted 0
-      },
-    },
-
-    {
-      family = "Maple Mono",
-      harfbuzz_features = {
-        "calt=0", -- no ligatures => ===
-        "cv01", -- fully attached @ # $ etc.
-        --"cv02", -- curly i
-        "cv03", -- upper arm on a
-        "cv04", -- @ rounded
-        "ss05", -- {{}} tight
       },
     },
 
