@@ -47,6 +47,7 @@ end, { desc = "Open current file in Marked 2" })
 command("Delete", function()
   local fp = vim.api.nvim_buf_get_name(0)
 
+  ---@TODO consider vim.fs.rm
   local ok, err = vim.uv.fs_unlink(fp)
   if not ok then
     vim.notify(
@@ -124,6 +125,7 @@ command("Rename", function(opts)
       return
     end
 
+    ---@TODO consider vim.fs.rm
     local ok, err = vim.uv.fs_unlink(prevpath)
     if not ok then
       vim.notify(
