@@ -1,12 +1,18 @@
+# ==========================================================================
+# brew'd apps I use on ALL macs
+# ==========================================================================
+
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "roots/tap"
+
 brew "asciinema"
 brew "asciiquarium"
 brew "brew-php-switcher"
 brew "composer"
 brew "doctl"
 brew "gh"
+brew "git"
 brew "grex"
 brew "howdoi"
 brew "imagemagick"
@@ -18,6 +24,10 @@ brew "neovim"
 brew "nnn"
 brew "php-cs-fixer"
 brew "pianobar"
+
+# my hammerspoon config uses this
+brew "switchaudio-osx"
+
 brew "tag"
 brew "task"
 brew "tasksh"
@@ -37,7 +47,13 @@ brew "trellis-cli"
 
 brew "wifi-password"
 brew "wtf"
+
+# ==========================================================================
+# casks
+# ==========================================================================
+
 cask "alfred"
+#cask "bettertouchtool"
 cask "dash"
 cask "firefox"
 cask "forklift"
@@ -49,7 +65,9 @@ cask "mailmate"
 cask "obsidian"
 cask "raindropio"
 cask "slack"
+#cask "meetingbar"
 cask "wezterm"
+
 mas "PopClip", id: 445189367
 mas "LittleIpsum", id: 405772121
 mas "PDFScanner", id: 410968114
