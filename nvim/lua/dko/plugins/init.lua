@@ -37,7 +37,6 @@ return {
   {
     "lambdalisue/vim-suda",
     cmd = "SudaWrite",
-    cond = has_ui,
   },
 
   {
@@ -177,7 +176,6 @@ return {
 
   {
     "ghillb/cybu.nvim",
-    cond = has_ui,
     dependencies = {
       "echasnovski/mini.icons",
       -- "nvim-tree/nvim-web-devicons", -- mini icons instead
@@ -215,7 +213,6 @@ return {
   -- overrides <C-w>o (originally does an :only)
   {
     "troydm/zoomwintab.vim",
-    cond = has_ui,
     keys = require("dko.mappings").zoomwintab,
     cmd = {
       "ZoomWinTabIn",
@@ -227,7 +224,6 @@ return {
   -- resize window to selection, or split new window with selection size
   {
     "wellle/visual-split.vim",
-    cond = has_ui,
     cmd = {
       "VSResize",
       "VSSplit",
@@ -240,7 +236,6 @@ return {
   -- https://github.com/yorickpeterse/nvim-window
   {
     "yorickpeterse/nvim-window",
-    cond = has_ui,
     keys = vim.tbl_values(require("dko.mappings").nvim_window),
     config = function()
       require("nvim-window").setup({})
@@ -263,7 +258,6 @@ return {
     "akinsho/toggleterm.nvim",
     keys = require("dko.mappings").toggleterm_all_keys,
     cmd = "ToggleTerm",
-    cond = has_ui,
     config = function()
       require("toggleterm").setup({
         float_opts = {
@@ -307,7 +301,6 @@ return {
     "axieax/urlview.nvim",
     keys = vim.tbl_values(require("dko.mappings").urlview),
     cmd = "UrlView",
-    cond = has_ui,
     config = function()
       require("dko.mappings").bind_urlview()
     end,
