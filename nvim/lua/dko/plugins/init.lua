@@ -99,7 +99,6 @@ return {
             keys = vim
               .iter({
                 require("dko.mappings.finder").features,
-                require("dko.mappings.lsp").features,
               })
               :fold({}, function(acc, features)
                 vim.iter(features):each(function(_, config)
