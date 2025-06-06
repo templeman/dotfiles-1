@@ -3,6 +3,5 @@ bashate
 img2pdf
 linkchecker
 pylint
-vim-vint
 vulture
 yamllint
