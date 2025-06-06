@@ -17,21 +17,6 @@ local function timestampfromtitle()
 end
 
 return {
-  -- https://github.com/stevearc/oil.nvim
-  {
-    "stevearc/oil.nvim",
-    dependencies = "echasnovski/mini.icons",
-    keys = "\\\\",
-    config = function()
-      require("oil").setup({
-        view_options = {
-          show_hidden = true,
-        },
-      })
-      require("dko.mappings").bind_oil()
-    end,
-  },
-
   -- because https://github.com/neovim/neovim/issues/1496
   -- once https://github.com/neovim/neovim/pull/10842 is merged, there will
   -- probably be a better implementation for this
