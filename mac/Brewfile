@@ -2,8 +2,6 @@
 # brew'd apps I use on ALL macs
 # ==========================================================================
 
-tap "homebrew/bundle"
-tap "homebrew/services"
 tap "roots/tap"
 
 brew "asciinema"
