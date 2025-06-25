@@ -6,6 +6,7 @@ return {
   {
     --"davidosomething/vim-colors-meh",
     "lifepillar/vim-solarized8",
+    branch = "neovim",
     cond = #vim.api.nvim_list_uis() > 0,
     dependencies = {
       -- { "rakr/vim-two-firewatch", lazy = true },
