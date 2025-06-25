@@ -35,9 +35,6 @@ M.setup = function(config)
     --  - https://github.com/IBM/plex
     -- had some issues with some letters like E so back to fira code
 
-    -- https://github.com/subframe7536/maple-font
-    "Maple Mono Normal NL NF CN",
-
     {
       family = "Fira Code",
       harfbuzz_features = {
@@ -61,6 +58,9 @@ M.setup = function(config)
         -- "zero", -- dotted 0
       },
     },
+
+    -- https://github.com/subframe7536/maple-font
+    "Maple Mono Normal NL NF CN",
 
     -- charset fallbacks ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ (ﾉಥ益ಥ）ﾉ︵┻━┻
     "Noto Sans Mono", -- linux + smallcaps
