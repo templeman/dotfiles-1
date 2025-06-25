@@ -255,7 +255,7 @@ return {
   -- =========================================================================
   -- ui: diffing
   -- =========================================================================
- 
+
   -- diff partial selections
   -- { "rickhowe/spotdiff.vim" },
 
@@ -358,7 +358,7 @@ return {
       -- virtual_symbol_prefix = ' ',
       -- virtual_symbol_suffix = '',
       ---Highlight tailwind colors, e.g. 'bg-blue-500'
-      enable_tailwind = true,
+      enable_tailwind = false,
       enable_var_usage = true,
       exclude_filetypes = {
         "lazy",
