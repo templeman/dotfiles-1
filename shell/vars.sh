@@ -244,4 +244,10 @@ export YARN_CACHE_FOLDER="${XDG_CACHE_HOME}/yarn"
 # https://github.com/nvim-neorg/neorg
 # export CC="gcc-12"
 
+# ============================================================================
+# Custom
+# ============================================================================
+
+export HOMEBREW_GITHUB_API_TOKEN="$(security find-generic-password -gs 'GitHub API Token' 2>&1 >/dev/null | awk '/password/ {print $2}' | tr -d \")"
+
 DKO_SOURCE="${DKO_SOURCE} }"
