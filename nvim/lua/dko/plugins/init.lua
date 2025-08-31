@@ -16,6 +16,9 @@ local function timestampfromtitle()
   return timestamp
 end
 
+local obsidian_vault = vim.fs.normalize("~/Dropbox (Personal)/Notes")
+local obsidian_vault_pattern = vim.fn.fnameescape(obsidian_vault)
+
 return {
   -- because https://github.com/neovim/neovim/issues/1496
   -- once https://github.com/neovim/neovim/pull/10842 is merged, there will
@@ -488,8 +491,8 @@ return {
     version = "*",
     lazy = true,
     event = {
-      "BufReadPre " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
-      "BufNewFile " .. vim.fn.expand("~") .. "/Dropbox (Personal)/Notes/**.md",
+      "BufReadPre " .. obsidian_vault_pattern .. "/**.md",
+      "BufNewFile " .. obsidian_vault_pattern .. "/**.md",
     },
     -- stylua: ignore
     keys = {
@@ -510,7 +513,7 @@ return {
     config = function()
       require("obsidian").setup({
         workspaces = {
-          { name = "Notes", path = "~/Dropbox (Personal)/Notes" },
+          { name = "Notes", path = obsidian_vault },
         },
         disable_frontmatter = true,
         -- Optional, set to true to force ':ObsidianOpen' to bring the app to the foreground.
