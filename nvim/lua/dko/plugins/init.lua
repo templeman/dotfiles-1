@@ -635,23 +635,6 @@ return {
           template = "nvim/journal.md",
         },
         completion = { nvim_cmp = true },
-        -- Optional, key mappings.
-        mappings = {
-          -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-          ["gf"] = {
-            action = function()
-              return require("obsidian").util.gf_passthrough()
-            end,
-            opts = { noremap = false, expr = true, buffer = true },
-          },
-          -- Toggle check-boxes.
-          ["<leader>ch"] = {
-            action = function()
-              return require("obsidian").util.toggle_checkbox()
-            end,
-            opts = { buffer = true },
-          },
-        },
         -- Where to put new notes. Valid options are
         --  * "current_dir" - put new notes in same directory as the current buffer.
         --  * "notes_subdir" - put new notes in the default notes subdirectory.
@@ -673,6 +656,25 @@ return {
           -- end
           -- return tostring(os.time()) .. "-" .. suffix
           return title
+        end,
+      })
+
+      -- Optional, key mappings.
+      local obsidian = require("obsidian")
+      local function set_obsidian_maps(buf)
+        vim.keymap.set("n", "gf", function()
+          return obsidian.util.gf_passthrough()
+        end, { noremap = false, expr = true, buffer = buf })
+        vim.keymap.set("n", "<leader>ch", obsidian.util.toggle_checkbox, {
+          buffer = buf,
+          desc = "Toggle checkbox",
+        })
+      end
+
+      vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+        pattern = obsidian_vault .. "/**.md",
+        callback = function(ev)
+          set_obsidian_maps(ev.buf)
         end,
       })
     end,
