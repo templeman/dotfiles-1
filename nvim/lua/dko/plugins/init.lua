@@ -506,7 +506,7 @@ return {
       { '<Leader>ot', '<Cmd>ObsidianTemplate<CR>', desc = 'obsidian: insert template', },
     },
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
       "hrsh7th/nvim-cmp",
       "nvim-telescope/telescope.nvim",
     },
