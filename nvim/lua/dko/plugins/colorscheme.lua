@@ -19,7 +19,7 @@ return {
     lazy = false,
     priority = 1000,
     init = function()
-      require("dko.settings").set("colors.dark", "meh")
+      require("dko.settings").set("colors.dark", "solarized8")
       require("dko.settings").set("colors.light", "komau")
     end,
     config = function()
