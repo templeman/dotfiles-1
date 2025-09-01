@@ -662,9 +662,6 @@ return {
       -- Optional, key mappings.
       local obsidian = require("obsidian")
       local function set_obsidian_maps(buf)
-        vim.keymap.set("n", "gf", function()
-          return obsidian.util.gf_passthrough()
-        end, { noremap = false, expr = true, buffer = buf })
         vim.keymap.set("n", "<leader>ch", obsidian.util.toggle_checkbox, {
           buffer = buf,
           desc = "Toggle checkbox",
