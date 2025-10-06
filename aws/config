@@ -1,3 +1,6 @@
 [default]
 region = us-east-1
 output = json
+[profile moad-ro]
+region = us-west-2
+output = json
