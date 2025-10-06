@@ -6,7 +6,6 @@
 -- There are more syntaxes, but checking for them makes editing md very slow
 vim.g.markdown_fenced_languages = {
   "bash=sh",
-  "help",
   "javascript",
   "javascriptreact",
   "js=javascript",
