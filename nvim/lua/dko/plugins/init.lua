@@ -6,14 +6,22 @@ local BRACKETED_DISABLED = ""
 local function timestampfromtitle()
   local date_str = vim.fn.expand("%:t:r")
 
+  if not date_str or date_str == "" then
+    return nil
+  end
+
   -- Parse the date string into year, month, and day
-  local year, month, day = date_str:match("(%d+)-(%d+)-(%d+)")
-  local date_table = { year = year, month = month, day = day }
+  local year, month, day = date_str:match("^(%d+)-(%d+)-(%d+)$")
+  if not (year and month and day) then
+    return nil
+  end
 
-  -- Convert the date table to a timestamp
-  local timestamp = os.time(date_table)
-
-  return timestamp
+  -- Return year, month, day as numbers
+  return os.time({
+    year = tonumber(year),
+    month = tonumber(month),
+    day = tonumber(day),
+  })
 end
 
 local obsidian_vault = vim.fs.normalize("~/Dropbox (Personal)/Notes")
@@ -526,33 +534,33 @@ return {
           -- A map for custom variables, the key should be the variable and the value a function
           substitutions = {
             tomorrowfromtitle = function()
-              return os.date("%Y-%m-%d", timestampfromtitle() + 60 * 60 * 24)
+              local timestamp = timestampfromtitle()
+              if not timestamp then
+                return os.date("%Y-%m-%d", os.time() + 60 * 60 * 24)
+              end
+              return os.date("%Y-%m-%d", timestamp + 60 * 60 * 24)
             end,
             yesterdayfromtitle = function()
-              return os.date("%Y-%m-%d", timestampfromtitle() - 60 * 60 * 24)
+              local timestamp = timestampfromtitle()
+              if not timestamp then
+                return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
+              end
+              return os.date("%Y-%m-%d", timestamp - 60 * 60 * 24)
             end,
             weekfromtitle = function()
-              local date_str = vim.fn.expand("%:t:r")
-              -- Parse the date string into year, month, and day
-              local year, month, day = date_str:match("(%d+)-(%d+)-(%d+)")
-
-              -- Convert to numbers
-              year, month, day = tonumber(year), tonumber(month), tonumber(day)
-
-              local date_table = { year = year, month = month, day = day }
-              local timestamp = os.time(date_table)
+              local timestamp = timestampfromtitle()
+              if not timestamp then
+                return os.date("%-W")
+              end
 
               -- Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-              local day_of_week = os.date(
+              local date = os.date("*t", timestamp)
+              local jan_1_weekday = os.date(
                 "*t",
-                os.time({ year = year, month = month, day = day })
+                os.time({ year = date.year, month = 1, day = 1 })
               ).wday
 
               -- Calculate the week number
-              local jan_1_weekday =
-                os.date("*t", os.time({ year = year, month = 1, day = 1 })).wday
-
-              -- local week_number = math.ceil((day + jan_1_weekday - 1) / 7)
               local week_number = math.ceil(
                 (tonumber(os.date("%j", timestamp)) + jan_1_weekday - 1) / 7
               )
@@ -565,26 +573,21 @@ return {
               return week_number
             end,
             dayofweekfromtitle = function()
-              -- Get the day of the week (Sunday is 1, Monday is 2, ..., Saturday is 7)
-              local day_of_week = tonumber(os.date("%w", timestampfromtitle()))
-
-              -- Define an array of day names
-              local days = {
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-              }
-
               -- Get the full name of the day of the week
-              return days[day_of_week + 1]
+              local timestamp = timestampfromtitle()
+              if not timestamp then
+                return os.date("%A")
+              end
+
+              return os.date("%A", timestamp)
             end,
             datefromtitle = function()
               -- Convert the timestamp to a date string with the desired format
-              return os.date("%B %-d, %Y", timestampfromtitle())
+              local timestamp = timestampfromtitle()
+              if not timestamp then
+                return os.date("%B %-d, %Y")
+              end
+              return os.date("%B %-d, %Y", timestamp)
             end,
             yesterday = function()
               return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
