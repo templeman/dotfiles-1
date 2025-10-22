@@ -78,6 +78,16 @@ k:insert({
   mods = "CTRL|SHIFT",
   action = wezterm.action_callback(panes.split_vert),
 })
+k:insert({
+  key = "{",
+  mods = "ALT|SHIFT",
+  action = wezterm.action.MoveTabRelative(-1),
+})
+k:insert({
+  key = "}",
+  mods = "ALT|SHIFT",
+  action = wezterm.action.MoveTabRelative(1),
+})
 
 -- =============================================================================
 
