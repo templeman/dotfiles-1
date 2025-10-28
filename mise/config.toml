@@ -11,6 +11,7 @@ gpg_verify = false
 go = "latest"
 jq = "latest"
 node = "22"
+"npm:npmrc" = "latest"
 python = "latest"
 ruby = "3.3.6"
 rust = "latest"
