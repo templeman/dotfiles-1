@@ -11,6 +11,7 @@ gpg_verify = false
 go = "latest"
 jq = "latest"
 node = "24"
+"npm:@anthropic-ai/claude-code" = "latest"
 "npm:npmrc" = "latest"
 python = "latest"
 ruby = "3.3.6"

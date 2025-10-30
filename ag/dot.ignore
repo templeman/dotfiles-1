@@ -20,6 +20,7 @@ zsh/.zinit/
 *.po
 *.sql
 *.svg
+*.tsbuildinfo
 *.vim.old
 *-min.*
 *.xcbkptlist
