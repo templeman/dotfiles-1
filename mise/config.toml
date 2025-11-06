@@ -2,6 +2,7 @@
 gpg_verify = false
 
 [tools]
+"aqua:astral-sh/uv" = "latest"
 "aqua:dandavison/delta" = "latest"
 "aqua:hashicorp/vault" = "latest"
 "aqua:junegunn/fzf" = "latest"
@@ -14,6 +15,7 @@ node = "24"
 "npm:@anthropic-ai/claude-code" = "latest"
 "npm:npmrc" = "latest"
 "npm:vibe-rules" = "latest"
+"pipx:basedpyright" = "latest"
 python = "latest"
 ruby = "3.3.6"
 rust = "latest"
