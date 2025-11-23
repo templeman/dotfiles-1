@@ -74,7 +74,7 @@ M.setup = function(config)
 
   config.font_dirs = { "fonts" }
 
-  config.font_size = 16.0
+  config.font_size = 12.0
 
   -- this is the default if using latest nightly
   --config.front_end = "WebGpu"
