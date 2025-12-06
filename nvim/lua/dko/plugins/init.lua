@@ -24,6 +24,27 @@ local function timestampfromtitle()
   })
 end
 
+-- Week-of-year (1..53, rarely 54) with Monday as first day,
+-- Week 1 always includes Jan 1 (no week 0), last week always ends Dec 31.
+local function calendar_week_monday(ts)
+  ts = ts or os.time()
+
+  -- %W = Monday-first week number, 00..53; Jan 1 before first Monday => 00
+  local W = tonumber(os.date("%W", ts)) -- 0..53
+  local y = tonumber(os.date("%Y", ts))
+  local W_jan1 =
+    tonumber(os.date("%W", os.time({ year = y, month = 1, day = 1 })))
+
+  -- If Jan 1 is before the year's first Monday (W_jan1 == 0), shift all weeks up by 1
+  -- so Jan 1..first Sunday becomes week 1; otherwise keep %W as-is.
+  local week = W + ((W_jan1 == 0) and 1 or 0)
+
+  -- Optional: clamp to 53 if you never want "week 54"
+  week = math.min(week, 53)
+
+  return week
+end
+
 local obsidian_vault = vim.fs.normalize("~/Dropbox (Personal)/Notes")
 local obsidian_vault_pattern = vim.fn.fnameescape(obsidian_vault)
 
@@ -66,7 +87,7 @@ return {
   },
 
   {
-    "echasnovski/mini.align",
+    "nvim-mini/mini.align",
     version = false,
     config = function()
       require("mini.align").setup()
@@ -120,6 +141,26 @@ return {
     config = function()
       vim.g.bufferize_command = "tabnew"
       vim.g.bufferize_keep_buffers = 1
+    end,
+  },
+
+  {
+    "nvim-mini/mini.files",
+    version = false, -- use latest
+    opts = {}, -- default setup
+    keys = {
+      {
+        "<A-o>",
+        function()
+          require("mini.files").open() -- opens at current working directory
+          -- or, to open at current buffer's directory:
+          -- require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+        end,
+        desc = "Mini Files: open",
+      },
+    },
+    config = function()
+      require("mini.files").setup()
     end,
   },
 
@@ -496,7 +537,7 @@ return {
 
   {
     "obsidian-nvim/obsidian.nvim",
-    version = "*",
+    version = "*", -- recommended, use latest release instead of latest commit
     lazy = true,
     event = {
       "BufReadPre " .. obsidian_vault_pattern .. "/**.md",
@@ -504,29 +545,81 @@ return {
     },
     -- stylua: ignore
     keys = {
-      -- { '<localleader>ob', '<Cmd>ObsidianBacklinks<CR>', desc = 'obsidian: buffer backlinks', },
-      { '<Leader>od', '<Cmd>ObsidianToday<CR>', desc = 'obsidian: open daily note', },
-      -- { '<localleader>on', ':ObsidianNew ', desc = 'obsidian: new note' },
-      -- { '<localleader>oy', '<Cmd>ObsidianYesterday<CR>', desc = 'obsidian: previous daily note', },
-      { '<Leader>oo', ':ObsidianOpen ', desc = 'obsidian: open in app' },
-      { '<Leader>nv', '<Cmd>ObsidianSearch<CR>', desc = 'obsidian: search', },
-      { '<Leader>os', '<Cmd>ObsidianQuickSwitch<CR>', desc = 'obsidian: quick switch', },
-      { '<Leader>ot', '<Cmd>ObsidianTemplate<CR>', desc = 'obsidian: insert template', },
+      -- { '<localleader>ob', '<Cmd>Obsidian backlinks<CR>', desc = 'obsidian: buffer backlinks', },
+      { '<Leader>od', '<Cmd>Obsidian today<CR>', desc = 'obsidian: open daily note', },
+      { '<Leader>on', ':Obsidian new ', desc = 'obsidian: new note' },
+      -- { '<localleader>oy', '<Cmd>Obsidian yesterday<CR>', desc = 'obsidian: previous daily note', },
+      { '<Leader>oo', ':Obsidian open ', desc = 'obsidian: open in app' },
+      { '<Leader>nv', '<Cmd>Obsidian search<CR>', desc = 'obsidian: search', },
+      { '<Leader>os', '<Cmd>Obsidian quick_switch<CR>', desc = 'obsidian: quick switch', },
+      { '<Leader>ot', '<Cmd>Obsidian template<CR>', desc = 'obsidian: insert template', },
+      -- open a picker of daily notes from the past 20 days (20 days back, 0 days forward)
+      { '<leader>oD', '<cmd>Obsidian dailies -20 0<cr>', desc = 'obsidian: daily notes' }
     },
     dependencies = {
+      -- Required.
+      "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "hrsh7th/nvim-cmp",
       "nvim-telescope/telescope.nvim",
     },
     config = function()
       require("obsidian").setup({
+        legacy_commands = false,
         workspaces = {
           { name = "Notes", path = obsidian_vault },
         },
-        disable_frontmatter = true,
+        picker = {
+          -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'snacks.pick' or 'mini.pick'.
+          name = "telescope.nvim",
+          -- name = "fzf-lua",
+          -- name = "snacks.pick",
+          -- Optional, configure key mappings for the picker. These are the defaults.
+          -- Not all pickers support all mappings.
+          -- mappings = {
+          --   -- Create a new note from your query.
+          --   new = "<C-x>",
+          --   -- Insert a link to the selected note.
+          --   insert_link = "<C-l>",
+          -- },
+        },
+        frontmatter = {
+          enabled = false,
+          sort = false,
+        },
         -- Optional, for templates (see below).
         templates = {
-          subdir = "Templates",
+          folder = "Templates",
+          customizations = {
+            person = {
+              notes_subdir = "people",
+              -- This function currently only receives the note title as an input
+              note_id_func = function(title)
+                if title == nil then
+                  return nil
+                end
+
+                -- local name =
+                --   title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+                -- return name -- "Hulk Hogan" → "hulk-hogan"
+                return title
+              end,
+            },
+            meeting = {
+              notes_subdir = "meetings",
+              -- This function currently only receives the note title as an input
+              note_id_func = function(title)
+                if title == nil then
+                  return nil
+                end
+
+                -- local name =
+                --   title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+                -- return name -- "Hulk Hogan" → "hulk-hogan"
+                return title
+              end,
+            },
+          },
           -- date_format = "%Y-%m-%d",
           -- time_format = "%H:%M",
           -- A map for custom variables, the key should be the variable and the value a function
@@ -547,28 +640,44 @@ return {
             end,
             weekfromtitle = function()
               local timestamp = timestampfromtitle()
-              if not timestamp then
-                return os.date("%-W")
-              end
+              return tostring(calendar_week_monday(timestamp or os.time()))
+              -- if not timestamp then
+              --   vim.notify(
+              --     vim.inspect(timestamp),
+              --     vim.log.levels.INFO,
+              --     { title = "debug" }
+              --   )
+              --   return os.date("%-W")
+              -- end
 
-              -- Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-              local date = os.date("*t", timestamp)
-              local jan_1_weekday = os.date(
-                "*t",
-                os.time({ year = date.year, month = 1, day = 1 })
-              ).wday
-
-              -- Calculate the week number
-              local week_number = math.ceil(
-                (tonumber(os.date("%j", timestamp)) + jan_1_weekday - 1) / 7
-              )
-
-              -- If the week number is 53, adjust it to 1
-              if week_number == 53 then
-                week_number = 1
-              end
-
-              return week_number
+              -- -- Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
+              -- local date = os.date("*t", timestamp)
+              -- local jan_1_weekday = os.date(
+              --   "*t",
+              --   os.time({ year = date.year, month = 1, day = 1 })
+              -- ).wday
+              -- vim.notify(
+              --   vim.inspect(jan_1_weekday),
+              --   vim.log.levels.INFO,
+              --   { title = "jan 1 weekday" }
+              -- )
+              -- vim.notify(
+              --   vim.inspect(os.date("%j", timestamp)),
+              --   vim.log.levels.INFO,
+              --   { title = "timestamp" }
+              -- )
+              --
+              -- -- Calculate the week number
+              -- local week_number = math.ceil(
+              --   (tonumber(os.date("%j", timestamp)) + jan_1_weekday - 1) / 7
+              -- )
+              --
+              -- -- If the week number is 53, adjust it to 1
+              -- if week_number == 53 then
+              --   week_number = 1
+              -- end
+              --
+              -- return week_number
             end,
             dayofweekfromtitle = function()
               -- Get the full name of the day of the week
@@ -635,7 +744,23 @@ return {
           -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
           template = "nvim/journal.md",
         },
-        completion = { nvim_cmp = true },
+        -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
+        completion = {
+          -- Enables completion using nvim_cmp
+          nvim_cmp = true,
+          -- Enables completion using blink.cmp
+          blink = false,
+          -- Trigger completion at 2 chars.
+          min_chars = 2,
+        },
+        -- Optional, sort search results by "path", "modified", "accessed", or "created".
+        -- The recommend value is "modified" and `true` for `sort_reversed`, which means, for example,
+        -- that `:ObsidianQuickSwitch` will show the notes sorted by latest modified time
+        search = {
+          -- max_lines = 1000,
+          sort_by = "modified",
+          sort_reversed = true,
+        },
         -- Where to put new notes. Valid options are
         --  * "current_dir" - put new notes in same directory as the current buffer.
         --  * "notes_subdir" - put new notes in the default notes subdirectory.
@@ -648,8 +773,9 @@ return {
           -- local suffix = ""
           -- if title ~= nil then
           --   -- If title is given, transform it into valid file name.
-          --   suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-          -- else
+          --   local name = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+          --   return name
+          -- end
           --   -- If title is nil, just add 4 random uppercase letters to the suffix.
           --   for _ = 1, 4 do
           --     suffix = suffix .. string.char(math.random(65, 90))
