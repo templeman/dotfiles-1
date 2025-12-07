@@ -6,7 +6,7 @@ local M = {}
 
 M.setup = function(config)
   -- May be overridden on gui-startup -- see ./wezterm.lua
-  config.font_size = 14.0
+  config.font_size = 16.0
 
   -- ===========================================================================
   -- Fonts
@@ -23,17 +23,18 @@ M.setup = function(config)
     -- For other font considerations see:
     -- https://github.com/davidosomething/dotfiles/issues/652
 
-    -- {
-    --   family = "Fira Code",
-    --   harfbuzz_features = {
-    --     "calt=0", -- no ligatures => ===
-    --     "clig=0", -- no contextual ligatures ft
-    --     "ss03", -- & clarified
-    --     "ss05", -- @ rounded
-    --     "ss06", -- \\ \n dimmed char escapes
-    --     "zero", -- dotted 0
-    --   },
-    -- },
+    -- == Primary Font =======================================================
+    {
+      family = "Fira Code",
+      harfbuzz_features = {
+        "calt=0", -- no ligatures => ===
+        "clig=0", -- no contextual ligatures ft
+        "ss03", -- & clarified
+        "ss05", -- @ rounded
+        "ss06", -- \\ \n dimmed char escapes
+        "zero", -- dotted 0
+      },
+    },
 
     -- {
     --   family = "MesloLGM Nerd Font",
@@ -47,7 +48,7 @@ M.setup = function(config)
     --   },
     -- },
 
-    -- == Primary Font =======================================================
+    -- == Primary Backup Font =======================================================
     -- https://github.com/subframe7536/maple-font
     "Maple Mono Normal NL NF CN",
     -- =======================================================================
