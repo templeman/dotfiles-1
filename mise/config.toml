@@ -16,6 +16,7 @@ gpg_verify = false
 "aqua:hadolint/hadolint" = "latest"
 "aqua:hashicorp/terraform-ls" = "latest"
 "aqua:hashicorp/vault" = "latest"
+"aqua:jdx/usage" = "latest"
 "aqua:junegunn/fzf" = "latest"
 "aqua:koalaman/shellcheck" = "latest"
 "aqua:mvdan/sh" = "latest"
@@ -54,7 +55,6 @@ node = "latest"
 python = "latest"
 ruby = "3.3.6"
 rust = "latest"
-usage = "latest"
 
 [env]
 MISE_NODE_DEFAULT_PACKAGES_FILE = "{{ get_env(name='XDG_CONFIG_HOME', default='~/.config') }}/mise/default-npm-packages"
