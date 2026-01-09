@@ -48,6 +48,7 @@ end
 local obsidian_vault = vim.fs.normalize("~/Dropbox (Personal)/Notes")
 local obsidian_vault_pattern = vim.fn.fnameescape(obsidian_vault)
 
+---@type LazySpec
 return {
   -- because https://github.com/neovim/neovim/issues/1496
   -- once https://github.com/neovim/neovim/pull/10842 is merged, there will
