@@ -3,7 +3,13 @@ local has_ui = #uis > 0
 
 ---@type LazySpec
 return {
-  -- https://github.com/tadmccorkle/markdown.nvim
+  --- https://github.com/brianhuster/live-preview.nvim
+  {
+    "brianhuster/live-preview.nvim",
+    dependencies = { "folke/snacks.nvim" },
+  },
+
+  --- https://github.com/tadmccorkle/markdown.nvim
   {
     "tadmccorkle/markdown.nvim",
     ft = "markdown", -- or 'event = "VeryLazy"'
@@ -54,8 +60,8 @@ return {
   --   end,
   -- },
 
-  -- Maybe conflicting with epwalsh/obsidian.nvim
-  -- https://github.com/lukas-reineke/headlines.nvim
+  -- Maybe conflicting with obsidian.nvim
+  --- https://github.com/lukas-reineke/headlines.nvim
   -- {
   --   "lukas-reineke/headlines.nvim",
   --   cond = has_ui,
