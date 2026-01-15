@@ -400,6 +400,9 @@ up() {
 # Local
 # ============================================================================
 
+# Google GAM
+export PATH="$HOME/bin/gam7:$PATH"
+
 . "${DOTFILES}/shell/after.sh"
 [[ -f "${LDOTDIR}/zshrc" ]] && . "${LDOTDIR}/zshrc"
 
