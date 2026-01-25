@@ -30,6 +30,20 @@ M.pipelines["html"] = {
   "efm:prettier",
 }
 
+M.pipelines["css"] = {
+  function()
+    require("dko.utils.format.efm").format_with(
+      "prettier",
+      { pipeline = "css" }
+    )
+  end,
+  "efm:prettier",
+}
+M.pipelines["scss"] = M.pipelines["css"]
+M.pipelines["less"] = M.pipelines["css"]
+M.pipelines["sugarss"] = M.pipelines["css"]
+M.pipelines["wxss"] = M.pipelines["css"]
+
 M.pipelines["javascript"] = {
   require("dko.utils.format.javascript").format,
   require("dko.settings").get("coc.enabled") and "coc" or nil,

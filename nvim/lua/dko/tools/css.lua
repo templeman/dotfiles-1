@@ -1,6 +1,12 @@
 local tools = require("dko.tools")
 
 tools.register({
+  fts = { "css", "less", "scss", "sugarss", "wxss" },
+  name = "prettier",
+  efm = require("dko.tools.prettier").efm,
+})
+
+tools.register({
   type = "lsp",
   require = "npm",
   name = "stylelint_lsp",

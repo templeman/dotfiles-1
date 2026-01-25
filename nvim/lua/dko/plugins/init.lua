@@ -503,11 +503,23 @@ return {
   --- GitHub Copilot
   {
     "github/copilot.vim",
-    init = function()
-      vim.g.copilot_filetypes = {
-        markdown = false,
-      }
-    end,
+    enabled = false,
+    ft = {
+      "lua",
+      "javascript",
+      "typescript",
+      "typescriptreact",
+      "javascriptreact",
+      "python",
+      "go",
+      "rust",
+      "php",
+    },
+    -- init = function()
+    --   vim.g.copilot_filetypes = {
+    --     markdown = false,
+    --   }
+    -- end,
   },
 
   -- =========================================================================
