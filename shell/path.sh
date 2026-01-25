@@ -60,3 +60,10 @@ PATH="${ASDF_DATA_DIR}/shims:${PATH}"
 # pipx uses this one by default
 PATH="${HOME}/.local/bin:${PATH}"
 PATH="${DOTFILES}/bin:${LDOTDIR}/bin:${PATH}"
+
+# ============================================================================
+# Custom
+# ============================================================================
+
+# GAM (Google Apps Manager)
+PATH="${HOME}/bin/gam7:${PATH}"
