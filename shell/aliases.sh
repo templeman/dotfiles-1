@@ -171,7 +171,7 @@ alias sshkeygen='ssh-keygen -o -a 100 -t ed25519'
 # ----------------------------------------------------------------------------
 
 alias root='sudo -s'
-alias se='sudo -e'
+alias se='SUDO_EDITOR="$(which nvim)" sudo -e'
 
 # ----------------------------------------------------------------------------
 # rest of bins
