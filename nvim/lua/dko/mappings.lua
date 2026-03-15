@@ -420,11 +420,11 @@ end
 -- filetype changes).
 -- Call externals using pcall in case I remove cmp for testing.
 -- Bind <C-Space> to open nvim-cmp
--- Bind <C-n> <C-p> to pick based on coc or nvim-cmp open
--- Bind <C-j> <C-k> to scroll coc or nvim-cmp attached docs window
+-- Bind <C-n> <C-p> to pick
+-- Bind <C-j> <C-k> to scroll
 M.bind_completion = function(opts)
   local cmp_ok, cmp = pcall(require, "cmp")
-  if not cmp_ok and not vim.b.did_bind_coc then
+  if not cmp_ok then
     return
   end
 
@@ -436,7 +436,6 @@ M.bind_completion = function(opts)
   end, { desc = "In normal mode, `A`ppend and start nvim-cmp completion" })
 
   map("i", "<C-Space>", function()
-    vim.fn["coc#pum#close"]("cancel")
     if cmp_ok then
       cmp.complete()
     end
@@ -456,18 +455,10 @@ M.bind_completion = function(opts)
     if cmp_ok and cmp.visible() then
       return "<Plug>(DkoCmpNext)"
     end
-    if vim.b.did_bind_coc then
-      return vim.fn["coc#pum#visible"]() == 0 and vim.fn["coc#refresh"]()
-        or vim.fn["coc#pum#next"](1)
-    end
   end, { expr = true, buffer = opts.buf, remap = true, silent = true })
   map("i", "<C-p>", function()
     if cmp_ok and cmp.visible() then
       return "<Plug>(DkoCmpPrev)"
-    end
-    if vim.b.did_bind_coc then
-      return vim.fn["coc#pum#visible"]() == 0 and vim.fn["coc#refresh"]()
-        or vim.fn["coc#pum#prev"](1)
     end
   end, { expr = true, buffer = opts.buf, remap = true, silent = true })
 
@@ -485,9 +476,6 @@ M.bind_completion = function(opts)
     if cmp_ok and cmp.visible() then
       return "<Plug>(DkoCmpScrollUp)"
     end
-    if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-      return vim.fn["coc#float#scroll"](1)
-    end
   end, {
     expr = true,
     buffer = opts.buf,
@@ -499,9 +487,6 @@ M.bind_completion = function(opts)
     if cmp_ok and cmp.visible() then
       return "<Plug>(DkoCmpScrollDown)"
     end
-    if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-      return vim.fn["coc#float#scroll"](0)
-    end
   end, {
     expr = true,
     buffer = opts.buf,
@@ -509,28 +494,6 @@ M.bind_completion = function(opts)
     remap = true,
     silent = true,
   })
-  -- map("n", "<C-j>", function()
-  --   if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-  --     return vim.fn["coc#float#scroll"](1)
-  --   end
-  -- end, {
-  --   expr = true,
-  --   buffer = opts.buf,
-  --   nowait = true,
-  --   remap = true,
-  --   silent = true,
-  -- })
-  -- map("n", "<C-k>", function()
-  --   if vim.b.did_bind_coc and vim.fn["coc#float#has_scroll"]() == 1 then
-  --     return vim.fn["coc#float#scroll"](0)
-  --   end
-  -- end, {
-  --   expr = true,
-  --   buffer = opts.buf,
-  --   nowait = true,
-  --   remap = true,
-  --   silent = true,
-  -- })
 end
 
 -- ===========================================================================

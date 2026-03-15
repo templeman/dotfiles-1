@@ -44,10 +44,7 @@ M.pipelines["less"] = M.pipelines["css"]
 M.pipelines["sugarss"] = M.pipelines["css"]
 M.pipelines["wxss"] = M.pipelines["css"]
 
-M.pipelines["javascript"] = {
-  require("dko.utils.format.javascript").format,
-  require("dko.settings").get("coc.enabled") and "coc" or nil,
-}
+M.pipelines["javascript"] = { require("dko.utils.format.javascript").format }
 
 M.pipelines["javascriptreact"] = M.pipelines["javascript"]
 M.pipelines["typescript"] = M.pipelines["javascript"]
