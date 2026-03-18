@@ -1,5 +1,6 @@
 [settings]
 gpg_verify = false
+experimental = false
 
 # tombi: format.rules.table-keys-order = "ascending"
 [tools]
@@ -53,8 +54,7 @@ node = "latest"
 "pipx:jedi-language-server" = "latest"
 "pipx:yamllint" = "latest"
 python = "latest"
-# @TODO fix completions for ripgrep
-ripgrep = "latest"
+ripgrep = { version = "latest", postinstall = "mkdir -p ${XDG_DATA_HOME}/zsh/site-functions && rg --generate complete-zsh > ${XDG_DATA_HOME}/zsh/site-functions/_rg" }
 ruby = "3.3.6"
 rust = "latest"
 
