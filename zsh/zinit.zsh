@@ -22,6 +22,8 @@ function {
   # ----------------------------------------------------------------------------
 
   zinit lucid as'program' for \
+    'davidosomething/git-ink' \
+    \
     pick"${ZPFX}/bin/git-*" \
     src'etc/git-extras-completion.zsh' \
     make"PREFIX=${ZPFX}" \
