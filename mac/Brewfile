@@ -62,7 +62,7 @@ cask "obsidian"
 cask "raindropio"
 cask "slack"
 #cask "meetingbar"
-cask "wezterm"
+cask "wezterm@nightly"
 
 mas "PopClip", id: 445189367
 mas "LittleIpsum", id: 405772121
