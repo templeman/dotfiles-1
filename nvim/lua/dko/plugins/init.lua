@@ -52,7 +52,9 @@ local obsidian_vault_pattern = vim.fn.fnameescape(obsidian_vault)
 return {
   {
     "awalland/nvim-file-watch",
-    opts = {},
+    opts = {
+      notify = false,
+    },
   },
 
   -- because https://github.com/neovim/neovim/issues/1496
