@@ -496,6 +496,26 @@ M.bind_completion = function(opts)
   })
 end
 
+
+-- ===========================================================================
+-- Plugin: claudecode.vim
+-- ===========================================================================
+
+local map = vim.keymap.set
+
+map("n", "<leader>ac", "<cmd>ClaudeCode<CR>", { desc = "Claude Code" })
+map("n", "<leader>af", "<cmd>ClaudeCodeFocus<CR>", { desc = "Claude Code focus" })
+map("n", "<leader>ar", "<cmd>ClaudeCode --resume<CR>", { desc = "Claude Code resume" })
+map("n", "<leader>aC", "<cmd>ClaudeCode --continue<CR>", { desc = "Claude Code continue" })
+map("n", "<leader>am", "<cmd>ClaudeCodeSelectModel<CR>", { desc = "Claude model" })
+map("n", "<leader>ab", "<cmd>ClaudeCodeAdd %<CR>", { desc = "Claude add buffer" })
+
+map("x", "<leader>as", "<cmd>ClaudeCodeSend<CR>", { desc = "Claude send selection" })
+
+map("n", "<leader>aa", "<cmd>ClaudeCodeDiffAccept<CR>", { desc = "Claude accept diff" })
+map("n", "<leader>ad", "<cmd>ClaudeCodeDiffDeny<CR>", { desc = "Claude deny diff" })
+
+
 -- ===========================================================================
 -- Plugin: Comment.nvim
 -- ===========================================================================
