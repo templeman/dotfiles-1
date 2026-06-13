@@ -5,7 +5,8 @@ return require("dko.utils.lazyspec")(function(ctx)
   return {
     {
       -- "davidosomething/vim-colors-meh",
-      "lifepillar/vim-solarized8",
+      url = "https://codeberg.org/lifepillar/vim-solarized8",
+      branch = "neovim",
       cond = ctx.has_ui,
       dependencies = {
         -- { "rakr/vim-two-firewatch", lazy = true },
