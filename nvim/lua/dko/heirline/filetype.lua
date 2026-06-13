@@ -20,9 +20,11 @@ return {
     -- term://~/.dotfiles/nvim//96469:/bin/zsh;#toggleterm#88888
     self.filepath = vim.api.nvim_buf_get_name(0)
 
-    self.icon, self.icon_color = "", ""
-    ---@diagnostic disable-next-line: undefined-field
-    self.icon = _G.MiniIcons and _G.MiniIcons.get("file", self.filepath) or ""
+    self.icon = ""
+    if _G.MiniIcons then
+      ---@diagnostic disable-next-line: undefined-field
+      self.icon = _G.MiniIcons.get("file", self.filepath)
+    end
 
     self.filetype_text = require("dko.utils.string").smallcaps(
       vim.bo.filetype,
@@ -42,19 +44,6 @@ return {
       end,
       provider = function(self)
         return self.icon
-      end,
-      hl = function()
-        local _, icons = pcall(require, "nvim-web-devicons")
-        if icons then
-          local _, color = icons.get_icon_color_by_filetype(vim.bo.filetype)
-          if color then
-            return require("dko.heirline.utils").hl(
-              { fg = color, bg = hl().bg },
-              "StatusLineNC"
-            )
-          end
-        end
-        return ""
       end,
     },
     {

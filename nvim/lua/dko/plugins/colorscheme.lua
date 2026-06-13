@@ -30,13 +30,21 @@ return require("dko.utils.lazyspec")(function(ctx)
         -- NormalFloat has no fg by default; link it to Normal so all float
         -- windows (snacks scratch, pickers, etc.) inherit solarized8 colors.
         -- Re-apply on ColorScheme so wezterm dark/light switching keeps it.
-        local function fix_normalfloat()
+        local function fix_highlights()
           vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+          -- Badge color for heirline filetype/terminal components: dark navy bg
+          -- (base02) with silver fg (base0), derived from StatusLine's raw
+          -- fg/bg so it's unaffected by plugins that override Pmenu.
+          local sl = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
+          vim.api.nvim_set_hl(0, "dkoStatusKey", { fg = sl.fg, bg = sl.bg })
         end
-        fix_normalfloat()
+        vim.schedule(fix_highlights)
         vim.api.nvim_create_autocmd("ColorScheme", {
-          group = vim.api.nvim_create_augroup("dko_normalfloat", { clear = true }),
-          callback = fix_normalfloat,
+          group = vim.api.nvim_create_augroup(
+            "dko_highlights",
+            { clear = true }
+          ),
+          callback = fix_highlights,
         })
         if vim.env.TERM_PROGRAM == "WezTerm" then
           require("dko.colors").wezterm_sync()
