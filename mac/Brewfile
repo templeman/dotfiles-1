@@ -1,8 +1,12 @@
 # ==========================================================================
-# brew'd apps I use on ALL macs
+# taps
 # ==========================================================================
 
 tap "roots/tap"
+
+# ==========================================================================
+# brew'd apps I use on ALL macs
+# ==========================================================================
 
 brew "asciinema"
 brew "asciiquarium"
@@ -43,6 +47,10 @@ brew "wtf"
 # casks
 # ==========================================================================
 
+# hotkey daemon; my skhd config forwards cmd-ctrl-d to hammerspoon
+tap "jackielii/tap"
+cask "jackielii/tap/skhd-zig"
+
 cask "alfred"
 #cask "bettertouchtool"
 cask "dash"
@@ -53,10 +61,10 @@ cask "hammerspoon"
 cask "itsycal"
 cask "kap"
 cask "mailmate"
+#cask "meetingbar"
 cask "obsidian"
 cask "raindropio"
 cask "slack"
-#cask "meetingbar"
 cask "wezterm@nightly"
 
 mas "PopClip", id: 445189367

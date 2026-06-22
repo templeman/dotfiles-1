@@ -22,7 +22,12 @@ login. To remedy this, see [Unlock] (forked to my GitHub for archival).
     ```
 
 1. Start bettertouchtool and hammerspoon
+1. Install and start the skhd service (grants Accessibility on first key event):
 
+    ```sh
+    skhd --install-service
+    skhd --start-service
+    ```
 
 ## GPG
 
@@ -113,28 +118,6 @@ Finally, commit something with the-S argument to make sure it’s signed:
 Taken from this gist comment: <https://gist.github.com/danieleggert/b029d44d4a54b328c0bac65d46ba4c65?permalink_comment_id=3464269#gistcomment-3464269>  
 And this dev.to article: <https://dev.to/wes/how2-using-gpg-on-macos-without-gpgtools-428f>
 
-## Cask notes
-
-List Homebrew items in mac/Brewfile and run bootstrap/mac after editing to
-apply changes. Install additional packages from [cask.md](./cask.md) as
-desired.
-
-- bettertouchtool
-  - I keep my license in syncthing/gmail/bitwarden
-  - Most important thing is three-finger click to middle click
-  - Provides better trackpad swipe configs, drag window snapping,
-    modifier-hold window resizing
-- hammerspoon
-  - App launcher (<kbd>⌘</kbd><kbd>space</kbd>) to replace spotlight
-    (disable spotlight shortcut first)
-  - Audio output device switch in menu bar, relies on `switchaudio-osx` which
-    is in homebrew
-  - Auto-type from clipboard (<kbd>⌃</kbd><kbd>⌘</kbd><kbd>v</kbd>) for
-    paste blockers
-  - Caffeinate icon in menu bar
-  - Window management keys to use sections of a monitor (try hitting the key
-    multiple times)
-
 ## Name the computer
 
 1. Go to https://www.npmjs.com/package/epithet
@@ -159,4 +142,36 @@ If there are file limit issues:
   using the recommended method. Then move the resulting .phar build to
   `/Users/[user]/.config/composer/vendor/bin/wp`
 
+## Cask notes
+
+List Homebrew items in mac/Brewfile and run bootstrap/mac after editing to
+apply changes. Install additional packages from [cask.md](./cask.md) as
+desired.
+
+- bettertouchtool
+  - I keep my license in syncthing/gmail/bitwarden
+  - Most important thing is three-finger click to middle click
+  - Provides better trackpad swipe configs, drag window snapping,
+    modifier-hold window resizing
+- hammerspoon
+  - App launcher (<kbd>⌘</kbd><kbd>space</kbd>) to replace spotlight
+    (disable spotlight shortcut first)
+  - Audio output device switch in menu bar, relies on `switchaudio-osx` which
+    is in homebrew
+  - Auto-type from clipboard (<kbd>⌃</kbd><kbd>⌘</kbd><kbd>v</kbd>) for
+    paste blockers
+  - Caffeinate icon in menu bar
+  - Window management keys to use sections of a monitor (try hitting the key
+    multiple times)
+
+## Brew notes
+
+- skhd ([skhd.zig], installed via the `jackielii/tap` tap) is a hotkey daemon.
+  macOS binds <kbd>⌘</kbd><kbd>⌃</kbd><kbd>d</kbd> to the Dictionary lookup for
+  the word under the cursor and won't let you disable it in System Preferences.
+  My `skhd/skhdrc` consumes that combo and forwards it to
+  <kbd>⌘</kbd><kbd>⌃</kbd><kbd>⇧</kbd><kbd>d</kbd>, which hammerspoon binds to
+  the window-management right-half action. Config hot-reloads on save.
+
 [unlock]: https://github.com/davidosomething/Unlock
+[skhd.zig]: https://github.com/jackielii/skhd.zig
