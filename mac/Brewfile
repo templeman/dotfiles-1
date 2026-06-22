@@ -52,18 +52,20 @@ tap "jackielii/tap"
 cask "jackielii/tap/skhd-zig"
 
 cask "alfred"
-#cask "bettertouchtool"
+# cask "bettertouchtool"
 cask "dash"
 cask "firefox"
 cask "forklift"
 cask "google-chrome"
 cask "hammerspoon"
+# cask "handy" # https://handy.computer/ # Open-source speech-to-text that works completely offline
 cask "itsycal"
 cask "kap"
 cask "mailmate"
-#cask "meetingbar"
+# cask "meetingbar" # https://meetingbar.app/ Menu app for managing meetings
 cask "obsidian"
 cask "raindropio"
+# cask "shottr" # https://shottr.cc/ Screenshotting tool for mac
 cask "slack"
 cask "wezterm@nightly"
 
