@@ -3,26 +3,26 @@
 User data on encrypted volumes other than the boot volume will not mount until
 login. To remedy this, see [Unlock] (forked to my GitHub for archival).
 
-## App Store
+1. OPTIONAL iCloud sign in
+1. OPTIONAL install App Store apps, Xcode
+1. Manually disable some keyboard shortcuts. Remove these using System Preferences:
+    - `Keyboard` disable a bunch of things in `Text Replacements`
+    - `Mission Control` owns <kbd>⌃</kbd><kbd>←</kbd> and <kbd>⌃</kbd><kbd>→</kbd>
+    - `Spotlight` owns <kbd>⌘</kbd><kbd>space</kbd>
+      - I remap this to hammerspoon's seal instead.
+    - Disable `Trackpad` various Zoom options.
+1. Follow step 1 of the repo [README.md](../README.md).
+1. Install homebrew according to <https://brew.sh/>.
+1. Install base `Brewfile` (or `personal.Brewfile`):
 
-1. iCloud sign in
-1. Install App Store apps, Xcode
+    ```sh
+    brew bundle --file=~/.dotfiles/mac/Brewfile
+    # or
+    # brew bundle --file=~/.dotfiles/mac/personal.Brewfile
+    ```
 
-## Install dotfiles
+1. Start bettertouchtool and hammerspoon
 
-Follow step 1 of the repo [README.md](../README.md).
-
-## Install homebrew and install packages
-
-Install homebrew according to <https://brew.sh/>.
-
-Install base `Brewfile` (or `personal.Brewfile`):
-
-```sh
-brew bundle --file=~/.dotfiles/mac/Brewfile
-# or
-# brew bundle --file=~/.dotfiles/mac/personal.Brewfile
-```
 
 ## GPG
 
@@ -113,7 +113,7 @@ Finally, commit something with the-S argument to make sure it’s signed:
 Taken from this gist comment: <https://gist.github.com/danieleggert/b029d44d4a54b328c0bac65d46ba4c65?permalink_comment_id=3464269#gistcomment-3464269>  
 And this dev.to article: <https://dev.to/wes/how2-using-gpg-on-macos-without-gpgtools-428f>
 
-### Cask notes
+## Cask notes
 
 List Homebrew items in mac/Brewfile and run bootstrap/mac after editing to
 apply changes. Install additional packages from [cask.md](./cask.md) as
@@ -143,6 +143,7 @@ desired.
 
 ## Install development tools
 
+If there are file limit issues:
 - Increase file limits a la
   <https://github.com/karma-runner/karma/issues/1979#issuecomment-260790451>
   - See <https://gist.github.com/abernix/a7619b07b687bb97ab573b0dc30928a0>
@@ -154,19 +155,8 @@ desired.
      Unlink current php: `brew unlink php`
      `brew-php-switcher 8.1`
   1. Run [php/install-composer-packages](../php/install-composer-packages)
-- Install
-  [wp-cli](https://make.wordpress.org/cli/handbook/guides/installing/#recommended-installation)
+- Install [wp-cli](https://make.wordpress.org/cli/handbook/guides/installing/#recommended-installation)
   using the recommended method. Then move the resulting .phar build to
   `/Users/[user]/.config/composer/vendor/bin/wp`
-
-## Manually disable some keyboard shortcuts
-
-Remove these using System Preferences:
-
-- `Keyboard` disable a bunch of things in `Text Replacements`
-- `Mission Control` owns <kbd>⌃</kbd><kbd>←</kbd> and <kbd>⌃</kbd><kbd>→</kbd>
-- `Spotlight` owns <kbd>⌘</kbd><kbd>space</kbd>
-  - I remap this to hammerspoon's seal instead.
-- Disable `Trackpad` various Zoom options.
 
 [unlock]: https://github.com/davidosomething/Unlock
