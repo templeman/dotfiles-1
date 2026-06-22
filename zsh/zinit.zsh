@@ -26,7 +26,7 @@ function {
     \
     pick"${ZPFX}/bin/git-*" \
     src'etc/git-extras-completion.zsh' \
-    make"PREFIX=${ZPFX}" \
+    make"PREFIX=${ZPFX} SKIP_CONFLICT_CHECK=yes" \
     'tj/git-extras' \
     ;
 
