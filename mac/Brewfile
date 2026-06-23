@@ -49,7 +49,7 @@ brew "wtf"
 
 # hotkey daemon; my skhd config forwards cmd-ctrl-d to hammerspoon
 tap "jackielii/tap"
-cask "jackielii/tap/skhd-zig"
+cask "jackielii/tap/skhd-zig", trusted: true
 
 cask "alfred"
 # cask "bettertouchtool"
