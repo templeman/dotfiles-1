@@ -68,6 +68,7 @@ cask "raindropio"
 # cask "shottr" # https://shottr.cc/ Screenshotting tool for mac
 cask "slack"
 cask "wezterm@nightly"
+# cask "whatcable" # Menu bar app for USC-C cable diagnostics
 
 mas "PopClip", id: 445189367
 mas "LittleIpsum", id: 405772121
