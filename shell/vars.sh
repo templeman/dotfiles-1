@@ -237,9 +237,9 @@ export NPMRC="$NPM_CONFIG_USERCONFIG"
 
 export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
 case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
+  *":$PNPM_HOME/bin:"*) ;;
   *)
-    PATH="${PNPM_HOME}:${PATH}"
+    PATH="${PNPM_HOME}/bin:${PATH}"
     ;;
 esac
 
