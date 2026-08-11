@@ -7,6 +7,7 @@ GIT_COMMITTER_NAME = { required = true }
 NPM_CONFIG_INIT_AUTHOR_NAME = { required = true }
 GIT_AUTHOR_EMAIL = { required = true }
 GIT_COMMITTER_EMAIL = { required = true }
+MISE_NODE_DEFAULT_PACKAGES_FILE = "{{ get_env(name='XDG_CONFIG_HOME', default='~/.config') }}/mise/default-npm-packages"
 
 [settings]
 gpg_verify = false
@@ -68,6 +69,3 @@ usage = "latest"
 uv = "latest"
 yamlfmt = "latest"
 yamllint = "latest"
-
-[env]
-MISE_NODE_DEFAULT_PACKAGES_FILE = "{{ get_env(name='XDG_CONFIG_HOME', default='~/.config') }}/mise/default-npm-packages"
