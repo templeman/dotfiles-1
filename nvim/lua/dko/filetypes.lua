@@ -3,6 +3,7 @@ vim.filetype.add({
     conf = "conf",
     env = "dotenv",
     mdx = "mdx",
+    njk = "jinja",
     tiltfile = "tiltfile",
     Tiltfile = "tiltfile",
 
