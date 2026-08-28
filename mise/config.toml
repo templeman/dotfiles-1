@@ -12,6 +12,7 @@ MISE_NODE_DEFAULT_PACKAGES_FILE = "{{ get_env(name='XDG_CONFIG_HOME', default='~
 [settings]
 gpg_verify = false
 experimental = false
+idiomatic_version_file_enable_tools = ["node"]
 
 [settings.github]
 use_git_credentials = true
