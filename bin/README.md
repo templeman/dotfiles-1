@@ -73,6 +73,13 @@ Pretty print the `$DKO_SOURCE` env variable to see sourced files
 
 Shortcuts to update dotfiles, packages, and general system maintenance.
 
+## dua-scan
+
+macOS. Sweep common stale-file locations (caches, DerivedData, `node_modules`,
+Docker) with [dua-cli](https://github.com/Byron/dua-cli) and print a
+top-N-by-size report, colorized in the terminal. `-o FILE` also saves a plain
+copy; `-n N` changes how many entries per location (default 15).
+
 ## e
 
 Open files in a shared nvim instance -- one per WezTerm tab, a single global

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+# dua-scan — Sweep common macOS stale-file locations with dua-cli, plus
+# node_modules folders and Docker disk usage, and print a top-N-by-size
+# report per location.
+#
+# Usage:
+#   dua-scan                # print a colorized report to the terminal
+#   dua-scan -o FILE        # also write a plain-text copy of the report
+#                           # (prompts before overwriting an existing FILE;
+#                           # pass -y/--force to skip the prompt)
+#   dua-scan -n 20          # show top 20 entries per location (default 15)
+#   dua-scan --no-color     # disable ANSI colors even on a tty
+
+set -uo pipefail
+
+TOP_N=15
+OUTPUT=""
+FORCE=0
+USE_COLOR=1
+[ -t 1 ] || USE_COLOR=0
+[ -n "${NO_COLOR:-}" ] && USE_COLOR=0
+
+usage() {
+  echo "usage: dua-scan [-o FILE] [-y] [-n TOP_N] [--no-color]" >&2
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  -o | --output)
+    OUTPUT="${2:?missing path for $1}"
+    shift 2
+    ;;
+  -y | --force)
+    FORCE=1
+    shift
+    ;;
+  -n | --top)
+    TOP_N="${2:?missing number for $1}"
+    shift 2
+    ;;
+  --no-color)
+    USE_COLOR=0
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+  esac
+done
+
+if [ -n "$OUTPUT" ] && [ -e "$OUTPUT" ] && [ "$FORCE" -ne 1 ]; then
+  reply=""
+  # empty or EOF answers no -- this overwrites an existing file
+  read -r -p "$OUTPUT already exists. Overwrite? [y/N] " reply || true
+  case "$reply" in
+  [yY] | [yY][eE][sS]) ;;
+  *)
+    echo "Not overwriting $OUTPUT. Aborting." >&2
+    exit 1
+    ;;
+  esac
+fi
+
+if ! command -v dua >/dev/null 2>&1; then
+  echo "dua-cli not found. Install with: brew install dua-cli" >&2
+  exit 1
+fi
+
+TARGETS=(
+  "$HOME"
+  "$HOME/Library/Caches"
+  "$HOME/Library/Developer/Xcode/DerivedData"
+  "$HOME/Library/Developer/CoreSimulator"
+  "$HOME/Library/Application Support/MobileSync/Backup"
+  "$HOME/Library/Containers/com.docker.docker/Data/vms/0/data"
+  "$HOME/.Trash"
+  "/Applications"
+)
+
+if [ "$USE_COLOR" -eq 1 ]; then
+  bold="$(tput bold)"
+  cyan="$(tput setaf 6)"
+  dim="$(tput dim)"
+  reset="$(tput sgr0)"
+else
+  bold="" cyan="" dim="" reset=""
+fi
+
+header() { printf "%s%s%s%s\n" "$bold" "$cyan" "$1" "$reset"; }
+skipped() { printf "%s--- %s (not found, skipping) ---%s\n\n" "$dim" "$1" "$reset"; }
+
+# Largest $TOP_N entries directly inside $1. dua sorts ascending by real
+# byte size internally, so take the tail and reverse the *lines* rather
+# than re-sorting the printed, unit-suffixed sizes (e.g. "4.10 KB"),
+# which plain `sort` can't order correctly.
+top_n() {
+  dua aggregate --no-total "$1" 2>/dev/null \
+    | tail -n "$TOP_N" \
+    | awk '{a[NR] = $0} END { for (i = NR; i >= 1; i--) print a[i] }'
+}
+
+report() {
+  echo "dua scan report — $(date)"
+  dko-line
+  echo
+
+  for dir in "${TARGETS[@]}"; do
+    if [ -d "$dir" ]; then
+      header "--- $dir ---"
+      top_n "$dir"
+      echo
+    else
+      skipped "$dir"
+    fi
+  done
+
+  header "--- node_modules directories (sorted by size, top 20) ---"
+  find "$HOME" -name node_modules -type d -prune -exec du -sh {} \; 2>/dev/null |
+    sort -rh | head -20
+  echo
+
+  header "--- Docker disk usage ---"
+  if command -v docker >/dev/null 2>&1; then
+    docker system df 2>/dev/null || echo "Docker daemon not running."
+  else
+    echo "Docker CLI not found."
+  fi
+}
+
+if [ -n "$OUTPUT" ]; then
+  report | tee >(sed -E 's/\x1b\[[0-9;]*m//g' >"$OUTPUT")
+  echo "Report also written to: $OUTPUT" >&2
+else
+  report
+fi
