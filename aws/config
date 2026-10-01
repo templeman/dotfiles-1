@@ -4,3 +4,6 @@ output = json
 [profile moad-ro]
 region = us-west-2
 output = json
+[profile moad-infra-ro]
+region = us-east-1
+output = json
