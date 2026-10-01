@@ -523,8 +523,7 @@ return require("dko.utils.lazyspec")(function(ctx)
 
     {
       "obsidian-nvim/obsidian.nvim",
-      -- version = "*", -- recommended, use latest release instead of latest commit
-      version = "3.15.4", -- recommended, use latest release instead of latest commit
+      version = "*", -- recommended, use latest release instead of latest commit
       lazy = true,
       event = {
         "BufReadPre " .. obsidian_vault_pattern .. "/**.md",
