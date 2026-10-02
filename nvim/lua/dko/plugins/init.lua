@@ -1,50 +1,5 @@
 local BRACKETED_DISABLED = ""
 
-local function timestampfromtitle()
-  local date_str = vim.fn.expand("%:t:r")
-
-  if not date_str or date_str == "" then
-    return nil
-  end
-
-  -- Parse the date string into year, month, and day
-  local year, month, day = date_str:match("^(%d+)-(%d+)-(%d+)$")
-  if not (year and month and day) then
-    return nil
-  end
-
-  -- Return year, month, day as numbers
-  return os.time({
-    year = tonumber(year),
-    month = tonumber(month),
-    day = tonumber(day),
-  })
-end
-
--- Week-of-year (1..53, rarely 54) with Monday as first day,
--- Week 1 always includes Jan 1 (no week 0), last week always ends Dec 31.
-local function calendar_week_monday(ts)
-  ts = ts or os.time()
-
-  -- %W = Monday-first week number, 00..53; Jan 1 before first Monday => 00
-  local W = tonumber(os.date("%W", ts)) -- 0..53
-  local y = tonumber(os.date("%Y", ts))
-  local W_jan1 =
-    tonumber(os.date("%W", os.time({ year = y, month = 1, day = 1 })))
-
-  -- If Jan 1 is before the year's first Monday (W_jan1 == 0), shift all weeks up by 1
-  -- so Jan 1..first Sunday becomes week 1; otherwise keep %W as-is.
-  local week = W + ((W_jan1 == 0) and 1 or 0)
-
-  -- Optional: clamp to 53 if you never want "week 54"
-  week = math.min(week, 53)
-
-  return week
-end
-
-local obsidian_vault = vim.fs.normalize("~/Dropbox (Personal)/Notes")
-local obsidian_vault_pattern = vim.fn.fnameescape(obsidian_vault)
-
 return require("dko.utils.lazyspec")(function(ctx)
   ---@type LazySpec
   return {
@@ -525,23 +480,9 @@ return require("dko.utils.lazyspec")(function(ctx)
       "obsidian-nvim/obsidian.nvim",
       version = "*", -- recommended, use latest release instead of latest commit
       lazy = true,
-      event = {
-        "BufReadPre " .. obsidian_vault_pattern .. "/**.md",
-        "BufNewFile " .. obsidian_vault_pattern .. "/**.md",
-      },
-    -- stylua: ignore
-    keys = {
-      -- { '<localleader>ob', '<Cmd>Obsidian backlinks<CR>', desc = 'obsidian: buffer backlinks', },
-      { '<Leader>od', '<Cmd>Obsidian today<CR>', desc = 'obsidian: open daily note', },
-      { '<Leader>on', ':Obsidian new ', desc = 'obsidian: new note' },
-      -- { '<localleader>oy', '<Cmd>Obsidian yesterday<CR>', desc = 'obsidian: previous daily note', },
-      { '<Leader>oo', ':Obsidian open ', desc = 'obsidian: open in app' },
-      { '<Leader>nv', '<Cmd>Obsidian search<CR>', desc = 'obsidian: search', },
-      { '<Leader>os', '<Cmd>Obsidian quick_switch<CR>', desc = 'obsidian: quick switch', },
-      { '<Leader>ot', '<Cmd>Obsidian template<CR>', desc = 'obsidian: insert template', },
-      -- open a picker of daily notes from the past 20 days (20 days back, 0 days forward)
-      { '<leader>oD', '<cmd>Obsidian dailies -20 0<cr>', desc = 'obsidian: daily notes' }
-    },
+      -- vault paths, periodic notes, template substitutions: lua/dko/obsidian.lua
+      event = require("dko.obsidian").lazy_events(),
+      keys = require("dko.obsidian").keys,
       dependencies = {
         -- Required.
         "nvim-lua/plenary.nvim",
@@ -550,243 +491,37 @@ return require("dko.utils.lazyspec")(function(ctx)
         "nvim-telescope/telescope.nvim",
       },
       config = function()
+        local dko_obsidian = require("dko.obsidian")
         require("obsidian").setup({
           legacy_commands = false,
-          workspaces = {
-            { name = "Notes", path = obsidian_vault },
-          },
+          workspaces = dko_obsidian.workspaces(),
           picker = {
             -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'snacks.pick' or 'mini.pick'.
             name = "telescope.nvim",
-            -- name = "fzf-lua",
-            -- name = "snacks.pick",
-            -- Optional, configure key mappings for the picker. These are the defaults.
-            -- Not all pickers support all mappings.
-            -- mappings = {
-            --   -- Create a new note from your query.
-            --   new = "<C-x>",
-            --   -- Insert a link to the selected note.
-            --   insert_link = "<C-l>",
-            -- },
           },
+          -- Templates own the frontmatter; obsidian.nvim never rewrites it.
           frontmatter = {
             enabled = false,
             sort = false,
           },
-          -- Optional, for templates (see below).
-          templates = {
-            folder = "Templates",
-            customizations = {
-              person = {
-                notes_subdir = "people",
-                -- This function currently only receives the note title as an input
-                note_id_func = function(title)
-                  if title == nil then
-                    return nil
-                  end
-
-                  -- local name =
-                  --   title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-                  -- return name -- "Hulk Hogan" → "hulk-hogan"
-                  return title
-                end,
-              },
-              meeting = {
-                notes_subdir = "meetings",
-                -- This function currently only receives the note title as an input
-                note_id_func = function(title)
-                  if title == nil then
-                    return nil
-                  end
-
-                  -- local name =
-                  --   title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-                  -- return name -- "Hulk Hogan" → "hulk-hogan"
-                  return title
-                end,
-              },
-            },
-            -- date_format = "%Y-%m-%d",
-            -- time_format = "%H:%M",
-            -- A map for custom variables, the key should be the variable and the value a function
-            substitutions = {
-              tomorrowfromtitle = function()
-                local timestamp = timestampfromtitle()
-                if not timestamp then
-                  return os.date("%Y-%m-%d", os.time() + 60 * 60 * 24)
-                end
-                return os.date("%Y-%m-%d", timestamp + 60 * 60 * 24)
-              end,
-              yesterdayfromtitle = function()
-                local timestamp = timestampfromtitle()
-                if not timestamp then
-                  return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
-                end
-                return os.date("%Y-%m-%d", timestamp - 60 * 60 * 24)
-              end,
-              weekfromtitle = function()
-                local timestamp = timestampfromtitle()
-                return tostring(calendar_week_monday(timestamp or os.time()))
-                -- if not timestamp then
-                --   vim.notify(
-                --     vim.inspect(timestamp),
-                --     vim.log.levels.INFO,
-                --     { title = "debug" }
-                --   )
-                --   return os.date("%-W")
-                -- end
-
-                -- -- Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-                -- local date = os.date("*t", timestamp)
-                -- local jan_1_weekday = os.date(
-                --   "*t",
-                --   os.time({ year = date.year, month = 1, day = 1 })
-                -- ).wday
-                -- vim.notify(
-                --   vim.inspect(jan_1_weekday),
-                --   vim.log.levels.INFO,
-                --   { title = "jan 1 weekday" }
-                -- )
-                -- vim.notify(
-                --   vim.inspect(os.date("%j", timestamp)),
-                --   vim.log.levels.INFO,
-                --   { title = "timestamp" }
-                -- )
-                --
-                -- -- Calculate the week number
-                -- local week_number = math.ceil(
-                --   (tonumber(os.date("%j", timestamp)) + jan_1_weekday - 1) / 7
-                -- )
-                --
-                -- -- If the week number is 53, adjust it to 1
-                -- if week_number == 53 then
-                --   week_number = 1
-                -- end
-                --
-                -- return week_number
-              end,
-              dayofweekfromtitle = function()
-                -- Get the full name of the day of the week
-                local timestamp = timestampfromtitle()
-                if not timestamp then
-                  return os.date("%A")
-                end
-
-                return os.date("%A", timestamp)
-              end,
-              datefromtitle = function()
-                -- Convert the timestamp to a date string with the desired format
-                local timestamp = timestampfromtitle()
-                if not timestamp then
-                  return os.date("%B %-d, %Y")
-                end
-                return os.date("%B %-d, %Y", timestamp)
-              end,
-              yesterday = function()
-                return os.date("%Y-%m-%d", os.time() - 60 * 60 * 24)
-              end,
-              today = function()
-                return os.date("%Y-%m-%d")
-              end,
-              tomorrow = function()
-                return os.date("%Y-%m-%d", os.time() + 60 * 60 * 24)
-              end,
-              day = function()
-                return os.date("%-d")
-              end,
-              month = function()
-                return os.date("%B")
-              end,
-              week = function()
-                return os.date("%-W")
-              end,
-              weekday = function()
-                return os.date("*t").wday
-              end,
-              weekdayname = function()
-                local daysoftheweek = {
-                  "Sunday",
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                }
-                return daysoftheweek[os.date("*t").wday]
-              end,
-              year = function()
-                return os.date("%Y")
-              end,
-            },
-          },
-          daily_notes = {
-            -- Optional, if you keep daily notes in a separate directory.
-            folder = "journal/daily",
-            -- Optional, if you want to change the date format for the ID of daily notes.
-            -- date_format = "%Y-%m-%d",
-            -- Optional, if you want to change the date format of the default alias of daily notes.
-            -- alias_format = "%B %-d, %Y",
-            -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-            template = "nvim/journal.md",
-          },
-          -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
           completion = {
-            -- Enables completion using nvim_cmp
-            nvim_cmp = false,
-            -- Enables completion using blink.cmp
-            blink = true,
-            -- Trigger completion at 2 chars.
             min_chars = 2,
           },
-          -- Optional, sort search results by "path", "modified", "accessed", or "created".
-          -- The recommend value is "modified" and `true` for `sort_reversed`, which means, for example,
-          -- that `:ObsidianQuickSwitch` will show the notes sorted by latest modified time
+          -- `:Obsidian quick_switch` shows latest modified first
           search = {
-            -- max_lines = 1000,
             sort_by = "modified",
             sort_reversed = true,
           },
-          -- Where to put new notes. Valid options are
-          --  * "current_dir" - put new notes in same directory as the current buffer.
-          --  * "notes_subdir" - put new notes in the default notes subdirectory.
           new_notes_location = "notes_subdir",
-          -- Optional, customize how names/IDs for new notes are created.
+          -- Human-readable filenames: the note id is its title.
           note_id_func = function(title)
-            -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-            -- In this case a note with the title 'My new note' will be given an ID that looks
-            -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
-            -- local suffix = ""
-            -- if title ~= nil then
-            --   -- If title is given, transform it into valid file name.
-            --   local name = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-            --   return name
-            -- end
-            --   -- If title is nil, just add 4 random uppercase letters to the suffix.
-            --   for _ = 1, 4 do
-            --     suffix = suffix .. string.char(math.random(65, 90))
-            --   end
-            -- end
-            -- return tostring(os.time()) .. "-" .. suffix
             return title
           end,
+          callbacks = {
+            post_setup = dko_obsidian.post_setup,
+          },
         })
-
-        -- Optional, key mappings.
-        local obsidian = require("obsidian")
-        local function set_obsidian_maps(buf)
-          vim.keymap.set("n", "<leader>ch", obsidian.util.toggle_checkbox, {
-            buffer = buf,
-            desc = "Toggle checkbox",
-          })
-        end
-
-        vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-          pattern = obsidian_vault .. "/**.md",
-          callback = function(ev)
-            set_obsidian_maps(ev.buf)
-          end,
-        })
+        dko_obsidian.attach_buffer_maps()
       end,
     },
 
