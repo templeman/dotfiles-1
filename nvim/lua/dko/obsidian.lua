@@ -230,6 +230,30 @@ function M.refresh_events(buf)
 end
 
 -- =============================================================================
+-- Letterboxd
+-- =============================================================================
+
+--- Sync the Letterboxd diary (RSS, last 50 entries) into movie notes.
+--- Runs _meta/scripts/letterboxd-sync in the background and reports its summary.
+--- Obsidian twin: _meta/scripts/templater/letterboxd_sync.js.
+function M.letterboxd_sync()
+  local script = vim.fs.joinpath(M.vaults.main, "_meta/scripts/letterboxd-sync")
+  vim.notify("Syncing…", vim.log.levels.INFO, { title = "letterboxd" })
+  vim.system({ script, "rss" }, { text = true, timeout = 60000 }, function(res)
+    vim.schedule(function()
+      local ok = res.code == 0
+      local msg = vim.trim(ok and res.stdout or (res.stderr ~= "" and res.stderr or res.stdout or ""))
+      vim.notify(
+        msg ~= "" and msg or "Sync failed",
+        ok and vim.log.levels.INFO or vim.log.levels.ERROR,
+        { title = "letterboxd" }
+      )
+      vim.cmd.checktime() -- reload open movie notes the sync changed
+    end)
+  end)
+end
+
+-- =============================================================================
 -- Legacy vault substitutions
 -- Kept verbatim so the old vault's nvim templates keep working until migration
 -- is finished. Delete this section (and the legacy workspace) afterwards.
@@ -530,6 +554,7 @@ function M.workspaces()
             book = { notes_subdir = "references" },
             til = { notes_subdir = "notes" },
             recipe = { notes_subdir = "references" },
+            movie = { notes_subdir = "references" },
           },
         },
         checkbox = { order = { " ", "/", "x", "-", ">", "!", "?" } },
@@ -579,6 +604,7 @@ M.keys = {
   { "<Leader>oq", function() M.open_period("quarterly") end, desc = "obsidian: open quarterly note" },
   { "<Leader>oy", function() M.open_period("yearly") end, desc = "obsidian: open yearly note" },
   { "<Leader>oe", function() M.refresh_events() end, desc = "obsidian: refresh calendar events" },
+  { "<Leader>oL", function() M.letterboxd_sync() end, desc = "obsidian: sync Letterboxd diary" },
   { "<Leader>ok", function() M.pick_tasks() end, desc = "obsidian: open tasks across the vault" },
   { "<Leader>oi", function() M.new_til() end, desc = "obsidian: new TIL (today I learned)" },
   { "<Leader>on", ":Obsidian new ", desc = "obsidian: new note" },
