@@ -356,6 +356,17 @@ function M.open_period(kind, time)
   note:open()
 end
 
+--- Meeting note id: today's date, then the name (unless it already starts with a date).
+---@param title string|?
+---@return string
+function M.meeting_id(title)
+  title = vim.trim(title or "")
+  if title:match("^%d%d%d%d%-%d%d%-%d%d ") then
+    return title
+  end
+  return os.date("%Y-%m-%d") .. " " .. (title ~= "" and title or "Meeting")
+end
+
 --- <leader>oi: capture a TIL. Asks for the title (the thing learned) and
 --- creates notes/<title>.md from the til template (tag `til`, a `kind`).
 function M.new_til()
@@ -547,7 +558,9 @@ function M.workspaces()
           time_format = "HH:mm",
           substitutions = M.substitutions,
           customizations = {
-            meeting = { notes_subdir = "notes" },
+            -- "<date> <name>", so recurring meetings stay unique; the
+            -- note's title (its H1) stays the bare name.
+            meeting = { notes_subdir = "notes", note_id_func = M.meeting_id },
             project = { notes_subdir = "notes" },
             note = { notes_subdir = "notes" },
             person = { notes_subdir = "references" },
