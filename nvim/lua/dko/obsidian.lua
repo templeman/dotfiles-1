@@ -332,6 +332,30 @@ function M.open_period(kind, time)
   note:open()
 end
 
+--- <leader>oi: capture a TIL. Asks for the title (the thing learned) and
+--- creates notes/<title>.md from the til template (tag `til`, a `kind`).
+function M.new_til()
+  vim.ui.input({ prompt = "TIL: " }, function(title)
+    title = title and vim.trim(title) or ""
+    if title == "" then
+      return
+    end
+    local Note = require("obsidian.note")
+    local Path = require("obsidian.path")
+    local path = vim.fs.joinpath(M.vaults.main, "notes", title .. ".md")
+    if vim.uv.fs_stat(path) then
+      return Note.from_file(path):open()
+    end
+    local note = Note.create({
+      id = title,
+      verbatim = true,
+      dir = Path.new(vim.fs.joinpath(M.vaults.main, "notes")),
+      template = "til.md",
+    })
+    note:write({}):open()
+  end)
+end
+
 --- Which period a note id belongs to, e.g. "2026-W40" → "weekly".
 ---@param id string
 ---@return string|nil
@@ -504,6 +528,7 @@ function M.workspaces()
             note = { notes_subdir = "notes" },
             person = { notes_subdir = "references" },
             book = { notes_subdir = "references" },
+            til = { notes_subdir = "notes" },
             recipe = { notes_subdir = "references" },
           },
         },
@@ -555,6 +580,7 @@ M.keys = {
   { "<Leader>oy", function() M.open_period("yearly") end, desc = "obsidian: open yearly note" },
   { "<Leader>oe", function() M.refresh_events() end, desc = "obsidian: refresh calendar events" },
   { "<Leader>ok", function() M.pick_tasks() end, desc = "obsidian: open tasks across the vault" },
+  { "<Leader>oi", function() M.new_til() end, desc = "obsidian: new TIL (today I learned)" },
   { "<Leader>on", ":Obsidian new ", desc = "obsidian: new note" },
   { "<Leader>oo", ":Obsidian open ", desc = "obsidian: open in app" },
   { "<Leader>nv", "<Cmd>Obsidian search<CR>", desc = "obsidian: search" },
