@@ -254,6 +254,56 @@ function M.letterboxd_sync()
 end
 
 -- =============================================================================
+-- Bookmarks
+-- =============================================================================
+
+--- <leader>ob: save a URL as a bookmark note (bookmarks/<Title>.md).
+--- Uses the clipboard when it holds a URL, otherwise asks. Runs
+--- _meta/scripts/bookmarks add, which fetches the title/description/image and
+--- skips URLs already saved; then opens the note. Obsidian twin: Web Clipper.
+function M.add_bookmark()
+  local function save(url, status)
+    local script = vim.fs.joinpath(M.vaults.main, "_meta/scripts/bookmarks")
+    vim.notify("Saving…", vim.log.levels.INFO, { title = "bookmark" })
+    vim.system({ script, "add", url, "--status", status }, { text = true, timeout = 30000 }, function(res)
+      vim.schedule(function()
+        local out = res.stdout or ""
+        local path = out:match("\npath: ([^\n]+)") or out:match("^path: ([^\n]+)")
+        local msg = vim.trim((out:gsub("\n?path: [^\n]+", "")))
+        if res.code ~= 0 or not path then
+          return vim.notify(vim.trim(res.stderr or "") ~= "" and vim.trim(res.stderr) or "Save failed",
+            vim.log.levels.ERROR, { title = "bookmark" })
+        end
+        vim.notify(msg, vim.log.levels.INFO, { title = "bookmark" })
+        vim.cmd.edit(vim.fn.fnameescape(path))
+      end)
+    end)
+  end
+
+  local function ask_status(url)
+    vim.ui.select({ "to-read", "saved", "read" }, { prompt = "Status" }, function(status)
+      if status then
+        save(url, status)
+      end
+    end)
+  end
+
+  local ok, clip = pcall(vim.fn.getreg, "+")
+  clip = ok and vim.trim(clip) or ""
+  if clip:match("^https?://%S+$") then
+    return ask_status(clip)
+  end
+  vim.ui.input({ prompt = "URL: " }, function(url)
+    url = url and vim.trim(url) or ""
+    if url:match("^https?://%S+$") then
+      ask_status(url)
+    elseif url ~= "" then
+      vim.notify("Not a URL: " .. url, vim.log.levels.WARN, { title = "bookmark" })
+    end
+  end)
+end
+
+-- =============================================================================
 -- Legacy vault substitutions
 -- Kept verbatim so the old vault's nvim templates keep working until migration
 -- is finished. Delete this section (and the legacy workspace) afterwards.
@@ -568,6 +618,7 @@ function M.workspaces()
             til = { notes_subdir = "notes" },
             recipe = { notes_subdir = "references" },
             movie = { notes_subdir = "references" },
+            bookmark = { notes_subdir = "bookmarks" },
           },
         },
         checkbox = { order = { " ", "/", "x", "-", ">", "!", "?" } },
@@ -620,6 +671,7 @@ M.keys = {
   { "<Leader>oL", function() M.letterboxd_sync() end, desc = "obsidian: sync Letterboxd diary" },
   { "<Leader>ok", function() M.pick_tasks() end, desc = "obsidian: open tasks across the vault" },
   { "<Leader>oi", function() M.new_til() end, desc = "obsidian: new TIL (today I learned)" },
+  { "<Leader>ob", function() M.add_bookmark() end, desc = "obsidian: save URL as a bookmark" },
   { "<Leader>on", ":Obsidian new ", desc = "obsidian: new note" },
   { "<Leader>oo", ":Obsidian open ", desc = "obsidian: open in app" },
   { "<Leader>nv", "<Cmd>Obsidian search<CR>", desc = "obsidian: search" },
