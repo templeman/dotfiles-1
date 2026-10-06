@@ -505,14 +505,14 @@ local function fenced_lines(lines)
 end
 
 --- Snacks picker of every open task in the main vault, soonest due first,
---- undated last. Skips templates (_meta/), the old vault (old-structure/) and
---- example tasks in code fences. Obsidian twin: categories/Tasks.md.
+--- undated last. Skips templates (_meta/) and example tasks in code fences.
+--- Obsidian twin: categories/Tasks.md.
 function M.pick_tasks()
   local root = M.vaults.main
   local res = vim
     .system({
       "rg", "--line-number", "--no-heading", "--color=never", "--sort=path",
-      "--glob=*.md", "--glob=!_meta/**", "--glob=!old-structure/**",
+      "--glob=*.md", "--glob=!_meta/**",
       "-e", M.TASK_PATTERN,
     }, { cwd = root, text = true })
     :wait()
