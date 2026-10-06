@@ -555,17 +555,54 @@ function M.period_for_id(id)
   end
 end
 
+--- Is `name` a person's org: does some person note have `org: "[[name]]"`
+--- (case-insensitive)? Searches frontmatter lines with ripgrep.
+---@param root string vault root
+---@param name string
+---@return boolean
+function M.is_org(root, name)
+  local res = vim
+    .system({ "rg", "--ignore-case", "--fixed-strings", "--no-filename", "--no-line-number", "--glob", "*.md", "[[" .. name, root }, { text = true })
+    :wait()
+  local want = name:lower()
+  for line in (res.stdout or ""):gmatch("[^\n]+") do
+    local t = line:match('^org:%s*"?%[%[([^|#%]]+)')
+    if t and vim.fs.basename(t):lower() == want then
+      return true
+    end
+  end
+  return false
+end
+
+--- Does a note named `name` (case-insensitive) exist anywhere in the vault?
+---@param root string
+---@param name string
+---@return boolean
+local function note_exists(root, name)
+  local want = name:lower() .. ".md"
+  local res = vim.system({ "rg", "--files", "--glob", "*.md", root }, { text = true }):wait()
+  for path in (res.stdout or ""):gmatch("[^\n]+") do
+    if vim.fs.basename(path):lower() == want then
+      return true
+    end
+  end
+  return false
+end
+
 --- <CR> in vault notes: following a link to a periodic note that doesn't exist
 --- yet creates it in its journal folder from its template (like <leader>od),
---- instead of a blank note in notes/. Everything else is obsidian.nvim's smart
---- action. Obsidian twin: Templater's regex file templates.
+--- and following a person's org link with no note yet creates
+--- references/<org>.md from the org template, instead of a blank note in
+--- notes/. Everything else is obsidian.nvim's smart action. Obsidian twin:
+--- Templater's regex file templates (orgs: _hooks/new-note.md).
 ---@return string keys for an expr mapping
 function M.smart_enter()
   local link = require("obsidian.api").cursor_link()
   local target = link and link:match("^!?%[%[([^|#%]]+)")
   local id = target and (vim.fs.basename(target):gsub("%.md$", ""))
+  local root = Obsidian.workspace and tostring(Obsidian.workspace.root)
   local kind = id and M.period_for_id(id)
-  if kind and Obsidian.workspace and tostring(Obsidian.workspace.root) == M.vaults.main then
+  if kind and root == M.vaults.main then
     local path = vim.fs.joinpath(M.vaults.main, M.periods[kind].folder, id .. ".md")
     if not vim.uv.fs_stat(path) then
       vim.schedule(function()
@@ -573,6 +610,26 @@ function M.smart_enter()
       end)
       return ""
     end
+  elseif
+    id
+    and root
+    and vim.uv.fs_stat(vim.fs.joinpath(root, "_meta/templates/nvim/org.md"))
+    and M.is_org(root, id)
+    and not note_exists(root, id)
+  then
+    vim.schedule(function()
+      local Note = require("obsidian.note")
+      local Path = require("obsidian.path")
+      Note.create({
+        id = id,
+        verbatim = true,
+        dir = Path.new(vim.fs.joinpath(root, "references")),
+        template = "org.md",
+      })
+        :write({})
+        :open()
+    end)
+    return ""
   end
   return require("obsidian.actions").smart_action()
 end
@@ -709,6 +766,7 @@ function M.workspaces()
             project = { notes_subdir = "notes" },
             note = { notes_subdir = "notes" },
             person = { notes_subdir = "references" },
+            org = { notes_subdir = "references" },
             book = { notes_subdir = "references" },
             til = { notes_subdir = "notes" },
             recipe = { notes_subdir = "references" },
