@@ -441,6 +441,101 @@ function M.new_til()
   end)
 end
 
+--- A YAML scalar for a list item: plain when that's safe, else double-quoted.
+---@param s string
+---@return string
+local function yaml_scalar(s)
+  local plain = not s:find("[:#%[%]{},&*!|>'\"%%@`\\]")
+    and not s:match("^[-?%s]")
+    and not s:match("%s$")
+    and not ({ ["true"] = 1, ["false"] = 1, null = 1, yes = 1, no = 1, ["~"] = 1 })[s:lower()]
+    and not s:match("^[%d.]+$")
+  if plain then
+    return s
+  end
+  return '"' .. s:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
+end
+
+--- Append `value` to the frontmatter list `key` in a note's lines, turning
+--- `key: []`, an empty `key:` or a missing key into a block list.
+---@param lines string[]
+---@param key string
+---@param value string
+---@return string[]|nil lines, string|nil err
+function M.append_to_list(lines, key, value)
+  if lines[1] ~= "---" then
+    return nil, "no frontmatter"
+  end
+  local close
+  for i = 2, #lines do
+    if lines[i] == "---" then
+      close = i
+      break
+    end
+  end
+  if not close then
+    return nil, "unclosed frontmatter"
+  end
+  local out = vim.list_slice(lines, 1, #lines)
+  local item = "  - " .. yaml_scalar(value)
+  for i = 2, close - 1 do
+    local rest = out[i]:match("^" .. vim.pesc(key) .. ":%s*(.-)%s*$")
+    if rest then
+      if rest ~= "" and rest ~= "[]" then
+        return nil, key .. " isn't a block list"
+      end
+      out[i] = key .. ":"
+      local last = i
+      while out[last + 1] and out[last + 1]:match("^%s+%- ") do
+        last = last + 1
+      end
+      table.insert(out, last + 1, item)
+      return out
+    end
+  end
+  table.insert(out, close, item)
+  table.insert(out, close, key .. ":")
+  return out
+end
+
+--- <leader>oh: add a highlight to today's daily note. Asks for the text and
+--- appends it to the note's `highlights` list (the Highlights views), creating
+--- the note from its template if needed. Obsidian twin:
+--- Insert_commands/add-highlight.
+function M.add_highlight()
+  vim.ui.input({ prompt = "Highlight: " }, function(text)
+    text = text and vim.trim(text) or ""
+    if text == "" then
+      return
+    end
+    local period = M.periods.daily
+    local id = M.format(os.time(), period.format)
+    local path = vim.fs.joinpath(M.vaults.main, period.folder, id .. ".md")
+    if not vim.uv.fs_stat(path) then
+      M.open_period("daily") -- creates it from the template (and opens it)
+      if not vim.uv.fs_stat(path) then
+        return
+      end
+    end
+    local buf = vim.fn.bufnr(path)
+    local loaded = buf ~= -1 and vim.api.nvim_buf_is_loaded(buf)
+    local lines = loaded and vim.api.nvim_buf_get_lines(buf, 0, -1, false) or vim.fn.readfile(path)
+    local new, err = M.append_to_list(lines, "highlights", text)
+    if not new then
+      return vim.notify(id .. ": " .. err, vim.log.levels.ERROR, { title = "highlight" })
+    end
+    if loaded then
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, new)
+      vim.api.nvim_buf_call(buf, function()
+        vim.cmd("silent write")
+      end)
+    else
+      vim.fn.writefile(new, path)
+    end
+    vim.notify("Highlight added to " .. id, vim.log.levels.INFO, { title = "highlight" })
+  end)
+end
+
 --- Which period a note id belongs to, e.g. "2026-W40" → "weekly".
 ---@param id string
 ---@return string|nil
@@ -672,6 +767,7 @@ M.keys = {
   { "<Leader>ok", function() M.pick_tasks() end, desc = "obsidian: open tasks across the vault" },
   { "<Leader>oi", function() M.new_til() end, desc = "obsidian: new TIL (today I learned)" },
   { "<Leader>ob", function() M.add_bookmark() end, desc = "obsidian: save URL as a bookmark" },
+  { "<Leader>oh", function() M.add_highlight() end, desc = "obsidian: add a highlight to today" },
   { "<Leader>on", ":Obsidian new ", desc = "obsidian: new note" },
   { "<Leader>oo", ":Obsidian open ", desc = "obsidian: open in app" },
   { "<Leader>nv", "<Cmd>Obsidian search<CR>", desc = "obsidian: search" },
