@@ -536,6 +536,129 @@ function M.add_highlight()
   end)
 end
 
+--- The vault a buffer's note is in: the nearest folder holding `.obsidian/`.
+--- Not Obsidian.workspace.root, which stays on the main vault while editing a
+--- vault with no workspace of its own (the scaffold).
+---@param buf? integer
+---@return string|nil
+local function vault_root(buf)
+  return vim.fs.root(buf or 0, ".obsidian")
+end
+
+--- Index of the frontmatter's closing `---` in `lines`, or nil.
+---@param lines string[]
+---@return integer|nil
+local function frontmatter_end(lines)
+  if lines[1] ~= "---" then
+    return nil
+  end
+  for i = 2, #lines do
+    if lines[i] == "---" then
+      return i
+    end
+  end
+end
+
+--- <leader>o#: add topics to the current note. Picks from every topic in the
+--- vault, most used first (● marks those with a topic note). <CR> adds the
+--- highlighted topic (or each one selected with <Tab>), or the typed text when
+--- nothing matches; <C-e> always adds the typed text, for a new topic. The edit
+--- is `_meta/scripts/topics add`, so the property comes out as lowercase links,
+--- like `topics normalize`. The buffer is left unsaved.
+function M.add_topic()
+  local buf = vim.api.nvim_get_current_buf()
+  local root = vault_root(buf)
+  local script = root and vim.fs.joinpath(root, "_meta/scripts/topics")
+  local function say(msg, level)
+    vim.notify(msg, level or vim.log.levels.INFO, { title = "topics" })
+  end
+  if not script or vim.fn.executable(script) ~= 1 then
+    return say("No _meta/scripts/topics in this vault", vim.log.levels.WARN)
+  end
+  if not frontmatter_end(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) then
+    return say("This note has no frontmatter", vim.log.levels.WARN)
+  end
+  local res = vim.system({ script, "list" }, { text = true }):wait()
+  if res.code ~= 0 then
+    return say("topics list failed: " .. vim.trim(res.stderr or ""), vim.log.levels.ERROR)
+  end
+
+  -- "    3  example topic  → notes/Example Topic.md", most used first
+  local items = {}
+  for _, line in ipairs(vim.split(res.stdout or "", "\n", { trimempty = true })) do
+    local count, rest = line:match("^%s*(%d+)  (.+)$")
+    if count then
+      local name, note = rest:match("^(.-)  → (.+)$")
+      table.insert(items, { text = name or rest, count = tonumber(count), note = note })
+    end
+  end
+
+  local function apply(names)
+    if #names == 0 or not vim.api.nvim_buf_is_valid(buf) then
+      return
+    end
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    local close = frontmatter_end(lines)
+    if not close then
+      return say("This note has no frontmatter", vim.log.levels.WARN)
+    end
+    local cmd = vim.list_extend({ script, "add" }, names)
+    local out = vim.system(cmd, { stdin = table.concat(lines, "\n") .. "\n", text = true }):wait()
+    if out.code ~= 0 then
+      return say("topics add failed: " .. vim.trim(out.stderr or ""), vim.log.levels.ERROR)
+    end
+    local new = vim.split(out.stdout, "\n")
+    local new_close = frontmatter_end(new)
+    if not new_close then
+      return say("topics add returned no frontmatter", vim.log.levels.ERROR)
+    end
+    -- only the frontmatter changes; leave the body (and its marks) alone
+    vim.api.nvim_buf_set_lines(buf, 0, close, false, vim.list_slice(new, 1, new_close))
+    say("Added " .. table.concat(names, ", "):lower())
+  end
+
+  local function typed(picker)
+    return vim.trim(picker.input.filter.pattern or "")
+  end
+
+  Snacks.picker.pick({
+    title = "Add topic (<C-e>: add as typed)",
+    items = items,
+    layout = { preset = "select" },
+    -- keep the most-used order among equally good matches
+    sort = { fields = { "score:desc", "idx" } },
+    format = function(item)
+      return {
+        { ("%4d "):format(item.count), "Comment" },
+        { item.note and "● " or "  ", "Special" },
+        { item.text },
+      }
+    end,
+    confirm = function(picker)
+      local names = vim.tbl_map(function(item)
+        return item.text
+      end, picker:selected({ fallback = true }))
+      if #names == 0 and typed(picker) ~= "" then
+        names = { typed(picker) }
+      end
+      picker:close()
+      apply(names)
+    end,
+    actions = {
+      add_typed = function(picker)
+        local name = typed(picker)
+        picker:close()
+        apply(name ~= "" and { name } or {})
+      end,
+    },
+    win = {
+      input = {
+        keys = { ["<c-e>"] = { "add_typed", mode = { "i", "n" }, desc = "Add the typed text as a topic" } },
+      },
+    },
+  })
+end
+
 --- Which period a note id belongs to, e.g. "2026-W40" → "weekly".
 ---@param id string
 ---@return string|nil
@@ -600,7 +723,7 @@ function M.smart_enter()
   local link = require("obsidian.api").cursor_link()
   local target = link and link:match("^!?%[%[([^|#%]]+)")
   local id = target and (vim.fs.basename(target):gsub("%.md$", ""))
-  local root = Obsidian.workspace and tostring(Obsidian.workspace.root)
+  local root = vault_root()
   local kind = id and M.period_for_id(id)
   if kind and root == M.vaults.main then
     local path = vim.fs.joinpath(M.vaults.main, M.periods[kind].folder, id .. ".md")
@@ -826,6 +949,7 @@ M.keys = {
   { "<Leader>oi", function() M.new_til() end, desc = "obsidian: new TIL (today I learned)" },
   { "<Leader>ob", function() M.add_bookmark() end, desc = "obsidian: save URL as a bookmark" },
   { "<Leader>oh", function() M.add_highlight() end, desc = "obsidian: add a highlight to today" },
+  { "<Leader>o#", function() M.add_topic() end, desc = "obsidian: add a topic to this note" },
   { "<Leader>on", ":Obsidian new ", desc = "obsidian: new note" },
   { "<Leader>oo", ":Obsidian open ", desc = "obsidian: open in app" },
   { "<Leader>nv", "<Cmd>Obsidian search<CR>", desc = "obsidian: search" },
