@@ -37,6 +37,15 @@ return require("dko.utils.lazyspec")(function(ctx)
           -- fg/bg so it's unaffected by plugins that override Pmenu.
           local sl = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
           vim.api.nvim_set_hl(0, "dkoStatusKey", { fg = sl.fg, bg = sl.bg })
+          -- solarized8 only sets the strikethrough attr; dim struck text to
+          -- the Comment tone (base01 dark / base1 light). Mirrored in the
+          -- Obsidian vault's nvim-palette.css snippet.
+          local comment = vim.api.nvim_get_hl(0, { name = "Comment", link = false })
+          vim.api.nvim_set_hl(
+            0,
+            "@markup.strikethrough",
+            { strikethrough = true, fg = comment.fg }
+          )
         end
         vim.schedule(fix_highlights)
         vim.api.nvim_create_autocmd("ColorScheme", {
