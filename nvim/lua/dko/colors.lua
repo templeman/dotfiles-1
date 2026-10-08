@@ -1,11 +1,13 @@
 local M = {}
 
 M.is_dark = function()
-  return vim.g.colors_name == require("dko.settings").get("colors.dark")
+  return vim.o.background == "dark"
+    and vim.g.colors_name == require("dko.settings").get("colors.dark")
 end
 
 M.is_light = function()
-  return vim.g.colors_name == require("dko.settings").get("colors.light")
+  return vim.o.background == "light"
+    and vim.g.colors_name == require("dko.settings").get("colors.light")
 end
 
 M.lightmode = function()

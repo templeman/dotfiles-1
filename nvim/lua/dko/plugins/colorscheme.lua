@@ -16,14 +16,14 @@ return require("dko.utils.lazyspec")(function(ctx)
         --   dependencies = { "rktjmp/lush.nvim" },
         -- },
         -- "ntk148v/komau.vim",
-        "oskarnurm/koda.nvim",
+        -- "oskarnurm/koda.nvim",
       },
       dev = dev,
       lazy = false,
       priority = 1000,
       init = function()
         require("dko.settings").set("colors.dark", "solarized8")
-        require("dko.settings").set("colors.light", "koda-glade")
+        require("dko.settings").set("colors.light", "solarized8")
       end,
       config = function()
         vim.cmd.colorscheme("solarized8")
