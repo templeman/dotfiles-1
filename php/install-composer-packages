@@ -20,10 +20,19 @@ export PATH="${DOTFILES}/bin:${PATH}"
 
 __install() {
   composer diagnose
-  composer global require "phpmd/phpmd=@stable"
-  composer global require "phpunit/phpunit=^9.6"
-  composer global require "psy/psysh=@stable"
-  composer global require "sebastian/phpcpd=6.0.3"
-  composer global require "squizlabs/php_codesniffer=*"
+  # Writes phpcs installed_paths for any composer-installed coding standards
+  composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+  # phpcpd is abandoned
+  composer global remove sebastian/phpcpd 2>/dev/null || true
+  composer global require -W "phpmd/phpmd=@stable"
+  composer global require -W "phpstan/phpstan=@stable"
+  composer global require -W "php-stubs/wp-cli-stubs=@stable"
+  composer global require -W "phpunit/phpunit=^9.6"
+  composer global require -W "psy/psysh=@stable"
+  composer global require -W "squizlabs/php_codesniffer=^3"
+  composer global require -W "szepeviktor/phpstan-wordpress=@stable"
+  composer global require -W "wp-cli/wp-cli-bundle=@stable"
+  composer global require -W "wp-coding-standards/wpcs=^3"
+  phpcs -i
 }
 __dko_has composer && __install "$@"

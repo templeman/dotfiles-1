@@ -137,10 +137,10 @@ If there are file limit issues:
      `bi php@8.1`
      Unlink current php: `brew unlink php`
      `brew-php-switcher 8.1`
-  1. Run [php/install-composer-packages](../php/install-composer-packages)
-- Install [wp-cli](https://make.wordpress.org/cli/handbook/guides/installing/#recommended-installation)
-  using the recommended method. Then move the resulting .phar build to
-  `/Users/[user]/.config/composer/vendor/bin/wp`
+  1. Run [php/install-composer-packages](../php/install-composer-packages).
+     This installs wp-cli, phpcs + WordPress-Coding-Standards, and phpstan +
+     phpstan-wordpress into `$COMPOSER_HOME` (XDG config dir). Keep them
+     updated with `dot composer` / `dot wpcs`.
 
 ## Cask notes
 
