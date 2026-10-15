@@ -45,6 +45,7 @@ require("dko/mappings").setup(config)
 require("dko/theme").setup(config)
 require("dko/panes").setup()
 require("dko/tabstate").setup()
+require("dko/wordpress").setup(config)
 
 wezterm.on("gui-startup", function(cmd)
   ---@diagnostic disable-next-line: unused-local
