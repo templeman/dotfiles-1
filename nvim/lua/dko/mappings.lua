@@ -537,6 +537,19 @@ M.bind_inspecthi = function()
 end
 
 -- =============================================================================
+-- WordPress
+-- =============================================================================
+
+M.bind_wordpress = function(bufnr)
+  map("n", "gK", function()
+    require("dko.wordpress").open_docs()
+  end, {
+    buffer = bufnr,
+    desc = "Open developer.wordpress.org for hook/function under cursor",
+  })
+end
+
+-- =============================================================================
 -- Plugin: tadmccorkle/markdown.nvim
 -- =============================================================================
 

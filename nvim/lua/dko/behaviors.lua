@@ -150,3 +150,4 @@ autocmd({ "BufWritePre", "FileWritePre" }, {
 require("dko.behaviors.git")
 require("dko.behaviors.lsp")
 require("dko.behaviors.qfloclist")
+require("dko.behaviors.wordpress")

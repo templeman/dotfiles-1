@@ -57,6 +57,12 @@ Check for directory, prompt to create if it doesn't exist
 
 `open` or `xdg-open`
 
+## dko-php-style
+
+PHP lint/format from stdin for editors (used by nvim efm). Pint-first: uses
+Pint when a pint.json is found, else phpcs/phpcbf. Leaves git-ignored and
+excluded files unchanged.
+
 ## dko-same
 
 Check if two filepaths are the same after resolving symlinks.

@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+# dko-php-style - PHP code style for editors (nvim efm), reads stdin
+#
+# Usage:
+#   dko-php-style format /path/to/file.php < file.php   # prints fixed code
+#   dko-php-style lint /path/to/file.php < file.php     # phpcs emacs report
+#
+# Pint-first: if a pint.json is found above the file, Pint formats it and
+# phpcs/phpcbf stay quiet so they don't contradict the project's standard.
+# Otherwise phpcbf formats (efm only calls format when a phpcs ruleset exists)
+# and phpcs lints.
+#
+# format always prints PHP code on success, unlike bare phpcbf:
+# - git-ignored files (e.g. composer-installed plugins) are echoed unchanged
+# - files matched by the ruleset's <exclude-pattern> are echoed unchanged;
+#   phpcbf prints a "No violations" report instead of the code for these
+# - exits 0 when phpcbf fixed something (phpcbf exits 1)
+#
+# Tools prefer the project's vendor/bin over the global ($COMPOSER_HOME) one.
+
+usage="Usage: dko-php-style format|lint /path/to/file.php < file.php"
+action="${1:?$usage}"
+file="${2:?$usage}"
+
+input="$(cat)"
+
+passthrough() {
+  printf '%s\n' "$input"
+  exit 0
+}
+
+# $1 dir to start in, $2 filename to look for
+find_up() {
+  local dir="$1"
+  while [[ -n "$dir" ]]; do
+    [[ -f "${dir}/${2}" ]] && printf '%s\n' "$dir" && return 0
+    [[ "$dir" == "/" ]] && return 1
+    dir="$(dirname -- "$dir")"
+  done
+  return 1
+}
+
+# $1 project dir, $2 tool name
+tool() {
+  if [[ -x "${1}/vendor/bin/${2}" ]]; then
+    printf '%s\n' "${1}/vendor/bin/${2}"
+  else
+    printf '%s\n' "$2"
+  fi
+}
+
+filedir="$(cd -- "$(dirname -- "$file")" 2>/dev/null && pwd)"
+pint_root="$(find_up "${filedir:-$PWD}" pint.json)"
+
+case "$action" in
+  lint)
+    [[ -n "$pint_root" ]] && exit 0
+    printf '%s\n' "$input" |
+      "$(tool "$PWD" phpcs)" --no-colors --report=emacs -q \
+        --stdin-path="$file" -
+    ;;
+
+  format)
+    git -C "$filedir" check-ignore -q -- "$file" 2>/dev/null && passthrough
+
+    if [[ -n "$pint_root" ]]; then
+      # Pint echoes excluded or unparseable files back unchanged
+      output="$(
+        cd -- "$pint_root" &&
+          printf '%s\n' "$input" |
+          "$(tool "$pint_root" pint)" - --stdin-filename="$file"
+      )" || exit $?
+    else
+      output="$(
+        printf '%s\n' "$input" |
+          "$(tool "$PWD" phpcbf)" -q --stdin-path="$file" -
+      )"
+      code=$?
+      ((code > 1)) && exit "$code"
+    fi
+
+    # never hand the editor something that isn't code; the phpcbf report may
+    # start with a blank line
+    [[ -z "${output//[[:space:]]/}" || "$output" =~ ^[[:space:]]*No\ violations ]] &&
+      passthrough
+    printf '%s\n' "$output"
+    ;;
+
+  *)
+    echo "$usage" >&2
+    exit 1
+    ;;
+esac

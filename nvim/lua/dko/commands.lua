@@ -34,6 +34,16 @@ command(
   { desc = "Set dark colorscheme" }
 )
 
+command("WP", function(opts)
+  require("dko.wordpress").run(opts.fargs)
+end, {
+  desc = "Run wp-cli in the current WordPress (or Trellis VM) site",
+  nargs = "*",
+  complete = function(arglead, cmdline)
+    return require("dko.wordpress").complete(arglead, cmdline)
+  end,
+})
+
 command("Marked", function()
   vim.cmd("silent !open -a 'Marked 2.app' '%:p'")
 end, { desc = "Open current file in Marked 2" })

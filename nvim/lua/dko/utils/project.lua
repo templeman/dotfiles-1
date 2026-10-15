@@ -13,6 +13,7 @@ local PROJECT_ROOTS = {
     "pubspec.yaml", -- flutter / dart
     "requirements.txt",
     "stylua.toml",
+    "wp-cli.yml", -- Bedrock
   },
 }
 
