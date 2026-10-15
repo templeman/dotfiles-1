@@ -99,6 +99,9 @@ __merge_dir "${HOME}/.fonts" "${XDG_DATA_HOME}/fonts"
 [[ -n "$GNUPGHOME" ]] && [[ -d "${HOME}/.gnupg" ]] && {
   rmdir "${HOME}/.gnupg" 2>/dev/null || __move "${HOME}/.gnupg" "$GNUPGHOME"
 }
+[[ -n "$WP_CLI_CONFIG_PATH" ]] && __move "${HOME}/.wp-cli/config.yml" "$WP_CLI_CONFIG_PATH"
+[[ -n "$WP_CLI_PACKAGES_DIR" ]] && __move "${HOME}/.wp-cli/packages" "$WP_CLI_PACKAGES_DIR"
+[[ -n "$WP_CLI_CACHE_DIR" ]] && __move "${HOME}/.wp-cli/cache" "$WP_CLI_CACHE_DIR"
 [[ -n "$PYLINTHOME" ]] && __move "${HOME}/.pylint.d" "$PYLINTHOME"
 [[ -n "$YARN_CACHE_FOLDER" ]] && __move "${HOME}/.yarn-cache" "$YARN_CACHE_FOLDER"
 

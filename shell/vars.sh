@@ -271,8 +271,10 @@ export VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases"
 # w3m
 export W3M_DIR="${XDG_DATA_HOME}/w3m"
 
-# wp cli
-export WP_CLI_CONFIG_PATH="${XDG_CONFIG_HOME}/wp-cli"
+# wp cli -- WP_CLI_CONFIG_PATH is a file path, not a dir
+export WP_CLI_CONFIG_PATH="${XDG_CONFIG_HOME}/wp-cli/config.yml"
+export WP_CLI_CACHE_DIR="${XDG_CACHE_HOME}/wp-cli"
+export WP_CLI_PACKAGES_DIR="${XDG_DATA_HOME}/wp-cli/packages"
 
 # x11
 export XCURSOR_PATH="/usr/share/icons:${XDG_DATA_HOME}/icons"
