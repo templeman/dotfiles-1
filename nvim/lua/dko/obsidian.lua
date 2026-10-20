@@ -678,8 +678,8 @@ function M.period_for_id(id)
   end
 end
 
---- Is `name` a person's org: does some person note have `org: "[[name]]"`
---- (case-insensitive)? Searches frontmatter lines with ripgrep.
+--- Is `name` an org: does some note (a person or project) have
+--- `org: "[[name]]"` (case-insensitive)? Searches frontmatter lines with ripgrep.
 ---@param root string vault root
 ---@param name string
 ---@return boolean
@@ -714,7 +714,7 @@ end
 
 --- <CR> in vault notes: following a link to a periodic note that doesn't exist
 --- yet creates it in its journal folder from its template (like <leader>od),
---- and following a person's org link with no note yet creates
+--- and following a person's or project's org link with no note yet creates
 --- references/<org>.md from the org template, instead of a blank note in
 --- notes/. Everything else is obsidian.nvim's smart action. Obsidian twin:
 --- Templater's regex file templates (orgs: _hooks/new-note.md).
