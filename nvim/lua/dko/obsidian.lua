@@ -498,19 +498,21 @@ function M.append_to_list(lines, key, value)
   return out
 end
 
---- <leader>oh: add a highlight to today's daily note. Asks for the text and
---- appends it to the note's `highlights` list (the Highlights views), creating
---- the note from its template if needed. Obsidian twin:
---- Insert_commands/add-highlight.
+--- <leader>oh: add a highlight to the daily note being edited, or to today's
+--- from any other note. Asks for the text and appends it to the note's
+--- `highlights` list (the Highlights views), creating today's note from its
+--- template if needed. Obsidian twin: Insert_commands/add-highlight.
 function M.add_highlight()
+  local period = M.periods.daily
+  local current = vim.api.nvim_buf_get_name(0)
+  local current_id = current:match("/" .. vim.pesc(period.folder) .. "/(%d%d%d%d%-%d%d%-%d%d)%.md$")
   vim.ui.input({ prompt = "Highlight: " }, function(text)
     text = text and vim.trim(text) or ""
     if text == "" then
       return
     end
-    local period = M.periods.daily
-    local id = M.format(os.time(), period.format)
-    local path = vim.fs.joinpath(M.vaults.main, period.folder, id .. ".md")
+    local id = current_id or M.format(os.time(), period.format)
+    local path = current_id and current or vim.fs.joinpath(M.vaults.main, period.folder, id .. ".md")
     if not vim.uv.fs_stat(path) then
       M.open_period("daily") -- creates it from the template (and opens it)
       if not vim.uv.fs_stat(path) then
