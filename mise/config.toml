@@ -7,7 +7,6 @@ GIT_COMMITTER_NAME = { required = true }
 NPM_CONFIG_INIT_AUTHOR_NAME = { required = true }
 GIT_AUTHOR_EMAIL = { required = true }
 GIT_COMMITTER_EMAIL = { required = true }
-MISE_NODE_DEFAULT_PACKAGES_FILE = "{{ get_env(name='XDG_CONFIG_HOME', default='~/.config') }}/mise/default-npm-packages"
 
 [settings]
 gpg_verify = false
@@ -21,6 +20,7 @@ use_git_credentials = true
 [tools]
 act = "latest"
 actionlint = "latest"
+"aqua:pnpm/pnpm" = "latest"
 bat = "latest"
 biome = "latest"
 "cargo:selene" = { version = "latest", depends = ["rust"] }
@@ -46,16 +46,28 @@ node = "latest"
 "npm:@tailwindcss/language-server" = { version = "latest" }
 "npm:@vtsls/language-server" = { version = "latest" }
 "npm:blade-formatter" = { version = "latest" }
+"npm:commitizen" = { version = "latest" }
 "npm:dockerfile-language-server-nodejs" = { version = "latest" }
+"npm:http-server" = { version = "latest" }
+"npm:icon-gen" = { version = "latest" }
 "npm:intelephense" = { version = "latest" }
+"npm:js-beautify" = { version = "latest" }
+"npm:jscpd" = { version = "latest" }
 "npm:markdownlint-cli" = { version = "latest" }
+"npm:mjml" = { version = "latest" }
+"npm:npm-check-updates" = { version = "latest" }
 "npm:npmrc" = { version = "latest" }
+"npm:random-word-cli" = { version = "latest", allow_low_downloads = true }
+"npm:sass-lint" = { version = "latest" }
+"npm:semistandard" = { version = "latest" }
+"npm:sitemap-generator-cli" = { version = "latest" }
+"npm:standard" = { version = "latest" }
+"npm:stylelint" = { version = "latest" }
 "npm:vscode-langservers-extracted" = { version = "latest" }
 "npm:yaml-language-server" = { version = "latest" }
 "pipx:basedpyright" = { version = "latest", depends = ["python"] }
 "pipx:isort" = { version = "latest", depends = ["python"] }
 "pipx:jedi-language-server" = { version = "latest", depends = ["python"] }
-"aqua:pnpm/pnpm" = "latest"
 prettier = { version = "latest" }
 python = "latest"
 ripgrep = { version = "latest", postinstall = "[ -n \"${XDG_DATA_HOME}\" ] && mkdir -p ${XDG_DATA_HOME}/zsh/site-functions && rg --generate complete-zsh > ${XDG_DATA_HOME}/zsh/site-functions/_rg || true" }
